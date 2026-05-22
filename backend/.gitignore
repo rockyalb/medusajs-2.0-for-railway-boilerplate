@@ -1,28 +1,58 @@
+# Build outputs
 /dist
-.env
-.DS_Store
-/uploads
-/node_modules
-yarn-error.log
+build
+.medusa
 .medusa-copy
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+/node_modules
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
 /.idea
+.vscode/
+
+# Logs
+*.log
+logs/
+
+# Uploads & static
+/uploads
 static
+
+# Test coverage
 coverage
 
-.medusa
+# TypeScript
+*.tsbuildinfo
 
-!src/**
-
-./tsconfig.tsbuildinfo
-# package-lock.json
+# Lockfiles (keep package-lock.json, ignore others)
 yarn.lock
-medusa-db.sql
-build
-.cache
+pnpm-lock.yaml
 
+# Yarn berry
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Medusa DB dump
+medusa-db.sql
+
+# Cache
+.cache
+
+# Claude Code memory
+.claude/
+
+!src/**
