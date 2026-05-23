@@ -5,10 +5,12 @@ import {
 } from "@medusajs/framework/utils"
 import {
   createRegionsWorkflow,
+  createSalesChannelsWorkflow,
   createShippingOptionsWorkflow,
   createShippingProfilesWorkflow,
   createStockLocationsWorkflow,
   deleteShippingOptionsWorkflow,
+  linkSalesChannelsToStockLocationWorkflow,
   updateRegionsWorkflow,
   updateStoresStep,
   updateStoresWorkflow,
@@ -53,13 +55,32 @@ export default async function setupAllShipping({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
   const link = container.resolve(ContainerRegistrationKeys.LINK)
   const fulfillmentModuleService = container.resolve(Modules.FULFILLMENT)
+  const inventoryModuleService = container.resolve(Modules.INVENTORY)
   const regionModuleService = container.resolve(Modules.REGION)
+  const salesChannelModuleService = container.resolve(Modules.SALES_CHANNEL)
   const stockLocationModuleService = container.resolve(Modules.STOCK_LOCATION)
   const storeModuleService = container.resolve(Modules.STORE)
 
   logger.info("Setting store currency to Albanian Lek (ALL)...")
 
   const [store] = await storeModuleService.listStores()
+  let [defaultSalesChannel] = await salesChannelModuleService.listSalesChannels({
+    name: "Default Sales Channel",
+  })
+
+  if (!defaultSalesChannel) {
+    const { result } = await createSalesChannelsWorkflow(container).run({
+      input: {
+        salesChannelsData: [
+          {
+            name: "Default Sales Channel",
+          },
+        ],
+      },
+    })
+
+    defaultSalesChannel = result[0]
+  }
 
   await updateStoreCurrencies(container).run({
     input: {
@@ -112,6 +133,7 @@ export default async function setupAllShipping({ container }: ExecArgs) {
     input: {
       selector: { id: store.id },
       update: {
+        default_sales_channel_id: defaultSalesChannel.id,
         default_region_id: region.id,
       },
     },
@@ -146,6 +168,13 @@ export default async function setupAllShipping({ container }: ExecArgs) {
       update: {
         default_location_id: stockLocation.id,
       },
+    },
+  })
+
+  await linkSalesChannelsToStockLocationWorkflow(container).run({
+    input: {
+      id: stockLocation.id,
+      add: [defaultSalesChannel.id],
     },
   })
 
@@ -238,6 +267,38 @@ export default async function setupAllShipping({ container }: ExecArgs) {
         },
       ],
     })
+  }
+
+  const inventoryItems = await inventoryModuleService.listInventoryItems(
+    {},
+    {
+      select: ["id"],
+      take: 1000,
+    }
+  )
+  const existingInventoryLevels =
+    await inventoryModuleService.listInventoryLevels(
+      {
+        location_id: stockLocation.id,
+      },
+      {
+        select: ["inventory_item_id"],
+        take: 1000,
+      }
+    )
+  const existingInventoryItemIds = new Set(
+    existingInventoryLevels.map((level) => level.inventory_item_id)
+  )
+  const inventoryLevelsToCreate = inventoryItems
+    .filter((item) => !existingInventoryItemIds.has(item.id))
+    .map((item) => ({
+      inventory_item_id: item.id,
+      location_id: stockLocation.id,
+      stocked_quantity: 1000000,
+    }))
+
+  if (inventoryLevelsToCreate.length) {
+    await inventoryModuleService.createInventoryLevels(inventoryLevelsToCreate)
   }
 
   const existingOptions = await fulfillmentModuleService.listShippingOptions(

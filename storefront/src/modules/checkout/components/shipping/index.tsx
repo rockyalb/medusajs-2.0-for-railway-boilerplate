@@ -49,7 +49,10 @@ const Shipping: React.FC<ShippingProps> = ({
 
   const selectableShippingMethods = useMemo(() => {
     return (availableShippingMethods ?? []).filter(
-      (method) => !method.insufficient_inventory
+      (method) =>
+        !method.insufficient_inventory &&
+        method.amount !== null &&
+        method.amount !== undefined
     )
   }, [availableShippingMethods])
 
