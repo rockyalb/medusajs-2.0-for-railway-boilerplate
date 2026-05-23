@@ -12,44 +12,14 @@ import {
   deleteShippingOptionsWorkflow,
   linkSalesChannelsToStockLocationWorkflow,
   updateRegionsWorkflow,
-  updateStoresStep,
   updateStoresWorkflow,
 } from "@medusajs/medusa/core-flows"
-import {
-  createWorkflow,
-  transform,
-  WorkflowResponse,
-} from "@medusajs/framework/workflows-sdk"
 
 const COUNTRY_CODE = "al"
 const CURRENCY_CODE = "all"
 const SERVICE_ZONE_NAME = "Albania Delivery"
 const FULFILLMENT_SET_NAME = "Albania delivery"
 const STOCK_LOCATION_NAME = "Albania Warehouse"
-
-const updateStoreCurrencies = createWorkflow(
-  "setup-all-shipping-update-store-currencies",
-  (input: {
-    supported_currencies: { currency_code: string; is_default?: boolean }[]
-    store_id: string
-  }) => {
-    const normalizedInput = transform({ input }, (data) => ({
-      selector: { id: data.input.store_id },
-      update: {
-        supported_currencies: data.input.supported_currencies.map(
-          (currency) => ({
-            currency_code: currency.currency_code,
-            is_default: currency.is_default ?? false,
-          })
-        ),
-      },
-    }))
-
-    const stores = updateStoresStep(normalizedInput)
-
-    return new WorkflowResponse(stores)
-  }
-)
 
 export default async function setupAllShipping({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER)
@@ -82,15 +52,18 @@ export default async function setupAllShipping({ container }: ExecArgs) {
     defaultSalesChannel = result[0]
   }
 
-  await updateStoreCurrencies(container).run({
+  await updateStoresWorkflow(container).run({
     input: {
-      store_id: store.id,
-      supported_currencies: [
-        {
-          currency_code: CURRENCY_CODE,
-          is_default: true,
-        },
-      ],
+      selector: { id: store.id },
+      update: {
+        supported_currencies: [
+          {
+            currency_code: CURRENCY_CODE,
+            is_default: true,
+            is_tax_inclusive: true,
+          },
+        ],
+      },
     },
   })
 
@@ -106,6 +79,7 @@ export default async function setupAllShipping({ container }: ExecArgs) {
           name: "Albania",
           currency_code: CURRENCY_CODE,
           countries: [COUNTRY_CODE],
+          is_tax_inclusive: true,
           payment_providers: ["pp_system_default"],
         },
       },
@@ -120,6 +94,7 @@ export default async function setupAllShipping({ container }: ExecArgs) {
             name: "Albania",
             currency_code: CURRENCY_CODE,
             countries: [COUNTRY_CODE],
+            is_tax_inclusive: true,
             payment_providers: ["pp_system_default"],
           },
         ],

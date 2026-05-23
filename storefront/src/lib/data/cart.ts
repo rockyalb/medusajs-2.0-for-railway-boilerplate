@@ -46,6 +46,17 @@ export async function getOrSetCart(countryCode: string) {
     throw new Error(`Region not found for country code: ${countryCode}`)
   }
 
+  if (
+    cart &&
+    cart.currency_code === region.currency_code &&
+    cart.items?.some((item) => item.is_tax_inclusive === false)
+  ) {
+    await removeCartId()
+    cart = null
+    revalidateTag("cart")
+    revalidateTag("shipping")
+  }
+
   if (cart && cart.currency_code !== region.currency_code) {
     await removeCartId()
     cart = null

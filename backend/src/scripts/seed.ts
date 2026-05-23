@@ -17,44 +17,10 @@ import {
   createTaxRegionsWorkflow,
   linkSalesChannelsToApiKeyWorkflow,
   linkSalesChannelsToStockLocationWorkflow,
-  updateStoresStep,
   updateStoresWorkflow,
 } from "@medusajs/medusa/core-flows";
-import {
-  createWorkflow,
-  transform,
-  WorkflowResponse,
-} from "@medusajs/framework/workflows-sdk";
 
 const SEEDED_PRODUCT_PRICE_ALL = 1000;
-
-const updateStoreCurrencies = createWorkflow(
-  "update-store-currencies",
-  (input: {
-    supported_currencies: { currency_code: string; is_default?: boolean }[];
-    store_id: string;
-  }) => {
-    const normalizedInput = transform({ input }, (data) => {
-      return {
-        selector: { id: data.input.store_id },
-        update: {
-          supported_currencies: data.input.supported_currencies.map(
-            (currency) => {
-              return {
-                currency_code: currency.currency_code,
-                is_default: currency.is_default ?? false,
-              };
-            },
-          ),
-        },
-      };
-    });
-
-    const stores = updateStoresStep(normalizedInput);
-
-    return new WorkflowResponse(stores);
-  },
-);
 
 export default async function seedDemoData({ container }: ExecArgs) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
@@ -88,15 +54,18 @@ export default async function seedDemoData({ container }: ExecArgs) {
     defaultSalesChannel = salesChannelResult;
   }
 
-  await updateStoreCurrencies(container).run({
+  await updateStoresWorkflow(container).run({
     input: {
-      store_id: store.id,
-      supported_currencies: [
-        {
-          currency_code: "all",
-          is_default: true,
-        },
-      ],
+      selector: { id: store.id },
+      update: {
+        supported_currencies: [
+          {
+            currency_code: "all",
+            is_default: true,
+            is_tax_inclusive: true,
+          },
+        ],
+      },
     },
   });
 
@@ -116,6 +85,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
           name: "Albania",
           currency_code: "all",
           countries,
+          is_tax_inclusive: true,
           payment_providers: ["pp_system_default"],
         },
       ],
