@@ -51,6 +51,7 @@ export async function getOrSetCart(countryCode: string) {
     cart = cartResp.cart
     await setCartId(cart.id)
     revalidateTag("cart")
+    revalidateTag("shipping")
   }
 
   if (cart && cart?.region_id !== region.id) {
@@ -61,6 +62,7 @@ export async function getOrSetCart(countryCode: string) {
       await getAuthHeaders()
     )
     revalidateTag("cart")
+    revalidateTag("shipping")
   }
 
   return cart
@@ -76,6 +78,7 @@ export async function updateCart(data: HttpTypes.StoreUpdateCart) {
     .update(cartId, data, {}, await getAuthHeaders())
     .then(({ cart }) => {
       revalidateTag("cart")
+      revalidateTag("shipping")
       return cart
     })
     .catch(medusaError)
@@ -111,6 +114,7 @@ export async function addToCart({
     )
     .then(() => {
       revalidateTag("cart")
+      revalidateTag("shipping")
     })
     .catch(medusaError)
 }
@@ -135,6 +139,7 @@ export async function updateLineItem({
     .updateLineItem(cartId, lineId, { quantity }, {}, await getAuthHeaders())
     .then(() => {
       revalidateTag("cart")
+      revalidateTag("shipping")
     })
     .catch(medusaError)
 }
@@ -153,9 +158,11 @@ export async function deleteLineItem(lineId: string) {
     .deleteLineItem(cartId, lineId, await getAuthHeaders())
     .then(() => {
       revalidateTag("cart")
+      revalidateTag("shipping")
     })
     .catch(medusaError)
   revalidateTag("cart")
+  revalidateTag("shipping")
 }
 
 export async function enrichLineItems(
@@ -221,6 +228,7 @@ export async function setShippingMethod({
     )
     .then(() => {
       revalidateTag("cart")
+      revalidateTag("shipping")
     })
     .catch(medusaError)
 }

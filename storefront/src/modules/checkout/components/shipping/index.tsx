@@ -8,7 +8,7 @@ import Divider from "@modules/common/components/divider"
 import Radio from "@modules/common/components/radio"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import { useRouter, useSearchParams, usePathname } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { setShippingMethod } from "@lib/data/cart"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
@@ -18,12 +18,23 @@ type ShippingProps = {
   availableShippingMethods: HttpTypes.StoreCartShippingOption[] | null
 }
 
+const FREE_DELIVERY_THRESHOLD = 7500
+
+const normalizeCity = (city?: string | null) => {
+  return city
+    ?.normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .toLowerCase()
+}
+
 const Shipping: React.FC<ShippingProps> = ({
   cart,
   availableShippingMethods,
 }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const lastAppliedOptionIdRef = useRef<string | null>(null)
 
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -36,24 +47,87 @@ const Shipping: React.FC<ShippingProps> = ({
     (method) => method.id === cart.shipping_methods?.at(-1)?.shipping_option_id
   )
 
+  const selectableShippingMethods = useMemo(() => {
+    return (availableShippingMethods ?? []).filter(
+      (method) => !method.insufficient_inventory
+    )
+  }, [availableShippingMethods])
+
+  const automaticShippingMethod = useMemo(() => {
+    if (!cart.shipping_address || selectableShippingMethods.length === 0) {
+      return undefined
+    }
+
+    const cityGroup =
+      normalizeCity(cart.shipping_address.city) === "tirane"
+        ? "tirane"
+        : "other"
+    const targetCode =
+      (cart.subtotal ?? 0) >= FREE_DELIVERY_THRESHOLD
+        ? "free-delivery"
+        : cityGroup === "tirane"
+        ? "tirane-delivery"
+        : "standard-delivery"
+
+    return (
+      selectableShippingMethods.find(
+        (method) => method.type?.code === targetCode
+      ) ?? selectableShippingMethods[0]
+    )
+  }, [cart.shipping_address, cart.subtotal, selectableShippingMethods])
+
   const handleEdit = () => {
     router.push(pathname + "?step=delivery", { scroll: false })
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    if (
+      automaticShippingMethod &&
+      selectedShippingMethod?.id !== automaticShippingMethod.id
+    ) {
+      const didSetShippingMethod = await set(automaticShippingMethod.id)
+
+      if (!didSetShippingMethod) {
+        return
+      }
+    }
+
     router.push(pathname + "?step=payment", { scroll: false })
   }
 
-  const set = async (id: string) => {
+  const set = useCallback(async (id: string) => {
     setIsLoading(true)
-    await setShippingMethod({ cartId: cart.id, shippingMethodId: id })
+    setError(null)
+    lastAppliedOptionIdRef.current = id
+    return await setShippingMethod({ cartId: cart.id, shippingMethodId: id })
+      .then(() => true)
       .catch((err) => {
+        lastAppliedOptionIdRef.current = null
         setError(err.message)
+        return false
       })
       .finally(() => {
         setIsLoading(false)
       })
-  }
+  }, [cart.id])
+
+  useEffect(() => {
+    if (
+      !automaticShippingMethod ||
+      selectedShippingMethod?.id === automaticShippingMethod.id ||
+      lastAppliedOptionIdRef.current === automaticShippingMethod.id ||
+      isLoading
+    ) {
+      return
+    }
+
+    set(automaticShippingMethod.id)
+  }, [
+    automaticShippingMethod,
+    selectedShippingMethod?.id,
+    isLoading,
+    set,
+  ])
 
   useEffect(() => {
     setError(null)
@@ -96,7 +170,7 @@ const Shipping: React.FC<ShippingProps> = ({
         <div data-testid="delivery-options-container">
           <div className="pb-8">
             <RadioGroup value={selectedShippingMethod?.id} onChange={set}>
-              {availableShippingMethods?.map((option) => {
+              {selectableShippingMethods.map((option) => {
                 return (
                   <RadioGroup.Option
                     key={option.id}
@@ -138,7 +212,7 @@ const Shipping: React.FC<ShippingProps> = ({
             className="mt-6"
             onClick={handleSubmit}
             isLoading={isLoading}
-            disabled={!cart.shipping_methods?.[0]}
+            disabled={!selectedShippingMethod && !automaticShippingMethod}
             data-testid="submit-delivery-option-button"
           >
             Continue to payment
