@@ -34,6 +34,22 @@ module.exports = {
           80: "#1F2937",
           90: "#111827",
         },
+        yco: {
+          cream: "#FAF9F8",
+          "cream-dark": "#F5F3F1",
+          blue: "#7CA4EB",
+          green: "#84C3AC",
+          coral: "#FC8C84",
+          charcoal: "#333333",
+          "charcoal-muted": "#5E5E5E",
+          // Fallback aliases for existing component references
+          sage: "#84C3AC",
+          "sage-dark": "#84C3AC",
+          forest: "#333333",
+          terracotta: "#FC8C84",
+          brown: "#333333",
+          "brown-muted": "#5E5E5E",
+        },
       },
       borderRadius: {
         none: "0px",
@@ -60,6 +76,7 @@ module.exports = {
       },
       fontFamily: {
         sans: [
+          "var(--font-kanit)",
           "Inter",
           "-apple-system",
           "BlinkMacSystemFont",
@@ -68,6 +85,12 @@ module.exports = {
           "Helvetica Neue",
           "Ubuntu",
           "sans-serif",
+        ],
+        serif: [
+          "var(--font-fredoka)",
+          "Georgia",
+          "Cambria",
+          "serif",
         ],
       },
       keyframes: {
@@ -140,6 +163,10 @@ module.exports = {
           "0%": { transform: "translateY(-100%)" },
           "100%": { transform: "translateY(0)" },
         },
+        "fade-up": {
+          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
       },
       animation: {
         ring: "ring 2.2s cubic-bezier(0.5, 0, 0.5, 1) infinite",
@@ -155,6 +182,7 @@ module.exports = {
         enter: "enter 200ms ease-out",
         "slide-in": "slide-in 1.2s cubic-bezier(.41,.73,.51,1.02)",
         leave: "leave 150ms ease-in forwards",
+        "fade-up": "fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both",
       },
     },
   },

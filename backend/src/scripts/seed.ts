@@ -42,7 +42,7 @@ const updateStoreCurrencies = createWorkflow(
                 currency_code: currency.currency_code,
                 is_default: currency.is_default ?? false,
               };
-            }
+            },
           ),
         },
       };
@@ -51,7 +51,7 @@ const updateStoreCurrencies = createWorkflow(
     const stores = updateStoresStep(normalizedInput);
 
     return new WorkflowResponse(stores);
-  }
+  },
 );
 
 export default async function seedDemoData({ container }: ExecArgs) {
@@ -62,7 +62,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
   const salesChannelModuleService = container.resolve(Modules.SALES_CHANNEL);
   const storeModuleService = container.resolve(Modules.STORE);
 
-  const countries = ["gb", "de", "dk", "se", "fr", "es", "it"];
+  const countries = ["al"];
 
   logger.info("Seeding store data...");
   const [store] = await storeModuleService.listStores();
@@ -73,7 +73,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
   if (!defaultSalesChannel.length) {
     // create the default sales channel
     const { result: salesChannelResult } = await createSalesChannelsWorkflow(
-      container
+      container,
     ).run({
       input: {
         salesChannelsData: [
@@ -114,7 +114,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
     input: {
       regions: [
         {
-          name: "Europe",
+          name: "Albania",
           currency_code: "eur",
           countries,
           payment_providers: ["pp_system_default"],
@@ -136,15 +136,15 @@ export default async function seedDemoData({ container }: ExecArgs) {
 
   logger.info("Seeding stock location data...");
   const { result: stockLocationResult } = await createStockLocationsWorkflow(
-    container
+    container,
   ).run({
     input: {
       locations: [
         {
-          name: "European Warehouse",
+          name: "Albania Warehouse",
           address: {
-            city: "Copenhagen",
-            country_code: "DK",
+            city: "Tirana",
+            country_code: "AL",
             address_1: "",
           },
         },
@@ -193,38 +193,14 @@ export default async function seedDemoData({ container }: ExecArgs) {
   }
 
   const fulfillmentSet = await fulfillmentModuleService.createFulfillmentSets({
-    name: "European Warehouse delivery",
+    name: "Albania Warehouse delivery",
     type: "shipping",
     service_zones: [
       {
-        name: "Europe",
+        name: "Albania",
         geo_zones: [
           {
-            country_code: "gb",
-            type: "country",
-          },
-          {
-            country_code: "de",
-            type: "country",
-          },
-          {
-            country_code: "dk",
-            type: "country",
-          },
-          {
-            country_code: "se",
-            type: "country",
-          },
-          {
-            country_code: "fr",
-            type: "country",
-          },
-          {
-            country_code: "es",
-            type: "country",
-          },
-          {
-            country_code: "it",
+            country_code: "al",
             type: "country",
           },
         ],
@@ -333,7 +309,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
 
   logger.info("Seeding publishable API key data...");
   const { result: publishableApiKeyResult } = await createApiKeysWorkflow(
-    container
+    container,
   ).run({
     input: {
       api_keys: [
@@ -358,7 +334,7 @@ export default async function seedDemoData({ container }: ExecArgs) {
   logger.info("Seeding product data...");
 
   const { result: categoryResult } = await createProductCategoriesWorkflow(
-    container
+    container,
   ).run({
     input: {
       product_categories: [

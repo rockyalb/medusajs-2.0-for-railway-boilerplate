@@ -1,10 +1,9 @@
 import { HttpTypes } from "@medusajs/types"
-import { notFound } from "next/navigation"
 import { NextRequest, NextResponse } from "next/server"
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL
 const PUBLISHABLE_API_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
-const DEFAULT_REGION = process.env.NEXT_PUBLIC_DEFAULT_REGION || "us"
+const DEFAULT_REGION = process.env.NEXT_PUBLIC_DEFAULT_REGION || "al"
 
 const regionMapCache = {
   regionMap: new Map<string, HttpTypes.StoreRegion>(),
@@ -18,29 +17,45 @@ async function getRegionMap() {
     !regionMap.keys().next().value ||
     regionMapUpdated < Date.now() - 3600 * 1000
   ) {
-    // Fetch regions from Medusa. We can't use the JS client here because middleware is running on Edge and the client needs a Node environment.
-    const { regions } = await fetch(`${BACKEND_URL}/store/regions`, {
-      headers: {
-        "x-publishable-api-key": PUBLISHABLE_API_KEY!,
-      },
-      next: {
-        revalidate: 3600,
-        tags: ["regions"],
-      },
-    }).then((res) => res.json())
-
-    if (!regions?.length) {
-      notFound()
-    }
-
-    // Create a map of country codes to regions.
-    regions.forEach((region: HttpTypes.StoreRegion) => {
-      region.countries?.forEach((c) => {
-        regionMapCache.regionMap.set(c.iso_2 ?? "", region)
+    try {
+      // Fetch regions from Medusa. We can't use the JS client here because middleware is running on Edge and the client needs a Node environment.
+      const response = await fetch(`${BACKEND_URL}/store/regions`, {
+        headers: {
+          "x-publishable-api-key": PUBLISHABLE_API_KEY!,
+        },
+        next: {
+          revalidate: 3600,
+          tags: ["regions"],
+        },
       })
-    })
 
-    regionMapCache.regionMapUpdated = Date.now()
+      if (response.ok) {
+        const data = await response.json()
+        const regions = data?.regions
+
+        if (regions?.length) {
+          // Clear any fallback entries if we retrieved actual regions
+          regionMapCache.regionMap.clear()
+
+          // Create a map of country codes to regions.
+          regions.forEach((region: HttpTypes.StoreRegion) => {
+            region.countries?.forEach((c) => {
+              regionMapCache.regionMap.set(c.iso_2 ?? "", region)
+            })
+          })
+
+          regionMapCache.regionMapUpdated = Date.now()
+          return regionMapCache.regionMap
+        }
+      }
+    } catch (error) {
+      if (process.env.NODE_ENV === "development") {
+        console.error(
+          "Middleware.ts: Error fetching regions from backend. Is the Medusa backend server running?",
+          error
+        )
+      }
+    }
   }
 
   return regionMapCache.regionMap
@@ -99,8 +114,13 @@ export async function middleware(request: NextRequest) {
 
   const countryCode = regionMap && (await getCountryCode(request, regionMap))
 
-  const urlHasCountryCode =
-    countryCode && request.nextUrl.pathname.split("/")[1].includes(countryCode)
+  if (!countryCode) {
+    return NextResponse.next()
+  }
+
+  const pathSegments = request.nextUrl.pathname.split("/").filter(Boolean)
+  const urlCountryCode = pathSegments[0]?.toLowerCase()
+  const urlHasCountryCode = urlCountryCode === countryCode
 
   // check if one of the country codes is in the url
   if (
@@ -112,7 +132,11 @@ export async function middleware(request: NextRequest) {
   }
 
   const redirectPath =
-    request.nextUrl.pathname === "/" ? "" : request.nextUrl.pathname
+    request.nextUrl.pathname === "/"
+      ? ""
+      : urlCountryCode?.length === 2
+      ? `/${pathSegments.slice(1).join("/")}`
+      : request.nextUrl.pathname
 
   const queryString = request.nextUrl.search ? request.nextUrl.search : ""
 
@@ -142,5 +166,7 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|favicon.ico|.*\\.png|.*\\.jpg|.*\\.gif|.*\\.svg).*)"], // prevents redirecting on static files
+  matcher: [
+    "/((?!api|_next/static|favicon.ico|.*\\.png|.*\\.jpg|.*\\.gif|.*\\.svg).*)",
+  ], // prevents redirecting on static files
 }

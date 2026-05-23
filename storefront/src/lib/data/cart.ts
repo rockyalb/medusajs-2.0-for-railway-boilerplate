@@ -8,7 +8,7 @@ import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
 import { getAuthHeaders, getCartId, removeCartId, setCartId } from "./cookies"
 import { getProductsById } from "./products"
-import { getRegion } from "./regions"
+import { getRegion, listRegions } from "./regions"
 
 export async function retrieveCart() {
   const cartId = await getCartId()
@@ -17,12 +17,25 @@ export async function retrieveCart() {
     return null
   }
 
-  return await sdk.store.cart
-    .retrieve(cartId, {}, { next: { tags: ["cart"] }, ...(await getAuthHeaders()) })
+  const cart = await sdk.store.cart
+    .retrieve(
+      cartId,
+      {},
+      { next: { tags: ["cart"] }, ...(await getAuthHeaders()) }
+    )
     .then(({ cart }) => cart)
     .catch(() => {
       return null
     })
+
+  if (!cart?.region_id) {
+    return cart
+  }
+
+  const regions = await listRegions()
+  const regionExists = regions?.some((region) => region.id === cart.region_id)
+
+  return regionExists ? cart : null
 }
 
 export async function getOrSetCart(countryCode: string) {
