@@ -2,10 +2,7 @@ import {
   AuthenticatedMedusaRequest,
   MedusaResponse,
 } from "@medusajs/framework/http"
-import {
-  ContainerRegistrationKeys,
-  Modules,
-} from "@medusajs/framework/utils"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 
 const STORE_CREDIT_MODULE = "store_credit"
 
@@ -20,22 +17,8 @@ export async function GET(
     return
   }
 
-  const customerService = req.scope.resolve(Modules.CUSTOMER) as any
   const storeCreditService = req.scope.resolve(STORE_CREDIT_MODULE) as any
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
-
-  const customer = await customerService.retrieveCustomer(customerId)
-  const customerIds = new Set<string>([customerId])
-
-  if (customer?.email) {
-    const matchingCustomers = await customerService.listCustomers({
-      email: customer.email,
-    })
-
-    matchingCustomers.forEach((matchingCustomer) => {
-      customerIds.add(matchingCustomer.id)
-    })
-  }
 
   const { data: storeCreditAccounts } = await query.graph({
     entity: "store_credit_account",
@@ -48,7 +31,7 @@ export async function GET(
       "metadata",
     ],
     filters: {
-      customer_id: Array.from(customerIds),
+      customer_id: customerId,
     },
   })
 

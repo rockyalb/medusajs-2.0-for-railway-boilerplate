@@ -101,27 +101,12 @@ export const issueLoyaltyRewardStep = createStep(
       return new StepResponse(null)
     }
 
-    let rewardCustomerId = order.customer_id
+    const rewardCustomerId = order.customer_id
     const customer = order.customer_id
       ? await customerService.retrieveCustomer(order.customer_id)
       : null
 
     if (customer?.has_account !== true) {
-      const [registeredCustomer] = order.email
-        ? await customerService.listCustomers({
-            email: order.email,
-            has_account: true,
-          } as any)
-        : []
-
-      if (!registeredCustomer) {
-        return new StepResponse(null)
-      }
-
-      rewardCustomerId = registeredCustomer.id
-    }
-
-    if (!rewardCustomerId) {
       return new StepResponse(null)
     }
 
