@@ -32,9 +32,10 @@ export default async function OrderCompletedTemplate({
       loyaltySettings.is_active &&
       loyaltySettings.percentage > 0
     ) {
+      const rewardBase = order.item_total ?? order.subtotal ?? 0
       const estimatedReward =
         Math.round(
-          (((order.total ?? 0) * loyaltySettings.percentage) / 100) * 100
+          ((rewardBase * loyaltySettings.percentage) / 100) * 100
         ) / 100
       if (estimatedReward > 0) {
         loyaltyCreditNotice = (

@@ -51,9 +51,10 @@ const CheckoutSummary = async ({
       loyaltySettings.is_active &&
       loyaltySettings.percentage > 0
     ) {
+      const rewardBase = cart.item_total ?? cart.subtotal ?? 0
       const estimatedReward =
         Math.round(
-          (((cart.total ?? 0) * loyaltySettings.percentage) / 100) * 100
+          ((rewardBase * loyaltySettings.percentage) / 100) * 100
         ) / 100
 
       if (estimatedReward > 0) {

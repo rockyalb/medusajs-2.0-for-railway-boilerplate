@@ -6,7 +6,40 @@ import { HttpTypes } from "@medusajs/types"
 import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
 import { cache } from "react"
-import { getAuthHeaders, removeAuthToken, setAuthToken } from "./cookies"
+import {
+  getAuthHeaders,
+  getCartId,
+  removeAuthToken,
+  setAuthToken,
+} from "./cookies"
+
+const getAuthTokenValue = (token: unknown) => {
+  if (typeof token === "string") {
+    return token
+  }
+
+  if (token && typeof token === "object" && "location" in token) {
+    return String((token as { location: unknown }).location)
+  }
+
+  return ""
+}
+
+const transferCurrentCart = async (authorization: string) => {
+  const cartId = await getCartId()
+
+  if (!cartId) {
+    return
+  }
+
+  await sdk.store.cart
+    .transferCart(cartId, {}, { authorization })
+    .then(() => {
+      revalidateTag("cart")
+      revalidateTag("shipping")
+    })
+    .catch(() => null)
+}
 
 export const getCustomer = cache(async function () {
   return await sdk.store.customer
@@ -42,7 +75,8 @@ export async function signup(_currentState: unknown, formData: FormData) {
       password: password,
     })
 
-    const customHeaders = { authorization: `Bearer ${token}` }
+    const registrationToken = getAuthTokenValue(token)
+    const customHeaders = { authorization: `Bearer ${registrationToken}` }
     
     const { customer: createdCustomer } = await sdk.store.customer.create(
       customerForm,
@@ -55,7 +89,11 @@ export async function signup(_currentState: unknown, formData: FormData) {
       password,
     })
 
-    await setAuthToken(typeof loginToken === 'string' ? loginToken : loginToken.location)
+    const authToken = getAuthTokenValue(loginToken)
+    const authorization = `Bearer ${authToken}`
+
+    await setAuthToken(authToken)
+    await transferCurrentCart(authorization)
 
     revalidateTag("customer")
     return null
@@ -70,7 +108,12 @@ export async function login(_currentState: unknown, formData: FormData) {
 
   try {
     const token = await sdk.auth.login("customer", "emailpass", { email, password })
-    await setAuthToken(typeof token === 'string' ? token : token.location)
+    const authToken = getAuthTokenValue(token)
+    const authorization = `Bearer ${authToken}`
+
+    await setAuthToken(authToken)
+    await transferCurrentCart(authorization)
+
     revalidateTag("customer")
     return null
   } catch (error: any) {

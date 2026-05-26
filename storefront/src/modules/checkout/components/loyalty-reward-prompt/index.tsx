@@ -26,8 +26,9 @@ const LoyaltyRewardPrompt = ({
     return null
   }
 
+  const rewardBase = cart.item_total ?? cart.subtotal ?? 0
   const estimatedReward =
-    Math.round((((cart.total ?? 0) * percentage) / 100) * 100) / 100
+    Math.round(((rewardBase * percentage) / 100) * 100) / 100
   const formattedReward = convertToLocale({
     amount: estimatedReward,
     currency_code: cart.currency_code,

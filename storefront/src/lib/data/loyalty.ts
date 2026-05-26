@@ -49,7 +49,7 @@ export const getCustomerStoreCreditAccounts = cache(async function () {
       "/store/store-credit-accounts",
       {
         headers: authHeaders as Record<string, string>,
-        next: { tags: ["store-credit"] },
+        cache: "no-store",
       }
     )
     .then(({ store_credit_accounts }) => store_credit_accounts)

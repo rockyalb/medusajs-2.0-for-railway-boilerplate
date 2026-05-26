@@ -64,13 +64,31 @@ export const issueLoyaltyRewardStep = createStep(
       relations: ["summary"],
     })
 
-    if (!order.customer_id || !order.currency_code) {
+    if (!order.currency_code) {
       return new StepResponse(null)
     }
 
-    const customer = await customerService.retrieveCustomer(order.customer_id)
+    let rewardCustomerId = order.customer_id
+    const customer = order.customer_id
+      ? await customerService.retrieveCustomer(order.customer_id)
+      : null
 
-    if (customer.has_account !== true) {
+    if (customer?.has_account !== true) {
+      const [registeredCustomer] = order.email
+        ? await customerService.listCustomers({
+            email: order.email,
+            has_account: true,
+          } as any)
+        : []
+
+      if (!registeredCustomer) {
+        return new StepResponse(null)
+      }
+
+      rewardCustomerId = registeredCustomer.id
+    }
+
+    if (!rewardCustomerId) {
       return new StepResponse(null)
     }
 
@@ -96,9 +114,7 @@ export const issueLoyaltyRewardStep = createStep(
       return new StepResponse(null)
     }
 
-    const eligibleTotal = toNumber(
-      order.summary?.current_order_total ?? order.total
-    )
+    const eligibleTotal = toNumber(order.item_total ?? order.subtotal)
     const rewardAmount =
       Math.round(((eligibleTotal * percentage) / 100) * 100) / 100
 
@@ -108,14 +124,14 @@ export const issueLoyaltyRewardStep = createStep(
 
     const [existingAccount] =
       await storeCreditService.listStoreCreditAccounts({
-        customer_id: order.customer_id,
+        customer_id: rewardCustomerId,
         currency_code: order.currency_code,
       })
 
     const account =
       existingAccount ??
       (await storeCreditService.createStoreCreditAccounts({
-        customer_id: order.customer_id,
+        customer_id: rewardCustomerId,
         currency_code: order.currency_code,
       }))
 
