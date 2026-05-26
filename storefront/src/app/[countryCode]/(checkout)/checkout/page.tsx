@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   title: "Checkout",
 }
 
+export const dynamic = "force-dynamic"
+
 const fetchCart = async () => {
   const cart = await retrieveCart()
   if (!cart) {

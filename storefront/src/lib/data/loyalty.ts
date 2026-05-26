@@ -61,11 +61,8 @@ export async function applyStoreCreditToCart(cartId: string, amount: number) {
   await sdk.client
     .fetch(`/store/carts/${cartId}/store-credits`, {
       method: "POST",
-      body: JSON.stringify({ amount }),
-      headers: {
-        ...(authHeaders as Record<string, string>),
-        "Content-Type": "application/json",
-      },
+      body: { amount },
+      headers: authHeaders as Record<string, string>,
     })
     .catch(() => null)
   revalidateTag("cart")

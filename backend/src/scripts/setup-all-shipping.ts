@@ -294,7 +294,7 @@ export default async function setupAllShipping({ container }: ExecArgs) {
   const commonRules: {
     attribute: string
     value: string
-    operator: "eq"
+    operator: "eq" | "gte" | "lt"
   }[] = [
     {
       attribute: "enabled_in_store",
@@ -334,7 +334,14 @@ export default async function setupAllShipping({ container }: ExecArgs) {
             ],
           },
         ],
-        rules: commonRules,
+        rules: [
+          ...commonRules,
+          {
+            attribute: "item_total",
+            operator: "gte",
+            value: "7500",
+          },
+        ],
       },
       {
         name: "Tirane Delivery",
@@ -366,6 +373,11 @@ export default async function setupAllShipping({ container }: ExecArgs) {
             attribute: "delivery_city_group",
             value: "tirane",
             operator: "eq" as const,
+          },
+          {
+            attribute: "item_total",
+            operator: "lt" as const,
+            value: "7500",
           },
         ],
       },
@@ -399,6 +411,11 @@ export default async function setupAllShipping({ container }: ExecArgs) {
             attribute: "delivery_city_group",
             value: "other",
             operator: "eq" as const,
+          },
+          {
+            attribute: "item_total",
+            operator: "lt" as const,
+            value: "7500",
           },
         ],
       },
