@@ -10,8 +10,7 @@ import {
   Text,
   toast,
 } from "@medusajs/ui"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { FormEvent, useEffect, useState } from "react"
+import { FormEvent, useCallback, useEffect, useState } from "react"
 import { sdk } from "../../lib/client"
 
 type RewardSetting = {
@@ -22,74 +21,49 @@ type RewardSetting = {
   end_date: string | null
 }
 
-const queryKey = ["loyalty-reward-setting"]
-
 const toDateInputValue = (value?: string | null) => {
-  if (!value) {
-    return ""
-  }
-
+  if (!value) return ""
   return new Date(value).toISOString().slice(0, 10)
 }
 
-const toStartOfDayIso = (value: string) => {
-  return new Date(`${value}T00:00:00.000Z`).toISOString()
-}
+const toStartOfDayIso = (value: string) =>
+  new Date(`${value}T00:00:00.000Z`).toISOString()
 
-const toEndOfDayIso = (value: string) => {
-  return new Date(`${value}T23:59:59.999Z`).toISOString()
-}
+const toEndOfDayIso = (value: string) =>
+  new Date(`${value}T23:59:59.999Z`).toISOString()
 
 const LoyaltyRewardsPage = () => {
-  const queryClient = useQueryClient()
   const [percentage, setPercentage] = useState("2")
   const [isEnabled, setIsEnabled] = useState(true)
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
+  const [isLoading, setIsLoading] = useState(true)
+  const [isPending, setIsPending] = useState(false)
 
-  const { data, isLoading } = useQuery({
-    queryKey,
-    queryFn: () =>
-      sdk.client.fetch<{ reward_setting: RewardSetting }>(
+  const fetchSettings = useCallback(async () => {
+    setIsLoading(true)
+    try {
+      const data = await sdk.client.fetch<{ reward_setting: RewardSetting }>(
         "/admin/loyalty/reward-settings"
-      ),
-  })
+      )
+      if (data?.reward_setting) {
+        setPercentage(String(data.reward_setting.percentage))
+        setIsEnabled(data.reward_setting.is_enabled)
+        setStartDate(toDateInputValue(data.reward_setting.start_date))
+        setEndDate(toDateInputValue(data.reward_setting.end_date))
+      }
+    } catch (e: any) {
+      toast.error(e?.message ?? "Failed to load settings")
+    } finally {
+      setIsLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
-    if (!data?.reward_setting) {
-      return
-    }
+    fetchSettings()
+  }, [fetchSettings])
 
-    setPercentage(String(data.reward_setting.percentage))
-    setIsEnabled(data.reward_setting.is_enabled)
-    setStartDate(toDateInputValue(data.reward_setting.start_date))
-    setEndDate(toDateInputValue(data.reward_setting.end_date))
-  }, [data])
-
-  const mutation = useMutation({
-    mutationFn: (body: {
-      percentage: number
-      is_enabled: boolean
-      start_date: string | null
-      end_date: string | null
-    }) =>
-      sdk.client.fetch<{ reward_setting: RewardSetting }>(
-        "/admin/loyalty/reward-settings",
-        {
-          method: "POST",
-          body,
-        }
-      ),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey })
-      toast.success("Loyalty reward settings updated")
-    },
-    onError: (error) => {
-      toast.error(error.message)
-    },
-  })
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
     const numericPercentage = Number(percentage)
@@ -108,12 +82,27 @@ const LoyaltyRewardsPage = () => {
       return
     }
 
-    mutation.mutate({
-      percentage: numericPercentage,
-      is_enabled: isEnabled,
-      start_date: startDate ? toStartOfDayIso(startDate) : null,
-      end_date: endDate ? toEndOfDayIso(endDate) : null,
-    })
+    setIsPending(true)
+    try {
+      await sdk.client.fetch<{ reward_setting: RewardSetting }>(
+        "/admin/loyalty/reward-settings",
+        {
+          method: "POST",
+          body: {
+            percentage: numericPercentage,
+            is_enabled: isEnabled,
+            start_date: startDate ? toStartOfDayIso(startDate) : null,
+            end_date: endDate ? toEndOfDayIso(endDate) : null,
+          },
+        }
+      )
+      toast.success("Loyalty reward settings updated")
+      fetchSettings()
+    } catch (e: any) {
+      toast.error(e?.message ?? "Failed to save settings")
+    } finally {
+      setIsPending(false)
+    }
   }
 
   return (
@@ -142,7 +131,7 @@ const LoyaltyRewardsPage = () => {
               step="1"
               value={percentage}
               onChange={(event) => setPercentage(event.target.value)}
-              disabled={isLoading || mutation.isPending}
+              disabled={isLoading || isPending}
             />
             <Text size="small" className="text-ui-fg-subtle">
               %
@@ -173,7 +162,7 @@ const LoyaltyRewardsPage = () => {
               type="date"
               value={startDate}
               onChange={(event) => setStartDate(event.target.value)}
-              disabled={isLoading || mutation.isPending}
+              disabled={isLoading || isPending}
             />
             <Text size="small" className="text-ui-fg-subtle">
               Leave empty to start immediately.
@@ -187,7 +176,7 @@ const LoyaltyRewardsPage = () => {
               type="date"
               value={endDate}
               onChange={(event) => setEndDate(event.target.value)}
-              disabled={isLoading || mutation.isPending}
+              disabled={isLoading || isPending}
             />
             <Text size="small" className="text-ui-fg-subtle">
               Leave empty to keep running.
@@ -196,7 +185,7 @@ const LoyaltyRewardsPage = () => {
         </div>
 
         <div>
-          <Button size="small" type="submit" isLoading={mutation.isPending}>
+          <Button size="small" type="submit" isLoading={isPending}>
             <PencilSquare />
             Save
           </Button>
