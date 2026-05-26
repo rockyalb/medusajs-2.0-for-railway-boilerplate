@@ -51,6 +51,9 @@ const medusaConfig = {
   },
   modules: [
     {
+      resolve: './src/modules/loyalty-settings',
+    },
+    {
       key: Modules.FILE,
       resolve: '@medusajs/file',
       options: {
@@ -135,7 +138,11 @@ const medusaConfig = {
     }] : [])
   ],
   plugins: [
-  ...(MEILISEARCH_HOST && MEILISEARCH_ADMIN_KEY ? [{
+    {
+      resolve: '@medusajs/loyalty-plugin',
+      options: {},
+    },
+    ...(MEILISEARCH_HOST && MEILISEARCH_ADMIN_KEY ? [{
       resolve: '@rokmohar/medusa-plugin-meilisearch',
       options: {
         config: {

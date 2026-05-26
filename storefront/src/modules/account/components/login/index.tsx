@@ -1,4 +1,8 @@
+"use client"
+
+import { useEffect } from "react"
 import { useFormState } from "react-dom"
+import { useRouter } from "next/navigation"
 
 import { LOGIN_VIEW } from "@modules/account/templates/login-template"
 import Input from "@modules/common/components/input"
@@ -8,10 +12,22 @@ import { login } from "@lib/data/customer"
 
 type Props = {
   setCurrentView: (view: LOGIN_VIEW) => void
+  returnTo?: string
 }
 
-const Login = ({ setCurrentView }: Props) => {
-  const [message, formAction] = useFormState(login, null)
+const Login = ({ setCurrentView, returnTo }: Props) => {
+  const [message, formAction] = useFormState(login, "idle")
+  const router = useRouter()
+
+  useEffect(() => {
+    if (message === null) {
+      if (returnTo) {
+        router.push(returnTo)
+      } else {
+        router.refresh()
+      }
+    }
+  }, [message, returnTo, router])
 
   return (
     <div
@@ -42,7 +58,7 @@ const Login = ({ setCurrentView }: Props) => {
             data-testid="password-input"
           />
         </div>
-        <ErrorMessage error={message} data-testid="login-error-message" />
+        <ErrorMessage error={typeof message === "string" && message !== "idle" ? message : null} data-testid="login-error-message" />
         <SubmitButton data-testid="sign-in-button" className="w-full mt-6">
           Sign in
         </SubmitButton>

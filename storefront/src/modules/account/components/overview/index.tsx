@@ -4,13 +4,21 @@ import ChevronDown from "@modules/common/icons/chevron-down"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
+import { StoreCreditAccount } from "@lib/data/loyalty"
 
 type OverviewProps = {
   customer: HttpTypes.StoreCustomer | null
   orders: HttpTypes.StoreOrder[] | null
+  creditAccounts: StoreCreditAccount[]
 }
 
-const Overview = ({ customer, orders }: OverviewProps) => {
+const Overview = ({ customer, orders, creditAccounts }: OverviewProps) => {
+  const totalCredits = creditAccounts.reduce(
+    (sum, a) => sum + Number(a.balance),
+    0
+  )
+  const primaryCredit = creditAccounts[0]
+
   return (
     <div data-testid="overview-page-wrapper">
       <div className="hidden small:block">
@@ -60,6 +68,23 @@ const Overview = ({ customer, orders }: OverviewProps) => {
                   </span>
                   <span className="uppercase text-base-regular text-ui-fg-subtle">
                     Saved
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-y-4">
+                <h3 className="text-large-semi">Store Credit</h3>
+                <div className="flex items-end gap-x-2">
+                  <span className="text-3xl-semi leading-none text-ui-fg-interactive">
+                    {primaryCredit
+                      ? convertToLocale({
+                          amount: Number(primaryCredit.balance),
+                          currency_code: primaryCredit.currency_code,
+                        })
+                      : "—"}
+                  </span>
+                  <span className="uppercase text-base-regular text-ui-fg-subtle">
+                    Available
                   </span>
                 </div>
               </div>

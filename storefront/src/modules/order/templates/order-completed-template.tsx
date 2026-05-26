@@ -8,16 +8,45 @@ import OnboardingCta from "@modules/order/components/onboarding-cta"
 import OrderDetails from "@modules/order/components/order-details"
 import ShippingDetails from "@modules/order/components/shipping-details"
 import PaymentDetails from "@modules/order/components/payment-details"
+import LoyaltyCreditNotice from "@modules/common/components/loyalty-credit-notice"
 import { HttpTypes } from "@medusajs/types"
+import { getCustomer } from "@lib/data/customer"
+import { getLoyaltyRewardSetting } from "@lib/data/loyalty"
 
 type OrderCompletedTemplateProps = {
   order: HttpTypes.StoreOrder
 }
 
-export default function OrderCompletedTemplate({
+export default async function OrderCompletedTemplate({
   order,
 }: OrderCompletedTemplateProps) {
-  const isOnboarding = cookies().get("_medusa_onboarding")?.value === "true"
+  const isOnboarding = (await cookies()).get("_medusa_onboarding")?.value === "true"
+
+  let loyaltyCreditNotice = null
+
+  const customer = await getCustomer().catch(() => null)
+  if (customer) {
+    const loyaltySettings = await getLoyaltyRewardSetting()
+    if (
+      loyaltySettings.is_enabled &&
+      loyaltySettings.is_active &&
+      loyaltySettings.percentage > 0
+    ) {
+      const estimatedReward =
+        Math.round(
+          (((order.total ?? 0) * loyaltySettings.percentage) / 100) * 100
+        ) / 100
+      if (estimatedReward > 0) {
+        loyaltyCreditNotice = (
+          <LoyaltyCreditNotice
+            amount={estimatedReward}
+            currency_code={order.currency_code}
+            variant="confirmation"
+          />
+        )
+      }
+    }
+  }
 
   return (
     <div className="py-6 min-h-[calc(100vh-64px)]">
@@ -40,6 +69,7 @@ export default function OrderCompletedTemplate({
           </Heading>
           <Items items={order.items} />
           <CartTotals totals={order} />
+          {loyaltyCreditNotice}
           <ShippingDetails order={order} />
           <PaymentDetails order={order} />
           <Help />
