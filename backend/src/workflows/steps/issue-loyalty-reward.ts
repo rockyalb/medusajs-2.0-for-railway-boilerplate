@@ -50,6 +50,39 @@ const isCampaignActive = (setting: any): boolean => {
   return true
 }
 
+const getOrderItemTotal = (order: any): number => {
+  const directTotal = toNumber(order.item_total ?? order.item_subtotal)
+
+  if (directTotal > 0) {
+    return directTotal
+  }
+
+  const lineItemsTotal = (order.items ?? []).reduce(
+    (sum: number, item: any) => {
+      const itemTotal = toNumber(
+        item.item_total ?? item.item_subtotal ?? item.total ?? item.subtotal
+      )
+
+      if (itemTotal > 0) {
+        return sum + itemTotal
+      }
+
+      return sum + toNumber(item.unit_price) * toNumber(item.quantity)
+    },
+    0
+  )
+
+  if (lineItemsTotal > 0) {
+    return lineItemsTotal
+  }
+
+  return toNumber(
+    order.summary?.totals?.item_total ??
+      order.summary?.totals?.item_subtotal ??
+      order.subtotal
+  )
+}
+
 export const issueLoyaltyRewardStep = createStep(
   "issue-loyalty-reward",
   async ({ order_id }: IssueLoyaltyRewardInput, { container }) => {
@@ -61,7 +94,7 @@ export const issueLoyaltyRewardStep = createStep(
     ) as any
 
     const order = await orderService.retrieveOrder(order_id, {
-      relations: ["summary"],
+      relations: ["summary", "items"],
     })
 
     if (!order.currency_code) {
@@ -114,7 +147,7 @@ export const issueLoyaltyRewardStep = createStep(
       return new StepResponse(null)
     }
 
-    const eligibleTotal = toNumber(order.item_total ?? order.subtotal)
+    const eligibleTotal = getOrderItemTotal(order)
     const rewardAmount =
       Math.round(((eligibleTotal * percentage) / 100) * 100) / 100
 
