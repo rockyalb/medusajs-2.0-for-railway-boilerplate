@@ -1,6 +1,9 @@
 "use server"
 
+import { cache } from "react"
 import { sdk } from "@lib/config"
+import { revalidateTag } from "next/cache"
+import { getAuthHeaders } from "./cookies"
 
 export type LoyaltyRewardSetting = {
   percentage: number
@@ -8,6 +11,17 @@ export type LoyaltyRewardSetting = {
   is_active: boolean
   start_date: string | null
   end_date: string | null
+}
+
+export type StoreCreditAccount = {
+  id: string
+  customer_id?: string
+  currency_code: string
+  balance: number
+  credits: number
+  debits: number
+  created_at: string
+  updated_at: string
 }
 
 export async function getLoyaltyRewardSetting() {
@@ -26,4 +40,33 @@ export async function getLoyaltyRewardSetting() {
       start_date: null,
       end_date: null,
     }))
+}
+
+export const getCustomerStoreCreditAccounts = cache(async function () {
+  const authHeaders = await getAuthHeaders()
+  return sdk.client
+    .fetch<{ store_credit_accounts: StoreCreditAccount[] }>(
+      "/store/store-credit-accounts",
+      {
+        headers: authHeaders as Record<string, string>,
+        next: { tags: ["store-credit"] },
+      }
+    )
+    .then(({ store_credit_accounts }) => store_credit_accounts)
+    .catch(() => [] as StoreCreditAccount[])
+})
+
+export async function applyStoreCreditToCart(cartId: string, amount: number) {
+  const authHeaders = await getAuthHeaders()
+  await sdk.client
+    .fetch(`/store/carts/${cartId}/store-credits`, {
+      method: "POST",
+      body: JSON.stringify({ amount }),
+      headers: {
+        ...(authHeaders as Record<string, string>),
+        "Content-Type": "application/json",
+      },
+    })
+    .catch(() => null)
+  revalidateTag("cart")
 }

@@ -4,6 +4,7 @@ import Overview from "@modules/account/components/overview"
 import { notFound } from "next/navigation"
 import { getCustomer } from "@lib/data/customer"
 import { listOrders } from "@lib/data/orders"
+import { getCustomerStoreCreditAccounts } from "@lib/data/loyalty"
 
 export const metadata: Metadata = {
   title: "Account",
@@ -13,10 +14,13 @@ export const metadata: Metadata = {
 export default async function OverviewTemplate() {
   const customer = await getCustomer().catch(() => null)
   const orders = (await listOrders().catch(() => null)) || null
+  const creditAccounts = await getCustomerStoreCreditAccounts().catch(() => [])
 
   if (!customer) {
     notFound()
   }
 
-  return <Overview customer={customer} orders={orders} />
+  return (
+    <Overview customer={customer} orders={orders} creditAccounts={creditAccounts} />
+  )
 }

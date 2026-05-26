@@ -10,6 +10,7 @@ type LoyaltyRewardPromptProps = {
   isEnabled: boolean
   isActive: boolean
   endDate?: string | null
+  countryCode: string
 }
 
 const LoyaltyRewardPrompt = ({
@@ -19,6 +20,7 @@ const LoyaltyRewardPrompt = ({
   isEnabled,
   isActive,
   endDate,
+  countryCode,
 }: LoyaltyRewardPromptProps) => {
   if (!isEnabled || !isActive || percentage <= 0) {
     return null
@@ -57,7 +59,9 @@ const LoyaltyRewardPrompt = ({
           </Text>
         </div>
         {!customer && (
-          <LocalizedClientLink href="/account">
+          <LocalizedClientLink
+            href={`/account?returnTo=/${countryCode}/checkout`}
+          >
             <Button variant="secondary" className="h-10 w-full small:w-auto">
               Sign in
             </Button>
