@@ -46,7 +46,7 @@ export const getCustomerStoreCreditAccounts = cache(async function () {
   const authHeaders = await getAuthHeaders()
   return sdk.client
     .fetch<{ store_credit_accounts: StoreCreditAccount[] }>(
-      "/store/customer/store-credit-accounts",
+      "/store/store-credit-accounts",
       {
         headers: authHeaders as Record<string, string>,
         cache: "no-store",
