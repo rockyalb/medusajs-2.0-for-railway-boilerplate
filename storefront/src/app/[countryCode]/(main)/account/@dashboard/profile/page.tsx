@@ -7,7 +7,7 @@ import ProfileName from "@modules/account/components/profile-name"
 import ProfilePassword from "@modules/account/components/profile-password"
 
 import { notFound } from "next/navigation"
-import { listRegions } from "@lib/data/regions"
+import { getRegion, listRegions } from "@lib/data/regions"
 import { getCustomer } from "@lib/data/customer"
 import {
   getCustomerStoreCreditAccounts,
@@ -22,16 +22,21 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic"
 
-export default async function Profile() {
+export default async function Profile({
+  params,
+}: {
+  params: { countryCode: string }
+}) {
   const customer = await getCustomer()
   const regions = await listRegions()
+  const region = await getRegion(params.countryCode)
 
   if (!customer || !regions) {
     notFound()
   }
 
   const [creditAccounts, loyaltySettings] = await Promise.all([
-    getCustomerStoreCreditAccounts(),
+    getCustomerStoreCreditAccounts(region?.currency_code ?? "all"),
     getLoyaltyRewardSetting(),
   ])
 

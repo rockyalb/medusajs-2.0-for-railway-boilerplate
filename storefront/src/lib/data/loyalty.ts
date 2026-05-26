@@ -42,13 +42,16 @@ export async function getLoyaltyRewardSetting() {
     }))
 }
 
-export const getCustomerStoreCreditAccounts = cache(async function () {
+export const getCustomerStoreCreditAccounts = cache(async function (
+  currencyCode: string = "all"
+) {
   const authHeaders = await getAuthHeaders()
   return sdk.client
     .fetch<{ store_credit_accounts: StoreCreditAccount[] }>(
       "/store/store-credit-accounts",
       {
         headers: authHeaders as Record<string, string>,
+        query: { currency_code: currencyCode },
         cache: "no-store",
       }
     )

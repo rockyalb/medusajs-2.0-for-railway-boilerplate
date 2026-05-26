@@ -5,6 +5,7 @@ import { notFound } from "next/navigation"
 import { getCustomer } from "@lib/data/customer"
 import { listOrders } from "@lib/data/orders"
 import { getCustomerStoreCreditAccounts } from "@lib/data/loyalty"
+import { getRegion } from "@lib/data/regions"
 
 export const metadata: Metadata = {
   title: "Account",
@@ -13,10 +14,17 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic"
 
-export default async function OverviewTemplate() {
+export default async function OverviewTemplate({
+  params,
+}: {
+  params: { countryCode: string }
+}) {
   const customer = await getCustomer().catch(() => null)
   const orders = (await listOrders().catch(() => null)) || null
-  const creditAccounts = await getCustomerStoreCreditAccounts().catch(() => [])
+  const region = await getRegion(params.countryCode).catch(() => null)
+  const creditAccounts = await getCustomerStoreCreditAccounts(
+    region?.currency_code ?? "all"
+  ).catch(() => [])
 
   if (!customer) {
     notFound()

@@ -25,7 +25,7 @@ const CheckoutSummary = async ({
   if (customer && cart) {
     const [loyaltySettings, creditAccounts] = await Promise.all([
       getLoyaltyRewardSetting(),
-      getCustomerStoreCreditAccounts(),
+      getCustomerStoreCreditAccounts(cart.currency_code),
     ])
 
     const currencyAccount = creditAccounts.find(
