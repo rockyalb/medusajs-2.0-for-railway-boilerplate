@@ -46,14 +46,17 @@ export const getCustomerStoreCreditAccounts = cache(async function () {
   const authHeaders = await getAuthHeaders()
   return sdk.client
     .fetch<{ store_credit_accounts: StoreCreditAccount[] }>(
-      "/store/store-credit-accounts",
+      "/store/customer/store-credit-accounts",
       {
         headers: authHeaders as Record<string, string>,
         cache: "no-store",
       }
     )
     .then(({ store_credit_accounts }) => store_credit_accounts)
-    .catch(() => [] as StoreCreditAccount[])
+    .catch((error) => {
+      console.error("Failed to fetch customer store credit accounts", error)
+      return [] as StoreCreditAccount[]
+    })
 })
 
 export async function applyStoreCreditToCart(cartId: string, amount: number) {
