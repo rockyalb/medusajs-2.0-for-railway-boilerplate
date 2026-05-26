@@ -6,12 +6,8 @@ import { HttpTypes } from "@medusajs/types"
 import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
 import { cache } from "react"
-import {
-  getAuthHeaders,
-  getCartId,
-  removeAuthToken,
-  setAuthToken,
-} from "./cookies"
+import { transferCartToCustomer } from "./cart"
+import { getAuthHeaders, removeAuthToken, setAuthToken } from "./cookies"
 
 const getAuthTokenValue = (token: unknown) => {
   if (typeof token === "string") {
@@ -23,22 +19,6 @@ const getAuthTokenValue = (token: unknown) => {
   }
 
   return ""
-}
-
-const transferCurrentCart = async (authorization: string) => {
-  const cartId = await getCartId()
-
-  if (!cartId) {
-    return
-  }
-
-  await sdk.store.cart
-    .transferCart(cartId, {}, { authorization })
-    .then(() => {
-      revalidateTag("cart")
-      revalidateTag("shipping")
-    })
-    .catch(() => null)
 }
 
 export const getCustomer = cache(async function () {
@@ -90,10 +70,10 @@ export async function signup(_currentState: unknown, formData: FormData) {
     })
 
     const authToken = getAuthTokenValue(loginToken)
-    const authorization = `Bearer ${authToken}`
+    const authHeaders = { authorization: `Bearer ${authToken}` }
 
     await setAuthToken(authToken)
-    await transferCurrentCart(authorization)
+    await transferCartToCustomer(undefined, authHeaders)
 
     revalidateTag("customer")
     return null
@@ -109,10 +89,10 @@ export async function login(_currentState: unknown, formData: FormData) {
   try {
     const token = await sdk.auth.login("customer", "emailpass", { email, password })
     const authToken = getAuthTokenValue(token)
-    const authorization = `Bearer ${authToken}`
+    const authHeaders = { authorization: `Bearer ${authToken}` }
 
     await setAuthToken(authToken)
-    await transferCurrentCart(authorization)
+    await transferCartToCustomer(undefined, authHeaders)
 
     revalidateTag("customer")
     return null

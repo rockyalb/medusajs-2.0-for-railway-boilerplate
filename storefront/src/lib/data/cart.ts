@@ -92,6 +92,8 @@ export async function updateCart(data: HttpTypes.StoreUpdateCart) {
     throw new Error("No existing cart found, please create one before updating")
   }
 
+  await transferCartToCustomer(cartId)
+
   return sdk.store.cart
     .update(cartId, data, {}, await getAuthHeaders())
     .then(({ cart }) => {
@@ -237,6 +239,8 @@ export async function setShippingMethod({
   cartId: string
   shippingMethodId: string
 }) {
+  await transferCartToCustomer(cartId)
+
   return sdk.store.cart
     .addShippingMethod(
       cartId,
@@ -258,6 +262,8 @@ export async function initiatePaymentSession(
     context?: Record<string, unknown>
   }
 ) {
+  await transferCartToCustomer(cart.id)
+
   return sdk.store.payment
     .initiatePaymentSession(cart, data, {}, await getAuthHeaders())
     .then((resp) => {
@@ -394,6 +400,8 @@ export async function placeOrder() {
     throw new Error("No existing cart found when placing an order")
   }
 
+  await transferCartToCustomer(cartId)
+
   const cartRes = await sdk.store.cart
     .complete(cartId, {}, await getAuthHeaders())
     .then((cartRes) => {
@@ -410,6 +418,35 @@ export async function placeOrder() {
   }
 
   return cartRes.cart
+}
+
+export async function transferCartToCustomer(
+  cartId?: string,
+  authHeaders?: Awaited<ReturnType<typeof getAuthHeaders>>
+) {
+  const id = cartId ?? (await getCartId())
+
+  if (!id) {
+    return null
+  }
+
+  const headers = (authHeaders ?? (await getAuthHeaders())) as Record<
+    string,
+    string
+  >
+
+  if (!headers.authorization) {
+    return null
+  }
+
+  return sdk.store.cart
+    .transferCart(id, {}, headers)
+    .then(({ cart }) => {
+      revalidateTag("cart")
+      revalidateTag("shipping")
+      return cart
+    })
+    .catch(() => null)
 }
 
 /**
