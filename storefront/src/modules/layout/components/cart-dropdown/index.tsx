@@ -1,9 +1,8 @@
 "use client"
 
-import { Popover, Transition } from "@headlessui/react"
 import { Button } from "@medusajs/ui"
 import { usePathname } from "next/navigation"
-import { Fragment, useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
@@ -18,203 +17,212 @@ const CartDropdown = ({
 }: {
   cart?: HttpTypes.StoreCart | null
 }) => {
-  const [activeTimer, setActiveTimer] = useState<NodeJS.Timer | undefined>(
-    undefined
-  )
-  const [cartDropdownOpen, setCartDropdownOpen] = useState(false)
-
-  const open = () => setCartDropdownOpen(true)
-  const close = () => setCartDropdownOpen(false)
+  const [open, setOpen] = useState(false)
 
   const totalItems =
-    cartState?.items?.reduce((acc, item) => {
-      return acc + item.quantity
-    }, 0) || 0
-
+    cartState?.items?.reduce((acc, item) => acc + item.quantity, 0) || 0
   const subtotal = cartState?.subtotal ?? 0
   const itemRef = useRef<number>(totalItems || 0)
-
-  const timedOpen = () => {
-    open()
-
-    const timer = setTimeout(close, 5000)
-
-    setActiveTimer(timer)
-  }
-
-  const openAndCancel = () => {
-    if (activeTimer) {
-      clearTimeout(activeTimer)
-    }
-
-    open()
-  }
-
-  // Clean up the timer when the component unmounts
-  useEffect(() => {
-    return () => {
-      if (activeTimer) {
-        clearTimeout(activeTimer)
-      }
-    }
-  }, [activeTimer])
-
   const pathname = usePathname()
 
-  // open cart dropdown when modifying the cart items, but only if we're not on the cart page
+  // Auto-open the drawer when an item is added (unless we're on the cart page).
   useEffect(() => {
     if (itemRef.current !== totalItems && !pathname.includes("/cart")) {
-      timedOpen()
+      setOpen(true)
     }
+    itemRef.current = totalItems
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [totalItems, itemRef.current])
+  }, [totalItems])
+
+  // Lock body scroll + close on Escape while the drawer is open.
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : ""
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false)
+    window.addEventListener("keydown", onKey)
+    return () => {
+      document.body.style.overflow = ""
+      window.removeEventListener("keydown", onKey)
+    }
+  }, [open])
 
   return (
-    <div
-      className="h-full z-50"
-      onMouseEnter={openAndCancel}
-      onMouseLeave={close}
-    >
-      <Popover className="relative h-full">
-        <Popover.Button className="h-full">
-          <LocalizedClientLink
-            className="hover:text-ui-fg-base"
-            href="/cart"
-            data-testid="nav-cart-link"
-          >{`Cart (${totalItems})`}</LocalizedClientLink>
-        </Popover.Button>
-        <Transition
-          show={cartDropdownOpen}
-          as={Fragment}
-          enter="transition ease-out duration-200"
-          enterFrom="opacity-0 translate-y-1"
-          enterTo="opacity-100 translate-y-0"
-          leave="transition ease-in duration-150"
-          leaveFrom="opacity-100 translate-y-0"
-          leaveTo="opacity-0 translate-y-1"
+    <div className="h-full flex items-center">
+      {/* Trigger */}
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label="Open cart"
+        data-testid="nav-cart-link"
+        className="h-full flex items-center"
+      >
+        <span className="hidden small:inline-block font-sans text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300">
+          Cart ({totalItems})
+        </span>
+        <span className="small:hidden relative text-yco-charcoal">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M6 8h12l-1 12H7L6 8Z" strokeLinejoin="round" />
+            <path d="M9 8V6a3 3 0 0 1 6 0v2" strokeLinecap="round" />
+          </svg>
+          <span className="absolute -right-2 -top-1 grid h-4 min-w-4 place-items-center rounded-circle bg-yco-charcoal px-1 text-[10px] font-bold text-white">
+            {totalItems}
+          </span>
+        </span>
+      </button>
+
+      {/* Drawer overlay */}
+      <div
+        className={`fixed inset-0 z-[70] ${open ? "visible" : "invisible"}`}
+        aria-hidden={!open}
+      >
+        {/* Backdrop */}
+        <div
+          onClick={() => setOpen(false)}
+          className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${
+            open ? "opacity-100" : "opacity-0"
+          }`}
+        />
+
+        {/* Panel */}
+        <div
+          data-testid="nav-cart-dropdown"
+          className={`absolute right-0 top-0 flex h-full w-full max-w-[420px] flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${
+            open ? "translate-x-0" : "translate-x-full"
+          }`}
         >
-          <Popover.Panel
-            static
-            className="hidden small:block absolute top-[calc(100%+1px)] right-0 bg-white border-x border-b border-gray-200 w-[420px] text-ui-fg-base"
-            data-testid="nav-cart-dropdown"
-          >
-            <div className="p-4 flex items-center justify-center">
-              <h3 className="text-large-semi">Cart</h3>
-            </div>
-            {cartState && cartState.items?.length ? (
-              <>
-                <div className="overflow-y-scroll max-h-[402px] px-4 grid grid-cols-1 gap-y-8 no-scrollbar p-px">
-                  {cartState.items
-                    .sort((a, b) => {
-                      return (a.created_at ?? "") > (b.created_at ?? "")
-                        ? -1
-                        : 1
-                    })
-                    .map((item) => (
-                      <div
-                        className="grid grid-cols-[122px_1fr] gap-x-4"
-                        key={item.id}
-                        data-testid="cart-item"
+          {/* Header */}
+          <div className="flex items-center justify-between border-b border-yco-cream-dark px-6 py-5">
+            <h3 className="font-sans text-yco-charcoal text-sm font-bold uppercase tracking-[0.18em]">
+              Cart ({totalItems})
+            </h3>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label="Close cart"
+              className="text-yco-charcoal-muted hover:text-yco-charcoal transition-colors"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <path d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            </button>
+          </div>
+
+          {cartState && cartState.items?.length ? (
+            <>
+              <div className="flex-1 overflow-y-auto px-6 py-6 grid grid-cols-1 gap-y-7 no-scrollbar">
+                {cartState.items
+                  .sort((a, b) =>
+                    (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
+                  )
+                  .map((item) => (
+                    <div
+                      className="grid grid-cols-[100px_1fr] gap-x-4"
+                      key={item.id}
+                      data-testid="cart-item"
+                    >
+                      <LocalizedClientLink
+                        href={`/products/${item.variant?.product?.handle}`}
+                        className="w-24"
+                        onClick={() => setOpen(false)}
                       >
-                        <LocalizedClientLink
-                          href={`/products/${item.variant?.product?.handle}`}
-                          className="w-24"
-                        >
-                          <Thumbnail
-                            thumbnail={item.variant?.product?.thumbnail}
-                            images={item.variant?.product?.images}
-                            size="square"
-                          />
-                        </LocalizedClientLink>
-                        <div className="flex flex-col justify-between flex-1">
-                          <div className="flex flex-col flex-1">
-                            <div className="flex items-start justify-between">
-                              <div className="flex flex-col overflow-ellipsis whitespace-nowrap mr-4 w-[180px]">
-                                <h3 className="text-base-regular overflow-hidden text-ellipsis">
-                                  <LocalizedClientLink
-                                    href={`/products/${item.variant?.product?.handle}`}
-                                    data-testid="product-link"
-                                  >
-                                    {item.title}
-                                  </LocalizedClientLink>
-                                </h3>
-                                <LineItemOptions
-                                  variant={item.variant}
-                                  data-testid="cart-item-variant"
-                                  data-value={item.variant}
-                                />
-                                <span
-                                  data-testid="cart-item-quantity"
-                                  data-value={item.quantity}
+                        <Thumbnail
+                          thumbnail={item.variant?.product?.thumbnail}
+                          images={item.variant?.product?.images}
+                          size="square"
+                        />
+                      </LocalizedClientLink>
+                      <div className="flex flex-col justify-between flex-1">
+                        <div className="flex flex-col flex-1">
+                          <div className="flex items-start justify-between">
+                            <div className="flex flex-col overflow-ellipsis whitespace-nowrap mr-4 w-[160px]">
+                              <h3 className="text-sm font-bold text-yco-charcoal overflow-hidden text-ellipsis">
+                                <LocalizedClientLink
+                                  href={`/products/${item.variant?.product?.handle}`}
+                                  data-testid="product-link"
+                                  onClick={() => setOpen(false)}
                                 >
-                                  Quantity: {item.quantity}
-                                </span>
-                              </div>
-                              <div className="flex justify-end">
-                                <LineItemPrice item={item} style="tight" />
-                              </div>
+                                  {item.title}
+                                </LocalizedClientLink>
+                              </h3>
+                              <LineItemOptions
+                                variant={item.variant}
+                                data-testid="cart-item-variant"
+                                data-value={item.variant}
+                              />
+                              <span
+                                className="text-yco-charcoal-muted text-xs mt-1"
+                                data-testid="cart-item-quantity"
+                                data-value={item.quantity}
+                              >
+                                Quantity: {item.quantity}
+                              </span>
+                            </div>
+                            <div className="flex justify-end text-yco-charcoal text-sm">
+                              <LineItemPrice item={item} style="tight" />
                             </div>
                           </div>
-                          <DeleteButton
-                            id={item.id}
-                            className="mt-1"
-                            data-testid="cart-item-remove-button"
-                          >
-                            Remove
-                          </DeleteButton>
                         </div>
+                        <DeleteButton
+                          id={item.id}
+                          className="mt-1 text-yco-charcoal-muted text-xs"
+                          data-testid="cart-item-remove-button"
+                        >
+                          Remove
+                        </DeleteButton>
                       </div>
-                    ))}
-                </div>
-                <div className="p-4 flex flex-col gap-y-4 text-small-regular">
-                  <div className="flex items-center justify-between">
-                    <span className="text-ui-fg-base font-semibold">
-                      Subtotal{" "}
-                      <span className="font-normal">(incl. VAT)</span>
-                    </span>
-                    <span
-                      className="text-large-semi"
-                      data-testid="cart-subtotal"
-                      data-value={subtotal}
-                    >
-                      {convertToLocale({
-                        amount: subtotal,
-                        currency_code: cartState.currency_code,
-                      })}
-                    </span>
-                  </div>
-                  <LocalizedClientLink href="/cart" passHref>
-                    <Button
-                      className="w-full"
-                      size="large"
-                      data-testid="go-to-cart-button"
-                    >
-                      Go to cart
-                    </Button>
-                  </LocalizedClientLink>
-                </div>
-              </>
-            ) : (
-              <div>
-                <div className="flex py-16 flex-col gap-y-4 items-center justify-center">
-                  <div className="bg-gray-900 text-small-regular flex items-center justify-center w-6 h-6 rounded-full text-white">
-                    <span>0</span>
-                  </div>
-                  <span>Your shopping bag is empty.</span>
-                  <div>
-                    <LocalizedClientLink href="/store">
-                      <>
-                        <span className="sr-only">Go to all products page</span>
-                        <Button onClick={close}>Explore products</Button>
-                      </>
-                    </LocalizedClientLink>
-                  </div>
-                </div>
+                    </div>
+                  ))}
               </div>
-            )}
-          </Popover.Panel>
-        </Transition>
-      </Popover>
+
+              <div className="border-t border-yco-cream-dark px-6 py-6 flex flex-col gap-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="font-sans text-yco-charcoal text-sm font-bold uppercase tracking-[0.12em]">
+                    Subtotal
+                  </span>
+                  <span
+                    className="font-sans text-yco-charcoal text-base font-bold"
+                    data-testid="cart-subtotal"
+                    data-value={subtotal}
+                  >
+                    {convertToLocale({
+                      amount: subtotal,
+                      currency_code: cartState.currency_code,
+                    })}
+                  </span>
+                </div>
+                <LocalizedClientLink href="/cart" passHref onClick={() => setOpen(false)}>
+                  <Button
+                    className="w-full rounded-circle"
+                    size="large"
+                    variant="secondary"
+                    data-testid="go-to-cart-button"
+                  >
+                    View cart
+                  </Button>
+                </LocalizedClientLink>
+                <LocalizedClientLink href="/checkout?step=address" passHref onClick={() => setOpen(false)}>
+                  <Button className="w-full rounded-circle" size="large">
+                    Checkout
+                  </Button>
+                </LocalizedClientLink>
+              </div>
+            </>
+          ) : (
+            <div className="flex flex-1 flex-col gap-y-5 items-center justify-center px-6 text-center">
+              <div className="grid h-12 w-12 place-items-center rounded-circle bg-yco-panel text-yco-charcoal text-sm font-bold">
+                0
+              </div>
+              <span className="font-sans text-yco-charcoal text-sm">
+                Your shopping bag is empty.
+              </span>
+              <LocalizedClientLink href="/store" onClick={() => setOpen(false)}>
+                <Button className="rounded-circle" variant="secondary">
+                  Explore products
+                </Button>
+              </LocalizedClientLink>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   )
 }

@@ -1,20 +1,17 @@
 import { Metadata } from "next"
 
 import Hero from "@modules/home/components/hero"
-import TrustBadges from "@modules/home/components/trust-badges"
 import CategoryGrid from "@modules/home/components/category-grid"
 import FeaturedProducts from "@modules/home/components/featured-products"
 import MissionSection from "@modules/home/components/mission-section"
-import FeaturedBrands from "@modules/home/components/featured-brands"
 import Testimonials from "@modules/home/components/testimonials"
-import Newsletter from "@modules/home/components/newsletter"
 import { getCollectionsWithProducts } from "@lib/data/collections"
 import { getRegion } from "@lib/data/regions"
 
 export const metadata: Metadata = {
-  title: "YCO Organics — Good for you, good for the planet",
+  title: "YCO — Beauty essentials",
   description:
-    "The home of certified organic, zero-waste, and natural beauty & wellness products. Cruelty-free, plastic-free, non-toxic.",
+    "A clean, editorial storefront for daily skin, body, and beauty essentials.",
 }
 
 export default async function Home({
@@ -29,18 +26,22 @@ export default async function Home({
   return (
     <div>
       <Hero />
-      <TrustBadges />
       <CategoryGrid />
 
       {collections && region && (
-        <section className="bg-yco-cream py-20 px-6 border-t border-yco-cream-dark">
-          <div className="max-w-6xl mx-auto mb-12">
-            <span className="font-sans text-yco-green text-xs tracking-[0.3em] uppercase font-medium">
-              Handpicked for you
-            </span>
-            <h2 className="font-serif text-yco-charcoal text-4xl md:text-5xl mt-3 leading-tight">
-              Featured Products
-            </h2>
+        <section className="bg-white py-16 px-6">
+          <div className="max-w-6xl mx-auto mb-10">
+            <span className="rhode-eyebrow">Handpicked for you</span>
+            <div className="mt-3 grid items-end gap-6 md:grid-cols-[1fr_0.58fr]">
+              <h2 className="rhode-display text-4xl md:text-5xl">
+                bestsellers
+              </h2>
+              <img
+                src="/placeholder-images/yco-real/featured-products.jpg"
+                alt="YCO featured product photography"
+                className="h-36 w-full rounded-large object-cover"
+              />
+            </div>
           </div>
           <ul className="flex flex-col gap-x-6">
             <FeaturedProducts collections={collections} region={region} />
@@ -49,9 +50,7 @@ export default async function Home({
       )}
 
       <MissionSection />
-      <FeaturedBrands />
       <Testimonials />
-      <Newsletter />
     </div>
   )
 }

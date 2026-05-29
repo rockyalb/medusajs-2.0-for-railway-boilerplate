@@ -1,7 +1,6 @@
 import { HttpTypes } from "@medusajs/types"
-import { Text } from "@medusajs/ui"
 
-import InteractiveLink from "@modules/common/components/interactive-link"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import ProductPreview from "@modules/products/components/product-preview"
 
 export default function ProductRail({
@@ -18,12 +17,17 @@ export default function ProductRail({
   }
 
   return (
-    <div className="content-container py-12 small:py-24">
-      <div className="flex justify-between mb-8">
-        <Text className="txt-xlarge">{collection.title}</Text>
-        <InteractiveLink href={`/collections/${collection.handle}`}>
+    <div className="content-container py-12 small:py-16">
+      <div className="flex items-end justify-between mb-8">
+        <h3 className="rhode-display text-3xl md:text-4xl">
+          {collection.title.toLowerCase()}
+        </h3>
+        <LocalizedClientLink
+          href={`/collections/${collection.handle}`}
+          className="font-sans text-yco-charcoal text-[11px] font-bold uppercase tracking-[0.18em] hover:text-yco-coral transition-colors"
+        >
           View all
-        </InteractiveLink>
+        </LocalizedClientLink>
       </div>
       <ul className="grid grid-cols-2 small:grid-cols-3 gap-x-6 gap-y-24 small:gap-y-36">
         {products &&

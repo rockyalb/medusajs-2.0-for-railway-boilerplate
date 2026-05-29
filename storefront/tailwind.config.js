@@ -34,21 +34,25 @@ module.exports = {
           80: "#1F2937",
           90: "#111827",
         },
+        // Rhode-inspired monochrome palette: white page, warm-gray panels,
+        // taupe ink. Class names kept stable so components inherit the new look.
         yco: {
-          cream: "#FAF9F8",
-          "cream-dark": "#F5F3F1",
-          blue: "#7CA4EB",
-          green: "#84C3AC",
-          coral: "#FC8C84",
-          charcoal: "#333333",
-          "charcoal-muted": "#5E5E5E",
+          cream: "#FFFFFF", // page / white surfaces
+          "cream-dark": "#E7E5E0", // hairlines & borders
+          panel: "#F1F0ED", // warm-gray section / card panels
+          "panel-dark": "#E8E6E1",
+          blue: "#67645E", // (legacy accent) folded into the taupe ink
+          green: "#8A8780", // secondary / muted text & links
+          coral: "#2F2D29", // hover / emphasis (darken)
+          charcoal: "#67645E", // primary ink (warm taupe)
+          "charcoal-muted": "#9C998F",
           // Fallback aliases for existing component references
-          sage: "#84C3AC",
-          "sage-dark": "#84C3AC",
-          forest: "#333333",
-          terracotta: "#FC8C84",
-          brown: "#333333",
-          "brown-muted": "#5E5E5E",
+          sage: "#8A8780",
+          "sage-dark": "#67645E",
+          forest: "#67645E",
+          terracotta: "#2F2D29",
+          brown: "#67645E",
+          "brown-muted": "#9C998F",
         },
       },
       borderRadius: {
@@ -76,21 +80,23 @@ module.exports = {
       },
       fontFamily: {
         sans: [
-          "var(--font-kanit)",
-          "Inter",
+          "var(--font-hanken)",
+          "Helvetica Neue",
+          "Helvetica",
+          "Arial",
           "-apple-system",
           "BlinkMacSystemFont",
           "Segoe UI",
           "Roboto",
-          "Helvetica Neue",
-          "Ubuntu",
           "sans-serif",
         ],
+        // Headings share the grotesque (Rhode uses no serifs); weight does the work.
         serif: [
-          "var(--font-fredoka)",
-          "Georgia",
-          "Cambria",
-          "serif",
+          "var(--font-hanken)",
+          "Helvetica Neue",
+          "Helvetica",
+          "Arial",
+          "sans-serif",
         ],
       },
       keyframes: {
