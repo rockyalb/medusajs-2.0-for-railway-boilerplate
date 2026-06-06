@@ -125,11 +125,13 @@ export default async function Footer() {
               <span className={colHeading}>Support</span>
               <ul className="grid grid-cols-1 gap-3">
                 {[
-                  { label: "About Us", href: "/store" },
-                  { label: "Sustainability", href: "/store" },
-                  { label: "FAQ", href: "/store" },
-                  { label: "Contact", href: "/store" },
-                  { label: "Privacy Policy", href: "/store" },
+                  { label: "Historia jone", href: "/historia-jone" },
+                  { label: "Diferenca jone", href: "/diferenca-jone" },
+                  { label: "Blog", href: "/blog" },
+                  { label: "FAQ", href: "/faq" },
+                  { label: "Transporti", href: "/transporti" },
+                  { label: "Kushtet", href: "/kushtet-dhe-rregullat" },
+                  { label: "Privatesia", href: "/politika-e-privatesise" },
                 ].map((link) => (
                   <li key={link.label}>
                     <LocalizedClientLink className={colLink} href={link.href}>
