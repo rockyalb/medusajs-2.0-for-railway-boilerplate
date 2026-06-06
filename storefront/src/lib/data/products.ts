@@ -35,14 +35,14 @@ export const getMenuProductsByCategoryIds = cache(async function (
         {
           limit: 6,
           category_id: [categoryId],
-          fields: "id,title,handle,thumbnail,*images,status",
+          fields: "id,title,handle,thumbnail,*images",
         },
         { next: { tags: ["products"] } }
       )
 
       return [
         categoryId,
-        products.filter((product) => product.status === "published"),
+        products,
       ] as const
     })
   )
@@ -61,14 +61,14 @@ export const getMenuProductsByCollectionIds = cache(async function (
         {
           limit: 1,
           collection_id: [collectionId],
-          fields: "id,title,handle,thumbnail,*images,status",
+          fields: "id,title,handle,thumbnail,*images",
         },
         { next: { tags: ["products"] } }
       )
 
       return [
         collectionId,
-        products.filter((product) => product.status === "published"),
+        products,
       ] as const
     })
   )
@@ -89,9 +89,7 @@ export const getProductByHandle = cache(async function (
       },
       { next: { tags: ["products"] } }
     )
-    .then(({ products }) =>
-      products.find((product) => product.status === "published")
-    )
+    .then(({ products }) => products[0])
 })
 
 export const getProductsList = cache(async function ({
@@ -130,15 +128,12 @@ export const getProductsList = cache(async function ({
       { next: { tags: ["products"] } }
     )
     .then(({ products, count }) => {
-      const publishedProducts = products.filter(
-        (product) => product.status === "published"
-      )
       const nextPage = count > offset + limit ? pageParam + 1 : null
 
       return {
         response: {
-          products: publishedProducts,
-          count: publishedProducts.length,
+          products,
+          count,
         },
         nextPage: nextPage,
         queryParams,

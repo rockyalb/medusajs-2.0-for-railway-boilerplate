@@ -78,14 +78,14 @@ export const getCollectionsWithPreviewProducts = cache(
           {
             collection_id: [collection.id],
             limit: 1,
-            fields: "id,title,handle,thumbnail,*images,status,collection_id",
+            fields: "id,title,handle,thumbnail,*images,collection_id",
           },
           { next: { tags: ["products"] } }
         )
 
         return {
           ...collection,
-          products: products.filter((product) => product.status === "published"),
+          products,
         } as unknown as HttpTypes.StoreCollection
       })
     )
