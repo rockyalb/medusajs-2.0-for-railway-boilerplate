@@ -2,10 +2,16 @@ import { Metadata } from "next"
 
 import Hero from "@modules/home/components/hero"
 import CategoryGrid from "@modules/home/components/category-grid"
+import FeaturedBrands from "@modules/home/components/featured-brands"
 import FeaturedProducts from "@modules/home/components/featured-products"
+import HomeSearch from "@modules/home/components/home-search"
 import MissionSection from "@modules/home/components/mission-section"
 import Testimonials from "@modules/home/components/testimonials"
-import { getCollectionsWithProducts } from "@lib/data/collections"
+import { getCategoriesList } from "@lib/data/categories"
+import {
+  getCollectionsWithPreviewProducts,
+  getCollectionsWithProducts,
+} from "@lib/data/collections"
 import { getRegion } from "@lib/data/regions"
 
 export const metadata: Metadata = {
@@ -20,13 +26,24 @@ export default async function Home({
   params: Promise<{ countryCode: string }>
 }) {
   const { countryCode } = await params
-  const collections = await getCollectionsWithProducts(countryCode)
-  const region = await getRegion(countryCode)
+  const [collections, region, categoryResponse, collectionResponse] =
+    await Promise.all([
+      getCollectionsWithProducts(countryCode),
+      getRegion(countryCode),
+      getCategoriesList(0, 6),
+      getCollectionsWithPreviewProducts(countryCode, 12),
+    ])
+
+  const topCategories = (categoryResponse.product_categories ?? []).filter(
+    (category) => !category.parent_category
+  )
 
   return (
     <div>
       <Hero />
-      <CategoryGrid />
+      <HomeSearch />
+      <CategoryGrid categories={topCategories} />
+      <FeaturedBrands collections={collectionResponse ?? []} />
 
       {collections && region && (
         <section className="bg-white py-16 px-6">

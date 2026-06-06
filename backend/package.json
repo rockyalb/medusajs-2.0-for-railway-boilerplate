@@ -15,6 +15,7 @@
   "scripts": {
     "build": "medusa build && node src/scripts/postBuild.js",
     "seed": "medusa exec ./src/scripts/seed.ts",
+    "cleanup:seed-catalog": "medusa exec ./src/scripts/remove-seed-catalog.ts",
     "prices:all": "medusa exec ./src/scripts/set-seeded-product-prices-all.ts",
     "ib": "init-backend",
     "start": "init-backend && cd .medusa/server && medusa start --verbose",

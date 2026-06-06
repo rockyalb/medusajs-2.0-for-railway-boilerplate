@@ -1,24 +1,21 @@
 import Link from "next/link"
+import { HttpTypes } from "@medusajs/types"
 
-const brands = [
-  { name: "Bambaw", tagline: "Zero-waste essentials", href: "/collections/bambaw" },
-  { name: "Comfort Zone", tagline: "Luxury skin rituals", href: "/collections/comfort-zone" },
-  { name: "Davines", tagline: "Sustainable hair care", href: "/collections/davines" },
-  { name: "Here We Flo", tagline: "Organic period care", href: "/collections/here-we-flo" },
-  { name: "KindBag", tagline: "Recycled bags & totes", href: "/collections/kindbag" },
-  { name: "UpCircle", tagline: "Upcycled beauty", href: "/collections/upcircle" },
-]
+type BrandCollection = HttpTypes.StoreCollection & {
+  products?: HttpTypes.StoreProduct[]
+}
 
-const hoverBgColors = [
-  "group-hover:bg-yco-blue",
-  "group-hover:bg-yco-green",
-  "group-hover:bg-yco-coral",
-  "group-hover:bg-yco-blue",
-  "group-hover:bg-yco-green",
-  "group-hover:bg-yco-coral",
-]
+export default function FeaturedBrands({
+  collections,
+}: {
+  collections: BrandCollection[]
+}) {
+  const brands = collections.slice(0, 12)
 
-export default function FeaturedBrands() {
+  if (!brands.length) {
+    return null
+  }
+
   return (
     <section className="bg-yco-cream-dark py-20 px-6">
       <div className="max-w-6xl mx-auto">
@@ -33,27 +30,41 @@ export default function FeaturedBrands() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {brands.map((brand, index) => (
+        <div className="-mx-6 flex gap-4 overflow-x-auto px-6 pb-2 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-6">
+          {brands.map((brand) => {
+            const product = brand.products?.[0]
+            const image = product?.thumbnail || product?.images?.[0]?.url
+
+            return (
             <Link
-              key={brand.name}
-              href={brand.href}
-              className="group bg-yco-cream p-6 rounded-2xl flex flex-col items-center text-center hover:shadow-lg hover:-translate-y-1 active:scale-95 transition-all duration-300 border border-yco-cream-dark/40"
+              key={brand.id}
+              href={`/collections/${brand.handle}`}
+              className="group flex w-[42vw] min-w-[9.5rem] max-w-[12rem] shrink-0 flex-col rounded-2xl border border-yco-cream-dark/40 bg-yco-cream p-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg active:scale-95 md:w-auto md:min-w-0 md:max-w-none"
             >
-              {/* Brand initial monogram */}
-              <div className={`w-12 h-12 rounded-full bg-yco-cream-dark flex items-center justify-center mb-4 transition-colors duration-300 ${hoverBgColors[index % hoverBgColors.length]}`}>
-                <span className="font-serif text-yco-charcoal group-hover:text-yco-cream text-xl font-medium transition-colors duration-300">
-                  {brand.name[0]}
-                </span>
+              <div className="mb-4 aspect-square overflow-hidden rounded-large bg-yco-cream-dark">
+                {image ? (
+                  <img
+                    src={image}
+                    alt={product?.title || brand.title}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center">
+                    <span className="font-serif text-yco-charcoal text-3xl font-medium">
+                      {brand.title[0]}
+                    </span>
+                  </div>
+                )}
               </div>
-              <div className="font-serif text-yco-charcoal text-sm font-semibold mb-1 leading-tight">
-                {brand.name}
+              <div className="font-serif text-yco-charcoal text-sm font-semibold mb-1 leading-tight text-center">
+                {brand.title}
               </div>
-              <div className="font-sans text-yco-charcoal-muted text-[10px] tracking-wide leading-snug">
-                {brand.tagline}
+              <div className="font-sans text-yco-charcoal-muted text-[10px] tracking-wide leading-snug text-center">
+                {product?.title || "Shop brand"}
               </div>
             </Link>
-          ))}
+          )})}
         </div>
 
         <div className="text-center mt-10">

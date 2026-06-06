@@ -24,6 +24,58 @@ export const getProductsById = cache(async function ({
     .then(({ products }) => products)
 })
 
+export const getMenuProductsByCategoryIds = cache(async function (
+  categoryIds: string[]
+) {
+  const uniqueCategoryIds = Array.from(new Set(categoryIds.filter(Boolean)))
+
+  const entries = await Promise.all(
+    uniqueCategoryIds.map(async (categoryId) => {
+      const { products } = await sdk.store.product.list(
+        {
+          limit: 6,
+          category_id: [categoryId],
+          fields: "id,title,handle,thumbnail,*images,status",
+        },
+        { next: { tags: ["products"] } }
+      )
+
+      return [
+        categoryId,
+        products.filter((product) => product.status === "published"),
+      ] as const
+    })
+  )
+
+  return Object.fromEntries(entries)
+})
+
+export const getMenuProductsByCollectionIds = cache(async function (
+  collectionIds: string[]
+) {
+  const uniqueCollectionIds = Array.from(new Set(collectionIds.filter(Boolean)))
+
+  const entries = await Promise.all(
+    uniqueCollectionIds.map(async (collectionId) => {
+      const { products } = await sdk.store.product.list(
+        {
+          limit: 1,
+          collection_id: [collectionId],
+          fields: "id,title,handle,thumbnail,*images,status",
+        },
+        { next: { tags: ["products"] } }
+      )
+
+      return [
+        collectionId,
+        products.filter((product) => product.status === "published"),
+      ] as const
+    })
+  )
+
+  return Object.fromEntries(entries)
+})
+
 export const getProductByHandle = cache(async function (
   handle: string,
   regionId: string
@@ -37,7 +89,9 @@ export const getProductByHandle = cache(async function (
       },
       { next: { tags: ["products"] } }
     )
-    .then(({ products }) => products[0])
+    .then(({ products }) =>
+      products.find((product) => product.status === "published")
+    )
 })
 
 export const getProductsList = cache(async function ({
@@ -76,12 +130,15 @@ export const getProductsList = cache(async function ({
       { next: { tags: ["products"] } }
     )
     .then(({ products, count }) => {
+      const publishedProducts = products.filter(
+        (product) => product.status === "published"
+      )
       const nextPage = count > offset + limit ? pageParam + 1 : null
 
       return {
         response: {
-          products,
-          count,
+          products: publishedProducts,
+          count: publishedProducts.length,
         },
         nextPage: nextPage,
         queryParams,

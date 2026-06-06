@@ -1,24 +1,24 @@
 const reviews = [
   {
     name: "Amelia R.",
-    location: "London, UK",
+    location: "Tirana, AL",
     rating: 5,
-    text: "I've searched for a one-stop shop for truly natural products for years. YCO is exactly that — every product has been phenomenal, and the packaging is completely plastic-free.",
-    product: "UpCircle Eye Cream",
+    text: "I can finally browse trusted organic products in one place and reorder my everyday essentials without guessing where they came from.",
+    product: "Daily essentials",
   },
   {
     name: "Sofia M.",
-    location: "Berlin, DE",
+    location: "Durres, AL",
     rating: 5,
-    text: "The Davines ALCHEMIC range transformed my hair. I love knowing every product is certified and the brand actually cares about the planet.",
-    product: "Davines ALCHEMIC Series",
+    text: "The brand selection feels considered, the product pages are clear, and the delivery updates made the whole order easy to follow.",
+    product: "Clean beauty edit",
   },
   {
     name: "Lea T.",
-    location: "Paris, FR",
+    location: "Prishtina, XK",
     rating: 5,
-    text: "Switched to Bambaw's zero-waste essentials six months ago and haven't looked back. The quality is outstanding and I feel good about every purchase.",
-    product: "Bambaw Zero-Waste Set",
+    text: "YCO makes it simple to compare products by category and brand, then come back to the same collection when I need a refill.",
+    product: "Refill routine",
   },
 ]
 
@@ -77,7 +77,7 @@ export default function Testimonials() {
               />
               <Stars count={review.rating} />
               <blockquote className="flex-1 font-sans text-yco-charcoal text-sm leading-[1.8]">
-                “{review.text}”
+                "{review.text}"
               </blockquote>
               <div className="flex items-center justify-between border-t border-yco-cream-dark pt-5">
                 <div>

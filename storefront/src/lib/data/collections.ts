@@ -60,3 +60,36 @@ export const getCollectionsWithProducts = cache(
     return collections as unknown as HttpTypes.StoreCollection[]
   }
 )
+
+export const getCollectionsWithPreviewProducts = cache(
+  async (
+    countryCode: string,
+    limit: number = 100
+  ): Promise<HttpTypes.StoreCollection[]> => {
+    const { collections } = await getCollectionsList(0, limit)
+
+    if (!collections.length) {
+      return []
+    }
+
+    const collectionsWithProducts = await Promise.all(
+      collections.map(async (collection) => {
+        const { products } = await sdk.store.product.list(
+          {
+            collection_id: [collection.id],
+            limit: 1,
+            fields: "id,title,handle,thumbnail,*images,status,collection_id",
+          },
+          { next: { tags: ["products"] } }
+        )
+
+        return {
+          ...collection,
+          products: products.filter((product) => product.status === "published"),
+        } as unknown as HttpTypes.StoreCollection
+      })
+    )
+
+    return collectionsWithProducts
+  }
+)

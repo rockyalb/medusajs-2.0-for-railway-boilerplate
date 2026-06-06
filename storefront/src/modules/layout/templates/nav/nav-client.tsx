@@ -6,21 +6,27 @@ import { ReactNode, useEffect, useMemo, useState } from "react"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import AnnouncementBar from "@modules/layout/components/announcement-bar"
 
-type SimpleCategory = { id: string; name: string; handle: string }
-type SimpleCollection = { id: string; title: string; handle: string }
-
-type MenuCard = {
+type SimpleCategory = {
+  id: string
+  name: string
+  handle: string
+  products?: SimpleMenuProduct[]
+  children?: SimpleCategory[]
+}
+type SimpleMenuProduct = {
+  id: string
   title: string
-  subtitle: string
-  href: string
-  badge?: string
+  handle: string
+  image: string
 }
-
-type MenuTab = {
-  key: string
-  label: string
-  cards: MenuCard[]
+type SimpleCollection = {
+  id: string
+  title: string
+  handle: string
+  products?: SimpleMenuProduct[]
 }
+type ShopPanel = "categories" | "brands"
+type MobileSection = "categories" | "brands" | null
 
 const navLink =
   "font-sans text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300"
@@ -30,53 +36,6 @@ const secondaryLinks = [
   { label: "FAQ", href: "/store" },
   { label: "Contact", href: "/store" },
 ]
-
-function buildTabs(
-  categories: SimpleCategory[],
-  collections: SimpleCollection[]
-): MenuTab[] {
-  const tabs: MenuTab[] = []
-
-  const featuredSource =
-    collections.length > 0
-      ? collections.slice(0, 4).map((c) => ({
-          title: c.title,
-          href: `/collections/${c.handle}`,
-        }))
-      : categories.slice(0, 4).map((c) => ({
-          title: c.name,
-          href: `/categories/${c.handle}`,
-        }))
-
-  if (featuredSource.length > 0) {
-    tabs.push({
-      key: "featured",
-      label: "Featured",
-      cards: featuredSource.map((item, i) => ({
-        title: item.title,
-        subtitle: "Explore the range",
-        href: item.href,
-        badge: i === 0 ? "new" : undefined,
-      })),
-    })
-  }
-
-  categories.slice(0, 5).forEach((cat) => {
-    const base = `/categories/${cat.handle}`
-    tabs.push({
-      key: cat.id,
-      label: cat.name,
-      cards: [
-        { title: "Bestsellers", subtitle: cat.name, href: base, badge: "new" },
-        { title: "New in", subtitle: cat.name, href: base },
-        { title: "Travel sizes", subtitle: cat.name, href: base },
-        { title: `Shop all ${cat.name}`, subtitle: cat.name, href: base },
-      ],
-    })
-  })
-
-  return tabs
-}
 
 function Hamburger({
   open,
@@ -117,11 +76,363 @@ function Hamburger({
 }
 
 const SearchIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
+  <svg
+    width="18"
+    height="18"
+    viewBox="0 0 20 20"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.5"
+  >
     <circle cx="9" cy="9" r="6" />
     <path d="M14 14l4 4" strokeLinecap="round" />
   </svg>
 )
+
+function CategoryNestedList({
+  categories,
+  activeCategoryId,
+  setActiveCategoryId,
+  onNavigate,
+}: {
+  categories: SimpleCategory[]
+  activeCategoryId: string
+  setActiveCategoryId: (id: string) => void
+  onNavigate: () => void
+}) {
+  const activeCategory =
+    categories.find((category) => category.id === activeCategoryId) ??
+    categories[0]
+  const children = activeCategory?.children ?? []
+  const products = activeCategory?.products ?? []
+
+  return (
+    <div className="grid min-h-[22rem] grid-cols-[0.78fr_1.22fr] gap-10">
+      <div className="overflow-y-auto pr-4">
+        <div className="mb-4 font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal-muted">
+          Categories
+        </div>
+        <ul className="space-y-1">
+          {categories.map((category) => (
+            <li key={category.id}>
+              <LocalizedClientLink
+                href={`/categories/${category.handle}`}
+                onMouseEnter={() => setActiveCategoryId(category.id)}
+                onFocus={() => setActiveCategoryId(category.id)}
+                onClick={onNavigate}
+                className={clx(
+                  "group flex items-center justify-between rounded-base px-3 py-3 font-sans text-sm font-bold uppercase tracking-[0.08em] transition-colors",
+                  activeCategory?.id === category.id
+                    ? "bg-white text-yco-charcoal"
+                    : "text-yco-charcoal-muted hover:bg-white hover:text-yco-charcoal"
+                )}
+              >
+                <span>{category.name}</span>
+                {(category.children?.length ?? 0) > 0 && (
+                  <span className="text-yco-charcoal-muted transition-transform group-hover:translate-x-1">
+                    {category.children?.length}
+                  </span>
+                )}
+              </LocalizedClientLink>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="overflow-y-auto border-l border-yco-cream-dark pl-10">
+        {activeCategory && (
+          <>
+            <div className="mb-5 flex items-center justify-between gap-6">
+              <h3 className="rhode-display text-4xl">
+                {activeCategory.name.toLowerCase()}
+              </h3>
+              <LocalizedClientLink
+                href={`/categories/${activeCategory.handle}`}
+                onClick={onNavigate}
+                className="font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:text-yco-coral transition-colors"
+              >
+                View all
+              </LocalizedClientLink>
+            </div>
+
+            {children.length > 0 ? (
+              <ul className="grid grid-cols-2 gap-4">
+                {children.map((child) => (
+                  <li key={child.id}>
+                    <LocalizedClientLink
+                      href={`/categories/${child.handle}`}
+                      onClick={onNavigate}
+                      className="group block rounded-large bg-white p-3 transition-transform duration-300 hover:-translate-y-1"
+                    >
+                      <div className="mb-3 aspect-[4/3] overflow-hidden rounded-base bg-yco-panel-dark">
+                        {child.products?.[0]?.image ? (
+                          <img
+                            src={child.products[0].image}
+                            alt={child.products[0].title}
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="flex h-full items-center justify-center font-sans text-4xl font-black lowercase text-yco-charcoal/20">
+                            {child.name.slice(0, 1)}
+                          </div>
+                        )}
+                      </div>
+                      <div className="font-sans text-xs font-bold uppercase tracking-[0.08em] text-yco-charcoal">
+                        {child.name}
+                      </div>
+                      {child.products?.[0]?.title && (
+                        <div className="mt-1 font-sans text-[11px] leading-tight text-yco-charcoal-muted">
+                          {child.products[0].title}
+                        </div>
+                      )}
+                    </LocalizedClientLink>
+                  </li>
+                ))}
+              </ul>
+            ) : products.length > 0 ? (
+              <ul className="grid grid-cols-3 gap-4">
+                {products.slice(0, 6).map((product) => (
+                  <li key={product.id}>
+                    <LocalizedClientLink
+                      href={`/products/${product.handle}`}
+                      onClick={onNavigate}
+                      className="group block rounded-large bg-white p-3 transition-transform duration-300 hover:-translate-y-1"
+                    >
+                      <div className="mb-3 aspect-square overflow-hidden rounded-base bg-yco-panel-dark">
+                        {product.image ? (
+                          <img
+                            src={product.image}
+                            alt={product.title}
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="flex h-full items-center justify-center font-sans text-4xl font-black lowercase text-yco-charcoal/20">
+                            {product.title.slice(0, 1)}
+                          </div>
+                        )}
+                      </div>
+                      <div className="font-sans text-xs font-bold uppercase tracking-[0.06em] text-yco-charcoal">
+                        {product.title}
+                      </div>
+                    </LocalizedClientLink>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="rounded-large bg-white p-6 font-sans text-sm text-yco-charcoal-muted">
+                No products found in this category yet.
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function BrandsList({
+  collections,
+  onNavigate,
+}: {
+  collections: SimpleCollection[]
+  onNavigate: () => void
+}) {
+  return (
+    <div className="min-h-[22rem] overflow-y-auto pr-2">
+      <div className="mb-4 flex items-center justify-between">
+        <div className="font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal-muted">
+          Brands
+        </div>
+        <LocalizedClientLink
+          href="/collections"
+          onClick={onNavigate}
+          className="font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:text-yco-coral transition-colors"
+        >
+          View all
+        </LocalizedClientLink>
+      </div>
+      <ul className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-1">
+        {collections.map((collection) => (
+          <li key={collection.id}>
+            <LocalizedClientLink
+              href={`/collections/${collection.handle}`}
+              onClick={onNavigate}
+              className="block rounded-base px-3 py-2 font-sans text-sm text-yco-charcoal-muted transition-colors hover:bg-white hover:text-yco-charcoal"
+            >
+              {collection.title}
+            </LocalizedClientLink>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+function MenuImageCard({
+  href,
+  title,
+  subtitle,
+  image,
+  onNavigate,
+}: {
+  href: string
+  title: string
+  subtitle?: string
+  image?: string
+  onNavigate: () => void
+}) {
+  return (
+    <LocalizedClientLink
+      href={href}
+      onClick={onNavigate}
+      className="group block rounded-large bg-yco-panel p-3"
+    >
+      <div className="mb-3 aspect-square overflow-hidden rounded-base bg-yco-panel-dark">
+        {image ? (
+          <img
+            src={image}
+            alt={title}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+            loading="lazy"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center font-sans text-3xl font-black lowercase text-yco-charcoal/20">
+            {title.slice(0, 1)}
+          </div>
+        )}
+      </div>
+      <div className="font-sans text-xs font-bold uppercase tracking-[0.06em] text-yco-charcoal">
+        {title}
+      </div>
+      {subtitle && (
+        <div className="mt-1 font-sans text-[11px] leading-tight text-yco-charcoal-muted">
+          {subtitle}
+        </div>
+      )}
+    </LocalizedClientLink>
+  )
+}
+
+function MobileCategoryPanel({
+  categories,
+  activeCategoryId,
+  setActiveCategoryId,
+  onNavigate,
+}: {
+  categories: SimpleCategory[]
+  activeCategoryId: string
+  setActiveCategoryId: (id: string) => void
+  onNavigate: () => void
+}) {
+  const activeCategory =
+    categories.find((category) => category.id === activeCategoryId) ?? null
+  const children = activeCategory?.children ?? []
+  const products = activeCategory?.products ?? []
+
+  return (
+    <div className="border-t border-yco-cream-dark">
+      {categories.map((category) => {
+        const expanded = activeCategory?.id === category.id
+
+        return (
+          <div key={category.id} className="border-b border-yco-cream-dark">
+            <button
+              type="button"
+              onClick={() =>
+                setActiveCategoryId(expanded ? "" : category.id)
+              }
+              className="flex w-full items-center justify-between py-4 text-left font-sans text-lg font-bold text-yco-charcoal"
+              aria-expanded={expanded}
+            >
+              <span>{category.name}</span>
+              <span className="text-xl leading-none">
+                {expanded ? "-" : "+"}
+              </span>
+            </button>
+
+            {expanded && (
+              <div className="pb-5">
+                <LocalizedClientLink
+                  href={`/categories/${category.handle}`}
+                  onClick={onNavigate}
+                  className="mb-4 inline-block font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:text-yco-coral"
+                >
+                  View all {category.name}
+                </LocalizedClientLink>
+
+                {children.length > 0 ? (
+                  <div className="-mx-6 overflow-x-auto px-6 pb-2">
+                    <div className="flex gap-3">
+                    {children.map((child) => (
+                      <div key={child.id} className="w-[42vw] min-w-[9.5rem] max-w-[12rem] shrink-0">
+                        <MenuImageCard
+                          href={`/categories/${child.handle}`}
+                          title={child.name}
+                          subtitle={child.products?.[0]?.title}
+                          image={child.products?.[0]?.image}
+                          onNavigate={onNavigate}
+                        />
+                      </div>
+                    ))}
+                    </div>
+                  </div>
+                ) : products.length > 0 ? (
+                  <div className="-mx-6 overflow-x-auto px-6 pb-2">
+                    <div className="flex gap-3">
+                    {products.slice(0, 6).map((product) => (
+                      <div key={product.id} className="w-[42vw] min-w-[9.5rem] max-w-[12rem] shrink-0">
+                        <MenuImageCard
+                          href={`/products/${product.handle}`}
+                          title={product.title}
+                          image={product.image}
+                          onNavigate={onNavigate}
+                        />
+                      </div>
+                    ))}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-large bg-yco-panel p-4 font-sans text-sm text-yco-charcoal-muted">
+                    No products found in this category yet.
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+function MobileBrandPanel({
+  collections,
+  onNavigate,
+}: {
+  collections: SimpleCollection[]
+  onNavigate: () => void
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-3 border-t border-yco-cream-dark pt-4">
+      {collections.map((collection) => {
+        const product = collection.products?.[0]
+
+        return (
+          <MenuImageCard
+            key={collection.id}
+            href={`/collections/${collection.handle}`}
+            title={collection.title}
+            subtitle={product?.title}
+            image={product?.image}
+            onNavigate={onNavigate}
+          />
+        )
+      })}
+    </div>
+  )
+}
 
 export default function NavClient({
   categories,
@@ -134,20 +445,24 @@ export default function NavClient({
   cartButton: ReactNode
   searchEnabled?: boolean
 }) {
-  const tabs = useMemo(
-    () => buildTabs(categories, collections),
-    [categories, collections]
-  )
   const [shopOpen, setShopOpen] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState(tabs[0]?.key ?? "")
-  const [mobileTab, setMobileTab] = useState(tabs[0]?.key ?? "")
+  const [activePanel, setActivePanel] = useState<ShopPanel>(
+    categories.length > 0 ? "categories" : "brands"
+  )
+  const [activeCategoryId, setActiveCategoryId] = useState(
+    categories[0]?.id ?? ""
+  )
+  const [mobileSection, setMobileSection] = useState<MobileSection>(null)
+  const [mobileActiveCategoryId, setMobileActiveCategoryId] = useState("")
 
-  const hasMenu = tabs.length > 0
-  const activeCards =
-    tabs.find((t) => t.key === activeTab)?.cards ?? tabs[0]?.cards ?? []
-  const mobileCards =
-    tabs.find((t) => t.key === mobileTab)?.cards ?? tabs[0]?.cards ?? []
+  const hasMenu = categories.length > 0 || collections.length > 0
+
+  useEffect(() => {
+    if (!activeCategoryId && categories[0]?.id) {
+      setActiveCategoryId(categories[0].id)
+    }
+  }, [activeCategoryId, categories])
 
   // Lock body scroll while the mobile menu is open.
   useEffect(() => {
@@ -173,6 +488,13 @@ export default function NavClient({
   }, [mobileOpen])
 
   const closeMobile = () => setMobileOpen(false)
+  const closeShop = () => setShopOpen(false)
+  const toggleMobileSection = (section: Exclude<MobileSection, null>) => {
+    setMobileSection((current) => (current === section ? null : section))
+    if (section === "categories") {
+      setMobileActiveCategoryId("")
+    }
+  }
 
   return (
     <div className="sticky top-0 inset-x-0 z-50">
@@ -180,10 +502,9 @@ export default function NavClient({
 
       <header
         className="relative bg-white border-b border-yco-cream-dark"
-        onMouseLeave={() => setShopOpen(false)}
+        onMouseLeave={closeShop}
       >
         <nav className="content-container flex items-center justify-between w-full h-16">
-          {/* Left: desktop links / mobile hamburger */}
           <div className="flex-1 basis-0 h-full flex items-center gap-x-7">
             <div className="h-full small:hidden flex items-center">
               <Hamburger
@@ -192,65 +513,62 @@ export default function NavClient({
               />
             </div>
             <div className="hidden small:flex items-center gap-x-7 h-full">
-              <LocalizedClientLink
+              <button
+                type="button"
                 className={navLink}
-                href="/store"
                 onMouseEnter={() => hasMenu && setShopOpen(true)}
+                onClick={() => setShopOpen((open) => !open)}
+                aria-expanded={shopOpen}
+                aria-controls="shop-megamenu"
               >
                 Shop
-              </LocalizedClientLink>
+              </button>
               <LocalizedClientLink
                 className={navLink}
                 href="/collections"
-                onMouseEnter={() => setShopOpen(false)}
+                onMouseEnter={closeShop}
               >
                 Brands
               </LocalizedClientLink>
               <LocalizedClientLink
                 className={navLink}
                 href="/store"
-                onMouseEnter={() => setShopOpen(false)}
+                onMouseEnter={closeShop}
               >
                 About
               </LocalizedClientLink>
             </div>
           </div>
 
-          {/* Center: wordmark */}
           <div className="flex items-center h-full">
             <LocalizedClientLink
               href="/"
               className="font-sans text-yco-charcoal text-3xl font-black lowercase tracking-[-0.04em] leading-none hover:opacity-80 transition-opacity duration-300"
               data-testid="nav-store-link"
               onClick={closeMobile}
-              onMouseEnter={() => setShopOpen(false)}
+              onMouseEnter={closeShop}
             >
               yco
             </LocalizedClientLink>
           </div>
 
-          {/* Right: search / account / cart */}
           <div className="flex items-center gap-x-5 small:gap-x-7 h-full flex-1 basis-0 justify-end">
-            {searchEnabled && (
-              <LocalizedClientLink
-                className="text-yco-charcoal hover:text-yco-coral transition-colors small:hidden"
-                href="/search"
-                scroll={false}
-                aria-label="Search"
-              >
-                <SearchIcon />
-              </LocalizedClientLink>
-            )}
-            {searchEnabled && (
-              <LocalizedClientLink
-                className={`hidden small:inline-block ${navLink}`}
-                href="/search"
-                scroll={false}
-                data-testid="nav-search-link"
-              >
-                Search
-              </LocalizedClientLink>
-            )}
+            <LocalizedClientLink
+              className="text-yco-charcoal hover:text-yco-coral transition-colors small:hidden"
+              href="/search"
+              scroll={false}
+              aria-label="Search"
+            >
+              <SearchIcon />
+            </LocalizedClientLink>
+            <LocalizedClientLink
+              className={`hidden small:inline-block ${navLink}`}
+              href="/search"
+              scroll={false}
+              data-testid="nav-search-link"
+            >
+              Search
+            </LocalizedClientLink>
             <LocalizedClientLink
               className={`hidden small:inline-block ${navLink}`}
               href="/account"
@@ -262,9 +580,9 @@ export default function NavClient({
           </div>
         </nav>
 
-        {/* Floating SHOP mega-menu (desktop) */}
         {hasMenu && (
           <div
+            id="shop-megamenu"
             className={clx(
               "absolute left-0 right-0 top-full hidden small:block bg-yco-panel border-b border-yco-cream-dark transition-all duration-300 ease-out",
               shopOpen
@@ -273,66 +591,55 @@ export default function NavClient({
             )}
             onMouseEnter={() => setShopOpen(true)}
           >
-            <div className="content-container py-10">
-              <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 mb-10">
-                {tabs.map((tab) => (
+            <div className="content-container max-h-[calc(100vh-8rem)] overflow-y-auto py-8">
+              <div className="mb-8 flex flex-wrap justify-center gap-x-8 gap-y-2">
+                {categories.length > 0 && (
                   <button
-                    key={tab.key}
                     type="button"
-                    onMouseEnter={() => setActiveTab(tab.key)}
-                    onClick={() => setActiveTab(tab.key)}
+                    onMouseEnter={() => setActivePanel("categories")}
+                    onClick={() => setActivePanel("categories")}
                     className={clx(
                       "font-sans text-xs font-bold uppercase tracking-[0.16em] pb-1 border-b transition-colors duration-200",
-                      activeTab === tab.key
+                      activePanel === "categories"
                         ? "text-yco-charcoal border-yco-charcoal"
                         : "text-yco-charcoal-muted border-transparent hover:text-yco-charcoal"
                     )}
                   >
-                    {tab.label}
+                    Categories
                   </button>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {activeCards.map((card, i) => (
-                  <LocalizedClientLink
-                    key={`${card.title}-${i}`}
-                    href={card.href}
-                    onClick={() => setShopOpen(false)}
-                    className="group/card block rounded-large bg-white p-4 transition-transform duration-300 hover:-translate-y-1"
+                )}
+                {collections.length > 0 && (
+                  <button
+                    type="button"
+                    onMouseEnter={() => setActivePanel("brands")}
+                    onClick={() => setActivePanel("brands")}
+                    className={clx(
+                      "font-sans text-xs font-bold uppercase tracking-[0.16em] pb-1 border-b transition-colors duration-200",
+                      activePanel === "brands"
+                        ? "text-yco-charcoal border-yco-charcoal"
+                        : "text-yco-charcoal-muted border-transparent hover:text-yco-charcoal"
+                    )}
                   >
-                    <div className="relative mb-4 aspect-square rounded-base bg-yco-panel-dark overflow-hidden">
-                      {card.badge && (
-                        <span className="absolute left-3 top-3 rounded-circle bg-yco-charcoal px-3 py-1 font-sans text-[10px] font-bold uppercase tracking-[0.1em] text-white">
-                          {card.badge}
-                        </span>
-                      )}
-                    </div>
-                    <div className="font-sans text-yco-charcoal text-sm font-bold uppercase tracking-[0.04em]">
-                      {card.title}
-                    </div>
-                    <div className="font-sans text-yco-charcoal-muted text-xs mt-1">
-                      {card.subtitle}
-                    </div>
-                  </LocalizedClientLink>
-                ))}
+                    Brands
+                  </button>
+                )}
               </div>
 
-              <div className="mt-10 flex justify-center">
-                <LocalizedClientLink
-                  href="/store"
-                  onClick={() => setShopOpen(false)}
-                  className="rhode-pill"
-                >
-                  Shop YCO
-                </LocalizedClientLink>
-              </div>
+              {activePanel === "categories" && categories.length > 0 ? (
+                <CategoryNestedList
+                  categories={categories}
+                  activeCategoryId={activeCategoryId}
+                  setActiveCategoryId={setActiveCategoryId}
+                  onNavigate={closeShop}
+                />
+              ) : (
+                <BrandsList collections={collections} onNavigate={closeShop} />
+              )}
             </div>
           </div>
         )}
       </header>
 
-      {/* Full-screen mobile menu */}
       <div
         className={clx(
           "small:hidden fixed inset-0 z-[60] bg-white overflow-y-auto transition-opacity duration-300",
@@ -365,71 +672,68 @@ export default function NavClient({
             </button>
           </div>
 
-          {hasMenu && (
-            <>
-              {/* Shop tabs */}
-              <div className="flex gap-x-6 overflow-x-auto no-scrollbar border-b border-yco-cream-dark pb-3 mb-6">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.key}
-                    type="button"
-                    onClick={() => setMobileTab(tab.key)}
-                    className={clx(
-                      "whitespace-nowrap font-sans text-xs font-bold uppercase tracking-[0.16em] pb-1 border-b transition-colors",
-                      mobileTab === tab.key
-                        ? "text-yco-charcoal border-yco-charcoal"
-                        : "text-yco-charcoal-muted border-transparent"
-                    )}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
+          <LocalizedClientLink
+            href="/search"
+            scroll={false}
+            onClick={closeMobile}
+            className="mb-5 flex min-h-[52px] items-center gap-3 rounded-large border border-yco-cream-dark bg-yco-panel px-4 font-sans text-sm text-yco-charcoal-muted"
+          >
+            <SearchIcon />
+            Search products, brands, and categories
+          </LocalizedClientLink>
 
-              {/* Product rows */}
-              <div className="flex flex-col gap-3">
-                {mobileCards.map((card, i) => (
-                  <LocalizedClientLink
-                    key={`${card.title}-${i}`}
-                    href={card.href}
-                    onClick={closeMobile}
-                    className="flex items-center gap-4 rounded-large bg-yco-panel p-3"
-                  >
-                    <div className="relative h-16 w-16 shrink-0 rounded-base bg-yco-panel-dark" />
-                    <div className="flex-1">
-                      <div className="font-sans text-yco-charcoal text-sm font-bold uppercase tracking-[0.04em]">
-                        {card.title}
-                      </div>
-                      <div className="font-sans text-yco-charcoal-muted text-xs mt-0.5">
-                        {card.subtitle}
-                      </div>
-                    </div>
-                    {card.badge && (
-                      <span className="rounded-circle bg-yco-charcoal px-2.5 py-1 font-sans text-[9px] font-bold uppercase tracking-[0.1em] text-white">
-                        {card.badge}
-                      </span>
-                    )}
-                  </LocalizedClientLink>
-                ))}
-              </div>
+          {categories.length > 0 && (
+            <div className="mb-8">
+              <button
+                type="button"
+                onClick={() => toggleMobileSection("categories")}
+                className="flex w-full items-center justify-between border-b border-yco-cream-dark py-4 text-left font-sans text-2xl font-black lowercase tracking-[-0.02em] text-yco-charcoal"
+                aria-expanded={mobileSection === "categories"}
+              >
+                <span>Categories</span>
+                <span className="text-xl">
+                  {mobileSection === "categories" ? "-" : "+"}
+                </span>
+              </button>
 
-              <div className="mt-7 flex justify-center">
-                <LocalizedClientLink
-                  href="/store"
-                  onClick={closeMobile}
-                  className="rhode-pill"
-                >
-                  Shop YCO
-                </LocalizedClientLink>
-              </div>
-            </>
+              {mobileSection === "categories" && (
+                <MobileCategoryPanel
+                  categories={categories}
+                  activeCategoryId={mobileActiveCategoryId}
+                  setActiveCategoryId={setMobileActiveCategoryId}
+                  onNavigate={closeMobile}
+                />
+              )}
+            </div>
           )}
 
-          {/* Primary + secondary links */}
+          {collections.length > 0 && (
+            <div className="mb-8">
+              <button
+                type="button"
+                onClick={() => toggleMobileSection("brands")}
+                className="flex w-full items-center justify-between border-b border-yco-cream-dark py-4 text-left font-sans text-2xl font-black lowercase tracking-[-0.02em] text-yco-charcoal"
+                aria-expanded={mobileSection === "brands"}
+              >
+                <span>Brands</span>
+                <span className="text-xl">
+                  {mobileSection === "brands" ? "-" : "+"}
+                </span>
+              </button>
+
+              {mobileSection === "brands" && (
+                <MobileBrandPanel
+                  collections={collections}
+                  onNavigate={closeMobile}
+                />
+              )}
+            </div>
+          )}
+
           <ul className="mt-10 border-t border-yco-cream-dark">
             {[
               { label: "Shop", href: "/store" },
-              { label: "Brands", href: "/collections" },
+              { label: "All brands", href: "/collections" },
               ...secondaryLinks,
               { label: "Account", href: "/account" },
             ].map((link) => (
@@ -444,10 +748,6 @@ export default function NavClient({
               </li>
             ))}
           </ul>
-
-          <p className="mt-8 font-sans text-yco-charcoal-muted text-xs tracking-[0.1em]">
-            Country/region: United States (EUR €)
-          </p>
         </div>
       </div>
     </div>
