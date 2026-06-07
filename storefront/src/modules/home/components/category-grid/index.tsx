@@ -1,12 +1,7 @@
 import Link from "next/link"
 import { HttpTypes } from "@medusajs/types"
-
-type CategoryProduct = {
-  id: string
-  title: string
-  handle: string
-  image: string
-}
+import CategoryProductSlider from "./category-product-slider"
+import type { CategoryProduct } from "./category-product-slider"
 
 type CategoryCard = {
   category: HttpTypes.StoreProductCategory
@@ -37,41 +32,12 @@ export default function CategoryGrid({
                 {category.name.toLowerCase()}
               </h3>
 
-              <div
-                className="-mx-6 mt-8 overflow-x-auto px-6 pb-3 no-scrollbar md:-mx-8 md:px-8"
-                role="region"
-                aria-label={`${category.name} products`}
-              >
-                <div className="flex snap-x snap-mandatory gap-3">
-                  {products.slice(0, 8).map((product, productIndex) => (
-                    <Link
-                      key={product.id}
-                      href={`/${countryCode}/products/${product.handle}`}
-                      className="group/product w-[68%] min-w-[12rem] max-w-[15rem] shrink-0 snap-start rounded-rounded bg-white/70 p-3 transition-transform duration-300 hover:-translate-y-1 sm:w-[54%] lg:w-[72%]"
-                    >
-                      <div className="aspect-square overflow-hidden rounded-base bg-white">
-                        {product.image ? (
-                          <img
-                            src={product.image}
-                            alt={product.title}
-                            className="h-full w-full object-cover transition-transform duration-500 group-hover/product:scale-[1.04]"
-                            loading={
-                              index > 1 || productIndex > 1 ? "lazy" : undefined
-                            }
-                          />
-                        ) : (
-                          <div className="flex h-full items-center justify-center font-sans text-5xl font-black lowercase text-yco-charcoal/20">
-                            {product.title.slice(0, 1)}
-                          </div>
-                        )}
-                      </div>
-                      <div className="mt-3 line-clamp-2 min-h-[2rem] font-sans text-xs font-bold uppercase leading-tight tracking-[0.06em] text-yco-charcoal">
-                        {product.title}
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
+              <CategoryProductSlider
+                products={products}
+                countryCode={countryCode}
+                categoryName={category.name}
+                cardIndex={index}
+              />
 
               <div className="mt-6 flex items-end justify-between gap-4">
                 <div>
