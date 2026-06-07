@@ -9,15 +9,27 @@ export type WordPressContentBlock =
   | {
       type: "paragraph"
       text: string
+      lines?: string[]
     }
   | {
       type: "list"
       items: string[]
+      ordered?: boolean
     }
   | {
       type: "image"
       src: string
       alt: string
+    }
+  | {
+      type: "imageGroup"
+      images: {
+        src: string
+        alt: string
+      }[]
+    }
+  | {
+      type: "separator"
     }
 
 export type WordPressEntry = {
@@ -59,6 +71,7 @@ const ENTITY_MAP: Record<string, string> = {
   "#8217": "'",
   "#8220": "\"",
   "#8221": "\"",
+  "#8230": "...",
 }
 
 function decodeHtml(value: string): string {
@@ -79,14 +92,22 @@ function decodeHtml(value: string): string {
   })
 }
 
-function cleanText(value: string): string {
+function stripTags(value: string): string {
   return decodeHtml(
     value
-      .replace(/<br\s*\/?>/gi, "\n")
-      .replace(/<[^>]+>/g, " ")
+      .replace(/<\/(p|div|li|h[1-6]|figcaption)>/gi, " ")
+      .replace(/<[^>]+>/g, "")
       .replace(/\s+/g, " ")
       .trim()
   )
+}
+
+function cleanText(value: string): string {
+  return stripTags(value.replace(/<br\s*\/?>/gi, " "))
+}
+
+function cleanLine(value: string): string {
+  return stripTags(value).replace(/\s+/g, " ").trim()
 }
 
 function cleanHtml(html: string): string {
@@ -102,26 +123,96 @@ function getAttribute(value: string, name: string): string {
   return match ? decodeHtml(match[1]) : ""
 }
 
+function getImages(value: string) {
+  const images: { src: string; alt: string }[] = []
+  const imagePattern = /<img[^>]+>/gi
+  let imageMatch: RegExpExecArray | null
+
+  while ((imageMatch = imagePattern.exec(value))) {
+    const image = imageMatch[0]
+    const src = getAttribute(image, "src")
+
+    if (src) {
+      images.push({
+        src,
+        alt: getAttribute(image, "alt"),
+      })
+    }
+  }
+
+  return images
+}
+
+function isBulletLine(value: string) {
+  return /^(\d+[.)]|[-*•–—]|[✅✓✔●○■□▪▫◆◇]|[\u{1f300}-\u{1faff}])\s+/u.test(
+    value
+  )
+}
+
+function normalizeBulletLine(value: string) {
+  return value
+    .replace(
+      /^(\d+[.)]|[-*•–—]|[✅✓✔●○■□▪▫◆◇]|[\u{1f300}-\u{1faff}])\s+/u,
+      ""
+    )
+    .trim()
+}
+
+function paragraphToBlocks(body: string): WordPressContentBlock[] {
+  const lines = body
+    .split(/<br\s*\/?>/i)
+    .map(cleanLine)
+    .filter(Boolean)
+
+  if (!lines.length) {
+    return []
+  }
+
+  if (lines.length > 1 && lines.every(isBulletLine)) {
+    return [
+      {
+        type: "list",
+        items: lines.map(normalizeBulletLine).filter(Boolean),
+      },
+    ]
+  }
+
+  const text = lines.join(" ")
+
+  if (!text) {
+    return []
+  }
+
+  return [
+    {
+      type: "paragraph",
+      text,
+      lines: lines.length > 1 ? lines : undefined,
+    },
+  ]
+}
+
 export function htmlToBlocks(html = ""): WordPressContentBlock[] {
   const cleaned = cleanHtml(html)
   const blocks: WordPressContentBlock[] = []
   const blockPattern =
-    /<(h[1-4]|p|ul|ol|figure)[^>]*>([\s\S]*?)<\/\1>|<img[^>]+>/gi
+    /<(h[1-4]|p|ul|ol|figure)[^>]*>([\s\S]*?)<\/\1>|<hr[^>]*>|<img[^>]+>/gi
   let match: RegExpExecArray | null
 
   while ((match = blockPattern.exec(cleaned))) {
     const raw = match[0]
 
     if (raw.toLowerCase().startsWith("<img")) {
-      const src = getAttribute(raw, "src")
+      const images = getImages(raw)
 
-      if (src) {
-        blocks.push({
-          type: "image",
-          src,
-          alt: getAttribute(raw, "alt"),
-        })
+      if (images[0]) {
+        blocks.push({ type: "image", ...images[0] })
       }
+      continue
+    }
+
+    if (raw.toLowerCase().startsWith("<hr")) {
+      blocks.push({ type: "separator" })
       continue
     }
 
@@ -129,15 +220,12 @@ export function htmlToBlocks(html = ""): WordPressContentBlock[] {
     const body = match[2]
 
     if (tag === "figure") {
-      const image = body.match(/<img[^>]+>/i)?.[0]
-      const src = image ? getAttribute(image, "src") : ""
+      const images = getImages(body)
 
-      if (src) {
-        blocks.push({
-          type: "image",
-          src,
-          alt: image ? getAttribute(image, "alt") : "",
-        })
+      if (images.length === 1) {
+        blocks.push({ type: "image", ...images[0] })
+      } else if (images.length > 1) {
+        blocks.push({ type: "imageGroup", images })
       }
       continue
     }
@@ -156,8 +244,13 @@ export function htmlToBlocks(html = ""): WordPressContentBlock[] {
       }
 
       if (items.length) {
-        blocks.push({ type: "list", items })
+        blocks.push({ type: "list", items, ordered: tag === "ol" })
       }
+      continue
+    }
+
+    if (tag === "p") {
+      blocks.push(...paragraphToBlocks(body))
       continue
     }
 
@@ -211,6 +304,20 @@ function dedupeConsecutiveBlocks(
   }
 
   return output
+}
+
+function firstImageFromBlocks(blocks: WordPressContentBlock[]) {
+  for (const block of blocks) {
+    if (block.type === "image") {
+      return block.src
+    }
+
+    if (block.type === "imageGroup") {
+      return block.images[0]?.src || ""
+    }
+  }
+
+  return ""
 }
 
 function normalizeEntry(entry: WordPressEntry): NormalizedWordPressEntry {
@@ -313,11 +420,29 @@ export async function listWordPressPosts(limit = 12) {
           new URLSearchParams({
             per_page: String(limit),
             status: "publish",
+            order: "desc",
+            orderby: "date",
             _fields: "id,slug,link,title,content,excerpt,date,modified",
           }).toString()
         )
 
   return posts.map(normalizeEntry)
+}
+
+export function getWordPressEntryImage(entry: NormalizedWordPressEntry) {
+  return firstImageFromBlocks(entry.blocks)
+}
+
+export function formatWordPressDate(date?: string) {
+  if (!date) {
+    return "YCO"
+  }
+
+  return new Intl.DateTimeFormat("sq-AL", {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  }).format(new Date(date))
 }
 
 export async function listWordPressPages() {

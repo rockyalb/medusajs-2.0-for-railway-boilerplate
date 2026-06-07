@@ -5,6 +5,7 @@ import CategoryGrid from "@modules/home/components/category-grid"
 import FeaturedBrands from "@modules/home/components/featured-brands"
 import FeaturedProducts from "@modules/home/components/featured-products"
 import HomeSearch from "@modules/home/components/home-search"
+import LatestBlogPosts from "@modules/home/components/latest-blog-posts"
 import MissionSection from "@modules/home/components/mission-section"
 import Testimonials from "@modules/home/components/testimonials"
 import { getCategoriesList } from "@lib/data/categories"
@@ -14,6 +15,7 @@ import {
   getMenuProductsByCategoryIds,
 } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
+import { listWordPressPosts } from "@lib/data/wordpress"
 import { HttpTypes } from "@medusajs/types"
 
 export const metadata: Metadata = {
@@ -28,12 +30,19 @@ export default async function Home({
   params: Promise<{ countryCode: string }>
 }) {
   const { countryCode } = await params
-  const [bestsellerProducts, region, categoryResponse, collectionResponse] =
+  const [
+    bestsellerProducts,
+    region,
+    categoryResponse,
+    collectionResponse,
+    latestPosts,
+  ] =
     await Promise.all([
       getBestsellerProducts(countryCode),
       getRegion(countryCode),
       getCategoriesList(0, 100),
       getCollectionsWithPreviewProducts(countryCode, 12),
+      listWordPressPosts(3),
     ])
 
   const topCategories = (
@@ -98,6 +107,7 @@ export default async function Home({
       )}
 
       <MissionSection />
+      <LatestBlogPosts posts={latestPosts} />
       <Testimonials />
     </div>
   )
