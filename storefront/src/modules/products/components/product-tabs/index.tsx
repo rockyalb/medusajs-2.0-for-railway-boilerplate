@@ -11,8 +11,102 @@ type ProductTabsProps = {
   product: HttpTypes.StoreProduct
 }
 
+type ProductMetadata = Record<string, unknown>
+
+const metadataSections = [
+  {
+    label: "Details",
+    keys: ["details", "product_details"],
+  },
+  {
+    label: "Ingredients",
+    keys: ["ingredients"],
+  },
+  {
+    label: "How to use",
+    keys: ["how_to_use", "howToUse", "how-to-use", "how to use"],
+  },
+]
+
+const hasDisplayableValue = (value: unknown): boolean => {
+  if (typeof value === "string") {
+    return value.trim().length > 0
+  }
+
+  if (Array.isArray(value)) {
+    return value.some(hasDisplayableValue)
+  }
+
+  if (value && typeof value === "object") {
+    return Object.values(value).some(hasDisplayableValue)
+  }
+
+  return value !== undefined && value !== null
+}
+
+const getMetadataValue = (metadata: ProductMetadata, keys: string[]) => {
+  return keys.map((key) => metadata[key]).find(hasDisplayableValue)
+}
+
+const formatMetadataLabel = (value: string) => {
+  return value
+    .replace(/[_-]+/g, " ")
+    .replace(/\b\w/g, (letter) => letter.toUpperCase())
+}
+
+const MetadataValue = ({ value }: { value: unknown }) => {
+  if (!hasDisplayableValue(value)) {
+    return null
+  }
+
+  if (Array.isArray(value)) {
+    return (
+      <ul className="list-disc space-y-2 pl-5">
+        {value.filter(hasDisplayableValue).map((item, index) => (
+          <li key={index}>
+            <MetadataValue value={item} />
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  if (value && typeof value === "object") {
+    return (
+      <div className="flex flex-col gap-y-3">
+        {Object.entries(value)
+          .filter(([, entryValue]) => hasDisplayableValue(entryValue))
+          .map(([key, entryValue]) => (
+            <div key={key} className="flex flex-col gap-y-1">
+              <span className="font-semibold">{formatMetadataLabel(key)}</span>
+              <MetadataValue value={entryValue} />
+            </div>
+          ))}
+      </div>
+    )
+  }
+
+  return <p className="whitespace-pre-line">{String(value)}</p>
+}
+
 const ProductTabs = ({ product }: ProductTabsProps) => {
+  const metadata = (product.metadata || {}) as ProductMetadata
+  const dynamicTabs = metadataSections
+    .map((section) => ({
+      label: section.label,
+      value: getMetadataValue(metadata, section.keys),
+    }))
+    .filter((section) => hasDisplayableValue(section.value))
+
   const tabs = [
+    ...dynamicTabs.map((section) => ({
+      label: section.label,
+      component: (
+        <div className="text-small-regular py-8 text-ui-fg-subtle">
+          <MetadataValue value={section.value} />
+        </div>
+      ),
+    })),
     {
       label: "Product Information",
       component: <ProductInfoTab product={product} />,
