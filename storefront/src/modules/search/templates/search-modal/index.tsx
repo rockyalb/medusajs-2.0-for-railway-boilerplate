@@ -1,6 +1,6 @@
 "use client"
 
-import { InstantSearch } from "react-instantsearch-hooks-web"
+import { Configure, InstantSearch } from "react-instantsearch-hooks-web"
 import { useRouter } from "next/navigation"
 import { MagnifyingGlassMini } from "@medusajs/icons"
 
@@ -8,7 +8,9 @@ import { SEARCH_INDEX_NAME, searchClient } from "@lib/search-client"
 import Hit from "@modules/search/components/hit"
 import Hits from "@modules/search/components/hits"
 import SearchBox from "@modules/search/components/search-box"
-import { useEffect, useRef } from "react"
+import { ComponentType, useEffect, useRef } from "react"
+
+const SearchConfigure = Configure as ComponentType<{ hitsPerPage: number }>
 
 export default function SearchModal() {
   const router = useRouter()
@@ -63,15 +65,16 @@ export default function SearchModal() {
             indexName={SEARCH_INDEX_NAME}
             searchClient={searchClient}
           >
+            <SearchConfigure hitsPerPage={6} />
             <div
-              className="flex absolute flex-col h-fit w-full sm:w-fit"
+              className="flex absolute flex-col h-fit max-h-[calc(100vh-2.5rem)] w-full sm:w-fit"
               data-testid="search-modal-container"
             >
               <div className="w-full flex items-center gap-x-2 p-4 bg-[rgba(3,7,18,0.5)] text-ui-fg-on-color backdrop-blur-2xl rounded-rounded">
                 <MagnifyingGlassMini />
                 <SearchBox />
               </div>
-              <div className="flex-1 mt-6">
+              <div className="mt-4 flex-1 overflow-y-auto pb-4 sm:mt-6">
                 <Hits hitComponent={Hit} />
               </div>
             </div>

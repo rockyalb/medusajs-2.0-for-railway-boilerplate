@@ -27,12 +27,12 @@ const Hit = ({ hit }: HitProps) => {
     >
       <Container
         key={hit.id}
-        className="flex sm:flex-col gap-2 w-full p-4 shadow-elevation-card-rest hover:shadow-elevation-card-hover items-center sm:justify-center"
+        className="flex sm:flex-col gap-2 w-full p-2.5 sm:p-4 shadow-elevation-card-rest hover:shadow-elevation-card-hover items-center sm:justify-center"
       >
         <Thumbnail
           thumbnail={hit.thumbnail}
           size="square"
-          className="group h-12 w-12 sm:h-full sm:w-full"
+          className="group h-11 w-11 sm:h-full sm:w-full"
         />
         <div className="flex flex-col justify-between group">
           <div className="flex flex-col">

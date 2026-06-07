@@ -12,6 +12,7 @@ const HIDDEN_CATEGORY_HANDLES = [
   "sweatshirts",
   "pants",
   "merch",
+  "markat",
   "uncategorized",
 ]
 
@@ -23,7 +24,10 @@ const removeSeedCategories = <T extends CategoryWithChildren>(
       (category) =>
         !HIDDEN_CATEGORY_HANDLES.includes(
           (category.handle ?? "").toLowerCase()
-        ) && category.name?.toLowerCase() !== "uncategorized"
+        ) &&
+        !["markat", "uncategorized"].includes(
+          category.name?.toLowerCase() ?? ""
+        )
     )
     .map((category) => ({
       ...category,

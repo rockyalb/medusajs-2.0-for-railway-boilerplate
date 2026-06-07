@@ -17,10 +17,10 @@ export default function FeaturedBrands({
   }
 
   return (
-    <section className="bg-yco-cream-dark py-20 px-6">
+    <section className="bg-yco-cream-dark px-6 py-12 small:py-14">
       <div className="max-w-6xl mx-auto">
 
-        <div className="text-center mb-14">
+        <div className="text-center mb-9 small:mb-10">
           <span className="font-sans text-yco-green text-xs tracking-[0.3em] uppercase font-medium">Curated Partners</span>
           <h2 className="font-serif text-yco-charcoal text-3xl md:text-4xl mt-3">
             Brands We Trust
@@ -67,7 +67,7 @@ export default function FeaturedBrands({
           )})}
         </div>
 
-        <div className="text-center mt-10">
+        <div className="text-center mt-8">
           <Link
             href="/collections"
             className="font-sans text-yco-charcoal text-xs tracking-[0.2em] uppercase font-medium border-b border-yco-charcoal pb-0.5 hover:text-yco-coral hover:border-yco-coral active:scale-95 transition-all duration-300 inline-block"

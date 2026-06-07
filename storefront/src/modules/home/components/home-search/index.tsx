@@ -6,7 +6,7 @@ export default function HomeSearch() {
   }
 
   return (
-    <section className="bg-yco-cream px-6 py-10">
+    <section className="bg-yco-cream px-6 py-6">
       <div className="mx-auto max-w-3xl">
         <Link
           href="/search"

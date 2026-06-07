@@ -564,7 +564,7 @@ export default function NavClient({
           </LocalizedClientLink>
 
           {categories.length > 0 && (
-            <div className="mb-8">
+            <div>
               <button
                 type="button"
                 onClick={() => toggleMobileSection("categories")}
@@ -598,7 +598,7 @@ export default function NavClient({
           )}
 
           {collections.length > 0 && (
-            <div className="mb-8">
+            <div>
               <button
                 type="button"
                 onClick={() => toggleMobileSection("brands")}
@@ -629,7 +629,7 @@ export default function NavClient({
             </div>
           )}
 
-          <ul className="mt-10 border-t border-yco-cream-dark">
+          <ul className="border-t border-yco-cream-dark">
             {[
               { label: "Shop", href: "/store" },
               { label: "All brands", href: "/collections" },

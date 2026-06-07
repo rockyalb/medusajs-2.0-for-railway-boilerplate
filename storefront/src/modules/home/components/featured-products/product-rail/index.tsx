@@ -14,7 +14,7 @@ export default function ProductRail({
   }
 
   return (
-    <div className="content-container py-12 small:py-16">
+    <div className="content-container py-7 small:py-8">
       <ul className="-mx-6 flex snap-x gap-4 overflow-x-auto px-6 pb-4 no-scrollbar small:mx-0 small:grid small:grid-cols-6 small:gap-5 small:overflow-visible small:px-0 small:pb-0">
         {products.slice(0, 6).map((product) => (
           <li

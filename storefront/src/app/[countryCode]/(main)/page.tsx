@@ -4,9 +4,7 @@ import Hero from "@modules/home/components/hero"
 import CategoryGrid from "@modules/home/components/category-grid"
 import FeaturedBrands from "@modules/home/components/featured-brands"
 import FeaturedProducts from "@modules/home/components/featured-products"
-import HomeSearch from "@modules/home/components/home-search"
 import LatestBlogPosts from "@modules/home/components/latest-blog-posts"
-import MissionSection from "@modules/home/components/mission-section"
 import Testimonials from "@modules/home/components/testimonials"
 import { getCategoriesList } from "@lib/data/categories"
 import { getCollectionsWithPreviewProducts } from "@lib/data/collections"
@@ -83,30 +81,21 @@ export default async function Home({
   return (
     <div>
       <Hero />
-      <HomeSearch />
       <CategoryGrid categories={categoryCards} countryCode={countryCode} />
       <FeaturedBrands collections={collectionResponse ?? []} />
 
       {bestsellerProducts.length > 0 && region && (
-        <section className="bg-white py-16 px-6">
-          <div className="max-w-6xl mx-auto mb-10">
+        <section className="bg-white px-6 py-10 small:py-12">
+          <div className="max-w-6xl mx-auto mb-7 small:mb-8">
             <span className="rhode-eyebrow">Handpicked for you</span>
-            <div className="mt-3 grid items-end gap-6 md:grid-cols-[1fr_0.58fr]">
-              <h2 className="rhode-display text-4xl md:text-5xl">
-                bestsellers
-              </h2>
-              <img
-                src="/placeholder-images/yco-real/featured-products.jpg"
-                alt="YCO featured product photography"
-                className="h-36 w-full rounded-large object-cover"
-              />
-            </div>
+            <h2 className="rhode-display mt-3 text-4xl md:text-5xl">
+              bestsellers
+            </h2>
           </div>
           <FeaturedProducts products={bestsellerProducts} region={region} />
         </section>
       )}
 
-      <MissionSection />
       <LatestBlogPosts posts={latestPosts} />
       <Testimonials />
     </div>

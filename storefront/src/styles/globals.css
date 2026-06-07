@@ -232,7 +232,7 @@
     --hero-a: #efe7ee;
     --hero-b: #d8dce8;
     --hero-c: #d4b3b6;
-    @apply bg-yco-cream px-3 pb-8 pt-4 small:px-7 small:pb-10;
+    @apply bg-yco-cream px-3 pb-4 pt-4 small:px-7 small:pb-6;
   }
 
   .bs-rhode-hero--sage {
@@ -307,7 +307,7 @@
   }
 
   .bs-rhode-hero__copy {
-    @apply relative order-2 z-[2] mx-auto flex min-h-[360px] w-full max-w-[46rem] flex-col items-start justify-center px-6 pb-16 pt-12 text-yco-charcoal small:order-1 small:min-h-0 small:max-w-none small:px-[clamp(48px,7vw,132px)] small:py-16;
+    @apply relative order-2 z-[2] mx-auto flex min-h-[270px] w-full max-w-[46rem] flex-col items-start justify-start px-6 pb-10 pt-10 text-yco-charcoal small:order-1 small:min-h-0 small:max-w-none small:justify-center small:px-[clamp(48px,7vw,132px)] small:py-12;
   }
 
   .bs-rhode-hero__copy p {
@@ -315,7 +315,7 @@
   }
 
   .bs-rhode-hero__copy h1 {
-    @apply mb-6 max-w-[760px] text-[clamp(34px,8vw,56px)] font-semibold leading-[0.98] tracking-normal small:text-[clamp(48px,5vw,88px)];
+    @apply mb-5 max-w-[760px] text-[clamp(34px,8vw,56px)] font-semibold leading-[0.98] tracking-normal small:text-[clamp(48px,5vw,88px)];
   }
 
   .bs-rhode-hero__copy a {

@@ -41,9 +41,9 @@ const Stars = ({ count }: { count: number }) => (
 
 export default function Testimonials() {
   return (
-    <section className="bg-white px-6 py-24">
+    <section className="bg-white px-6 py-14 small:py-16">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-12 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="rhode-display text-4xl md:text-5xl">yco + you</h2>
             <div className="mt-5 overflow-hidden rounded-large bg-yco-panel md:hidden">
@@ -101,7 +101,7 @@ export default function Testimonials() {
           ))}
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-center gap-2 text-center sm:flex-row">
+        <div className="mt-8 flex flex-col items-center justify-center gap-2 text-center sm:flex-row">
           <Stars count={5} />
           <span className="font-sans text-yco-charcoal text-sm font-bold">
             4.9/5

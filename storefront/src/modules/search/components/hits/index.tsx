@@ -4,6 +4,7 @@ import {
   UseHitsProps,
   useHits,
   useSearchBox,
+  useStats,
 } from "react-instantsearch-hooks-web"
 
 import { ProductHit } from "../hit"
@@ -21,6 +22,7 @@ const Hits = ({
 }: HitsProps<ProductHit>) => {
   const { query } = useSearchBox()
   const { hits } = useHits(props)
+  const { nbHits } = useStats()
 
   return (
     <div
@@ -34,21 +36,16 @@ const Hits = ({
       )}
     >
       <div
-        className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4"
+        className="grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-4 mb-3 sm:mb-4"
         data-testid="search-results"
       >
         {hits.slice(0, 6).map((hit, index) => (
-          <li
-            key={index}
-            className={clx("list-none", {
-              "hidden sm:block": index > 2,
-            })}
-          >
+          <li key={index} className="list-none">
             <Hit hit={hit as unknown as ProductHit} />
           </li>
         ))}
       </div>
-      <ShowAll />
+      <ShowAll total={nbHits} shown={Math.min(hits.length, 6)} />
     </div>
   )
 }
