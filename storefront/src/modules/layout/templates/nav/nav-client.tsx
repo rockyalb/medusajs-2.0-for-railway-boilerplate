@@ -1,7 +1,7 @@
 "use client"
 
 import { clx } from "@medusajs/ui"
-import { ReactNode, useEffect, useMemo, useState } from "react"
+import { ReactNode, useEffect, useState } from "react"
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import AnnouncementBar from "@modules/layout/components/announcement-bar"
@@ -10,20 +10,12 @@ type SimpleCategory = {
   id: string
   name: string
   handle: string
-  products?: SimpleMenuProduct[]
   children?: SimpleCategory[]
-}
-type SimpleMenuProduct = {
-  id: string
-  title: string
-  handle: string
-  image: string
 }
 type SimpleCollection = {
   id: string
   title: string
   handle: string
-  products?: SimpleMenuProduct[]
 }
 type ShopPanel = "categories" | "brands"
 type MobileSection = "categories" | "brands" | null
@@ -104,7 +96,6 @@ function CategoryNestedList({
     categories.find((category) => category.id === activeCategoryId) ??
     categories[0]
   const children = activeCategory?.children ?? []
-  const products = activeCategory?.products ?? []
 
   return (
     <div className="grid min-h-[22rem] grid-cols-[0.78fr_1.22fr] gap-10">
@@ -156,73 +147,22 @@ function CategoryNestedList({
             </div>
 
             {children.length > 0 ? (
-              <ul className="grid grid-cols-2 gap-4">
+              <ul className="grid grid-cols-2 gap-x-8 gap-y-1">
                 {children.map((child) => (
                   <li key={child.id}>
                     <LocalizedClientLink
                       href={`/categories/${child.handle}`}
                       onClick={onNavigate}
-                      className="group block rounded-large bg-white p-3 transition-transform duration-300 hover:-translate-y-1"
+                      className="block rounded-base px-3 py-2 font-sans text-sm text-yco-charcoal-muted transition-colors hover:bg-white hover:text-yco-charcoal"
                     >
-                      <div className="mb-3 aspect-[4/3] overflow-hidden rounded-base bg-yco-panel-dark">
-                        {child.products?.[0]?.image ? (
-                          <img
-                            src={child.products[0].image}
-                            alt={child.products[0].title}
-                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="flex h-full items-center justify-center font-sans text-4xl font-black lowercase text-yco-charcoal/20">
-                            {child.name.slice(0, 1)}
-                          </div>
-                        )}
-                      </div>
-                      <div className="font-sans text-xs font-bold uppercase tracking-[0.08em] text-yco-charcoal">
-                        {child.name}
-                      </div>
-                      {child.products?.[0]?.title && (
-                        <div className="mt-1 font-sans text-[11px] leading-tight text-yco-charcoal-muted">
-                          {child.products[0].title}
-                        </div>
-                      )}
-                    </LocalizedClientLink>
-                  </li>
-                ))}
-              </ul>
-            ) : products.length > 0 ? (
-              <ul className="grid grid-cols-3 gap-4">
-                {products.slice(0, 6).map((product) => (
-                  <li key={product.id}>
-                    <LocalizedClientLink
-                      href={`/products/${product.handle}`}
-                      onClick={onNavigate}
-                      className="group block rounded-large bg-white p-3 transition-transform duration-300 hover:-translate-y-1"
-                    >
-                      <div className="mb-3 aspect-square overflow-hidden rounded-base bg-yco-panel-dark">
-                        {product.image ? (
-                          <img
-                            src={product.image}
-                            alt={product.title}
-                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="flex h-full items-center justify-center font-sans text-4xl font-black lowercase text-yco-charcoal/20">
-                            {product.title.slice(0, 1)}
-                          </div>
-                        )}
-                      </div>
-                      <div className="font-sans text-xs font-bold uppercase tracking-[0.06em] text-yco-charcoal">
-                        {product.title}
-                      </div>
+                      {child.name}
                     </LocalizedClientLink>
                   </li>
                 ))}
               </ul>
             ) : (
               <div className="rounded-large bg-white p-6 font-sans text-sm text-yco-charcoal-muted">
-                No products found in this category yet.
+                No subcategories found in this category yet.
               </div>
             )}
           </>
@@ -270,51 +210,6 @@ function BrandsList({
   )
 }
 
-function MenuImageCard({
-  href,
-  title,
-  subtitle,
-  image,
-  onNavigate,
-}: {
-  href: string
-  title: string
-  subtitle?: string
-  image?: string
-  onNavigate: () => void
-}) {
-  return (
-    <LocalizedClientLink
-      href={href}
-      onClick={onNavigate}
-      className="group block rounded-large bg-yco-panel p-3"
-    >
-      <div className="mb-3 aspect-square overflow-hidden rounded-base bg-yco-panel-dark">
-        {image ? (
-          <img
-            src={image}
-            alt={title}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-            loading="lazy"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center font-sans text-3xl font-black lowercase text-yco-charcoal/20">
-            {title.slice(0, 1)}
-          </div>
-        )}
-      </div>
-      <div className="font-sans text-xs font-bold uppercase tracking-[0.06em] text-yco-charcoal">
-        {title}
-      </div>
-      {subtitle && (
-        <div className="mt-1 font-sans text-[11px] leading-tight text-yco-charcoal-muted">
-          {subtitle}
-        </div>
-      )}
-    </LocalizedClientLink>
-  )
-}
-
 function MobileCategoryPanel({
   categories,
   activeCategoryId,
@@ -329,7 +224,6 @@ function MobileCategoryPanel({
   const activeCategory =
     categories.find((category) => category.id === activeCategoryId) ?? null
   const children = activeCategory?.children ?? []
-  const products = activeCategory?.products ?? []
 
   return (
     <div className="border-t border-yco-cream-dark">
@@ -360,50 +254,33 @@ function MobileCategoryPanel({
             >
               <div className="yco-expand-grid__inner">
                 <div className="pb-5">
-                <LocalizedClientLink
-                  href={`/categories/${category.handle}`}
-                  onClick={onNavigate}
-                  className="mb-4 inline-block font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:text-yco-coral"
-                >
-                  View all {category.name}
-                </LocalizedClientLink>
+                  <LocalizedClientLink
+                    href={`/categories/${category.handle}`}
+                    onClick={onNavigate}
+                    className="mb-4 inline-block font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:text-yco-coral"
+                  >
+                    View all {category.name}
+                  </LocalizedClientLink>
 
-                {children.length > 0 ? (
-                  <div className="-mx-6 overflow-x-auto px-6 pb-2">
-                    <div className="flex gap-3">
-                    {children.map((child) => (
-                      <div key={child.id} className="w-[42vw] min-w-[9.5rem] max-w-[12rem] shrink-0">
-                        <MenuImageCard
-                          href={`/categories/${child.handle}`}
-                          title={child.name}
-                          subtitle={child.products?.[0]?.title}
-                          image={child.products?.[0]?.image}
-                          onNavigate={onNavigate}
-                        />
-                      </div>
-                    ))}
+                  {children.length > 0 ? (
+                    <ul className="space-y-1">
+                      {children.map((child) => (
+                        <li key={child.id}>
+                          <LocalizedClientLink
+                            href={`/categories/${child.handle}`}
+                            onClick={onNavigate}
+                            className="block rounded-base px-3 py-3 font-sans text-sm text-yco-charcoal-muted transition-colors hover:bg-yco-panel hover:text-yco-charcoal"
+                          >
+                            {child.name}
+                          </LocalizedClientLink>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="rounded-large bg-yco-panel p-4 font-sans text-sm text-yco-charcoal-muted">
+                      No subcategories found in this category yet.
                     </div>
-                  </div>
-                ) : products.length > 0 ? (
-                  <div className="-mx-6 overflow-x-auto px-6 pb-2">
-                    <div className="flex gap-3">
-                    {products.slice(0, 6).map((product) => (
-                      <div key={product.id} className="w-[42vw] min-w-[9.5rem] max-w-[12rem] shrink-0">
-                        <MenuImageCard
-                          href={`/products/${product.handle}`}
-                          title={product.title}
-                          image={product.image}
-                          onNavigate={onNavigate}
-                        />
-                      </div>
-                    ))}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="rounded-large bg-yco-panel p-4 font-sans text-sm text-yco-charcoal-muted">
-                    No products found in this category yet.
-                  </div>
-                )}
+                  )}
                 </div>
               </div>
             </div>
@@ -422,22 +299,19 @@ function MobileBrandPanel({
   onNavigate: () => void
 }) {
   return (
-    <div className="grid grid-cols-2 gap-3 border-t border-yco-cream-dark pt-4">
-      {collections.map((collection) => {
-        const product = collection.products?.[0]
-
-        return (
-          <MenuImageCard
-            key={collection.id}
+    <ul className="space-y-1 border-t border-yco-cream-dark pt-4">
+      {collections.map((collection) => (
+        <li key={collection.id}>
+          <LocalizedClientLink
             href={`/collections/${collection.handle}`}
-            title={collection.title}
-            subtitle={product?.title}
-            image={product?.image}
-            onNavigate={onNavigate}
-          />
-        )
-      })}
-    </div>
+            onClick={onNavigate}
+            className="block rounded-base px-3 py-3 font-sans text-sm text-yco-charcoal-muted transition-colors hover:bg-yco-panel hover:text-yco-charcoal"
+          >
+            {collection.title}
+          </LocalizedClientLink>
+        </li>
+      ))}
+    </ul>
   )
 }
 

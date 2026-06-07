@@ -6,15 +6,16 @@ export default function Hero() {
       <div className="bs-rhode-hero__stage">
         <div className="bs-rhode-hero__image-wrap">
           <img
-            src="/placeholder-images/yco-real/hero.jpg"
-            alt="YCO product ritual photography"
+            src="https://bucket-production-a1707.up.railway.app/medusa-media/static/yco-hero-davines-shampoo-01.jpg"
+            alt="Davines shampoo bottles on a light surface"
             className="bs-rhode-hero__image"
           />
         </div>
 
         <div className="bs-rhode-hero__copy">
-          <h1>a soft reset for skin, lips, and every day.</h1>
-          <Link href="/store">shop the edit</Link>
+          <p>{"MIRË PËR JU, MIRË PËR PLANETIN."}</p>
+          <h1>{"Shtëpia e produkteve zero-waste, organike dhe natyrale."}</h1>
+          <Link href="/store">Shiko produktet</Link>
         </div>
       </div>
     </section>
