@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react"
-import { Button, clx } from "@medusajs/ui"
+import { clx } from "@medusajs/ui"
 import React, { Fragment, useMemo } from "react"
 
 import useToggleState from "@lib/hooks/use-toggle-state"
@@ -96,34 +96,38 @@ const MobileActions: React.FC<MobileActionsProps> = ({
               )}
             </div>
             <div className="grid grid-cols-2 w-full gap-x-4">
-              <Button
+              <button
+                type="button"
                 onClick={open}
-                variant="secondary"
-                className="w-full"
+                className="yco-btn yco-btn--outline yco-btn--block !px-4"
                 data-testid="mobile-actions-button"
               >
-                <div className="flex items-center justify-between w-full">
-                  <span>
+                <div className="flex w-full items-center justify-between normal-case tracking-normal">
+                  <span className="truncate">
                     {variant
                       ? Object.values(options).join(" / ")
                       : "Select Options"}
                   </span>
                   <ChevronDown />
                 </div>
-              </Button>
-              <Button
+              </button>
+              <button
+                type="button"
                 onClick={handleAddToCart}
-                disabled={!inStock || !variant}
-                className="w-full"
-                isLoading={isAdding}
+                disabled={!inStock || !variant || isAdding}
+                className="yco-btn yco-btn--coral yco-btn--block"
                 data-testid="mobile-cart-button"
               >
-                {!variant
-                  ? "Select variant"
-                  : !inStock
-                  ? "Out of stock"
-                  : "Add to cart"}
-              </Button>
+                {isAdding ? (
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                ) : !variant ? (
+                  "Select variant"
+                ) : !inStock ? (
+                  "Out of stock"
+                ) : (
+                  "Add to cart"
+                )}
+              </button>
             </div>
           </div>
         </Transition>

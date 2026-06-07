@@ -2,6 +2,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 
 import { getCollectionsWithPreviewProducts } from "@lib/data/collections"
+import { BRAND_LOGOS } from "@lib/data/brand-logos"
 
 export const metadata: Metadata = {
   title: "Brands | YCO",
@@ -33,8 +34,7 @@ export default async function CollectionsPage({
 
         <div className="mt-12 grid grid-cols-1 gap-4 small:grid-cols-2 medium:grid-cols-3">
           {collections.map((collection) => {
-            const product = collection.products?.[0]
-            const image = product?.thumbnail || product?.images?.[0]?.url
+            const logo = collection.handle ? BRAND_LOGOS[collection.handle] : undefined
 
             return (
               <Link
@@ -42,12 +42,12 @@ export default async function CollectionsPage({
                 href={`/collections/${collection.handle}`}
                 className="group rounded-large bg-white p-4 transition-transform duration-300 hover:-translate-y-1"
               >
-                <div className="mb-5 aspect-[4/3] overflow-hidden rounded-base bg-yco-panel-dark">
-                  {image ? (
+                <div className="mb-5 aspect-[4/3] overflow-hidden rounded-base bg-white flex items-center justify-center p-8 border border-yco-cream-dark/40">
+                  {logo ? (
                     <img
-                      src={image}
-                      alt={product?.title || collection.title}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                      src={logo}
+                      alt={`${collection.title} logo`}
+                      className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.06]"
                       loading="lazy"
                     />
                   ) : (
@@ -62,7 +62,7 @@ export default async function CollectionsPage({
                   {collection.title}
                 </h2>
                 <p className="mt-2 font-sans text-xs text-yco-charcoal-muted">
-                  {product?.title || "View products"}
+                  Shop brand
                 </p>
               </Link>
             )

@@ -87,10 +87,14 @@ export default async function Home({
       {bestsellerProducts.length > 0 && region && (
         <section className="bg-white px-6 py-10 small:py-12">
           <div className="max-w-6xl mx-auto mb-7 small:mb-8">
-            <span className="rhode-eyebrow">Handpicked for you</span>
+            <span className="rhode-eyebrow inline-flex items-center gap-2">
+              <span className="yco-accent-dot" aria-hidden />
+              Handpicked for you
+            </span>
             <h2 className="rhode-display mt-3 text-4xl md:text-5xl">
               bestsellers
             </h2>
+            <div className="yco-tricolor-rule mt-4" />
           </div>
           <FeaturedProducts products={bestsellerProducts} region={region} />
         </section>

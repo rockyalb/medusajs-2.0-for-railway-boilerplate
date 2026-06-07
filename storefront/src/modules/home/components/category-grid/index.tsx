@@ -13,6 +13,24 @@ type CategoryCard = {
 
 const DRAG_THRESHOLD = 14
 
+// Full literal class names so Tailwind keeps these hand-written @layer
+// component rules (it tree-shakes that layer by scanning source text).
+const ACCENT_CLASSES = [
+  "yco-accent--mint",
+  "yco-accent--coral",
+  "yco-accent--blue",
+] as const
+
+// Some categories read better in a specific colour (e.g. period care → pink).
+// Pinned categories win; everything else rotates through the palette.
+const accentForCategory = (name: string, index: number) => {
+  const normalized = name.toLowerCase()
+  if (normalized.includes("period") || normalized.includes("menstr")) {
+    return "yco-accent--coral"
+  }
+  return ACCENT_CLASSES[index % ACCENT_CLASSES.length]
+}
+
 export default function CategoryGrid({
   categories,
   countryCode,
@@ -97,14 +115,18 @@ export default function CategoryGrid({
       <div className="max-w-6xl mx-auto">
         <div className="mb-7 flex items-end justify-between gap-6">
           <div>
-            <span className="rhode-eyebrow">Shop by category</span>
+            <span className="rhode-eyebrow inline-flex items-center gap-2">
+              <span className="yco-accent-dot" aria-hidden />
+              Shop by category
+            </span>
             <h2 className="rhode-display mt-3 text-4xl md:text-5xl">
               categories
             </h2>
+            <div className="yco-tricolor-rule mt-4" />
           </div>
           <Link
             href={`/${countryCode}/store`}
-            className="hidden font-sans text-xs font-bold uppercase tracking-[0.18em] text-yco-charcoal transition-colors hover:text-yco-coral small:block"
+            className="hidden font-sans text-xs font-bold uppercase tracking-[0.18em] text-yco-charcoal transition-colors hover:text-pastel-coral-ink small:block"
           >
             View all
           </Link>
@@ -124,12 +146,13 @@ export default function CategoryGrid({
           <div className="flex snap-x snap-mandatory gap-4">
             {categories.map(({ category, products }, index) => {
               const image = products[0]?.image
+              const accentClass = accentForCategory(category.name, index)
 
               return (
                 <Link
                   key={category.id}
                   href={`/${countryCode}/categories/${category.handle}`}
-                  className="group relative flex min-h-[360px] w-[78vw] max-w-[25rem] shrink-0 snap-start flex-col justify-between overflow-hidden rounded-large bg-yco-panel p-5 transition-all duration-300 hover:bg-yco-panel-dark small:w-[38vw] medium:w-[30vw] large:w-[24rem]"
+                  className={`group ${accentClass} yco-accent-card relative flex min-h-[360px] w-[78vw] max-w-[25rem] shrink-0 snap-start flex-col justify-between overflow-hidden rounded-large p-5 small:w-[38vw] medium:w-[30vw] large:w-[24rem]`}
                   aria-label={`Shop ${category.name}`}
                   draggable={false}
                   onClick={handleCategoryClick}
@@ -170,7 +193,7 @@ export default function CategoryGrid({
                         {products.length} products
                       </p>
                     </div>
-                    <span className="rhode-round-btn shrink-0">
+                    <span className="rhode-round-btn rhode-round-btn--accent shrink-0">
                       <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                         <path
                           d="M9 8l4 4-4 4"

@@ -23,22 +23,26 @@ const OptionSelect: React.FC<OptionSelectProps> = ({
 
   return (
     <div className="flex flex-col gap-y-3">
-      <span className="text-sm">Select {title}</span>
+      <span className="font-sans text-xs font-bold uppercase tracking-[0.16em] text-yco-charcoal-muted">
+        Select {title}
+      </span>
       <div
-        className="flex flex-wrap justify-between gap-2"
+        className="flex flex-wrap gap-2.5"
         data-testid={dataTestId}
       >
         {filteredOptions?.map((v) => {
+          const isSelected = v === current
           return (
             <button
               onClick={() => updateOption(option.title ?? "", v ?? "")}
               key={v}
               className={clx(
-                "border-ui-border-base bg-ui-bg-subtle border text-small-regular h-10 rounded-rounded p-2 flex-1 ",
+                "h-11 min-w-[3.5rem] flex-1 rounded-circle border-2 px-4 text-sm font-semibold transition-all duration-200 active:translate-y-[2px]",
                 {
-                  "border-ui-border-interactive": v === current,
-                  "hover:shadow-elevation-card-rest transition-shadow ease-in-out duration-150":
-                    v !== current,
+                  "border-pastel-coral bg-pastel-coral-soft text-pastel-coral-ink shadow-[0_3px_0_0_#e0726a]":
+                    isSelected,
+                  "border-yco-cream-dark bg-white text-yco-charcoal hover:-translate-y-0.5 hover:border-pastel-coral/60":
+                    !isSelected,
                 }
               )}
               disabled={disabled}

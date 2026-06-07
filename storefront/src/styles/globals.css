@@ -87,6 +87,218 @@
   }
 }
 
+/* ── YCO tri-color accent system ──────────────────────────────────────────
+   Sampled from the wordmark logo. A parent sets one accent via
+   .yco-accent--{mint|coral|blue}; children consume it through CSS vars so a
+   single rotating class colours backgrounds, glows, buttons and text. */
+@layer components {
+  .yco-accent--mint {
+    --accent: #84c3ac;
+    --accent-soft: #e0f0ea;
+    --accent-ink: #3d7d63;
+    --accent-glow: rgba(132, 195, 172, 0.45);
+  }
+
+  .yco-accent--coral {
+    --accent: #fc8c84;
+    --accent-soft: #fee2e0;
+    --accent-ink: #c85850;
+    --accent-glow: rgba(252, 140, 132, 0.45);
+  }
+
+  .yco-accent--blue {
+    --accent: #7ca4eb;
+    --accent-soft: #dee8fa;
+    --accent-ink: #4a6cb0;
+    --accent-glow: rgba(124, 164, 235, 0.45);
+  }
+
+  /* Soft-tinted surface with a defined coloured edge so it still reads as a
+     card on white sections, then lifts into a coloured glow on hover. */
+  .yco-accent-card {
+    background-color: var(--accent-soft);
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    box-shadow: 0 1px 2px rgba(36, 33, 30, 0.04);
+    transition:
+      transform 320ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 320ms ease,
+      border-color 320ms ease;
+  }
+
+  .yco-accent-card:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--accent) 50%, transparent);
+    box-shadow: 0 24px 48px -20px var(--accent-glow);
+  }
+
+  /* Circular icon button that fills with the active accent on card hover. */
+  .rhode-round-btn--accent {
+    border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+    color: var(--accent-ink);
+    transition:
+      background-color 240ms ease,
+      border-color 240ms ease,
+      color 240ms ease,
+      transform 240ms ease;
+  }
+
+  .group:hover .rhode-round-btn--accent {
+    background-color: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    transform: translateX(2px);
+  }
+
+  /* Signature hairline blending the three logo pastels. */
+  .yco-tricolor-rule {
+    height: 3px;
+    width: 56px;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, #84c3ac, #fc8c84, #7ca4eb);
+  }
+
+  /* Small pulsing dot — pairs with eyebrow labels. */
+  .yco-accent-dot {
+    display: inline-block;
+    height: 7px;
+    width: 7px;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #84c3ac, #fc8c84, #7ca4eb);
+    animation: accent-pulse 2.6s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .yco-accent-dot {
+      animation: none;
+    }
+    .yco-accent-card:hover {
+      transform: none;
+    }
+  }
+}
+
+/* ── YCO bubbly pressable buttons ─────────────────────────────────────────
+   Pastel fill + dark ink text + a solid darker-accent "base" beneath, so the
+   button looks like a physical key that drops onto its base when pressed.
+   Defaults to coral (the logo's dominant hue); variants swap the palette. */
+@layer components {
+  .yco-btn {
+    --btn-bg: #fc8c84;
+    --btn-bg-hover: #fb7c72;
+    --btn-base: #e0726a;
+    --btn-text: #2f2d29;
+    --btn-depth: 5px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 48px;
+    padding: 0.8rem 1.7rem;
+    border-radius: 9999px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.8rem;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--btn-text);
+    background-color: var(--btn-bg);
+    box-shadow:
+      0 var(--btn-depth) 0 0 var(--btn-base),
+      0 calc(var(--btn-depth) + 8px) 18px -8px rgba(47, 45, 41, 0.4);
+    transform: translateY(0);
+    transition:
+      transform 90ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 90ms ease,
+      background-color 200ms ease;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .yco-btn:hover {
+    background-color: var(--btn-bg-hover);
+  }
+
+  .yco-btn:focus-visible {
+    outline: none;
+    box-shadow:
+      0 var(--btn-depth) 0 0 var(--btn-base),
+      0 calc(var(--btn-depth) + 8px) 18px -8px rgba(47, 45, 41, 0.4),
+      0 0 0 4px color-mix(in srgb, var(--btn-base) 45%, transparent);
+  }
+
+  /* Pressed: the key drops onto its base. */
+  .yco-btn:active {
+    transform: translateY(var(--btn-depth));
+    box-shadow:
+      0 0 0 0 var(--btn-base),
+      0 3px 8px -5px rgba(47, 45, 41, 0.5);
+  }
+
+  .yco-btn:disabled,
+  .yco-btn[disabled],
+  .yco-btn[aria-disabled="true"] {
+    cursor: not-allowed;
+    color: #a8a39a;
+    background-color: #e7e4df;
+    --btn-base: #d2cfc8;
+    box-shadow: 0 var(--btn-depth) 0 0 var(--btn-base);
+    transform: translateY(0);
+  }
+
+  .yco-btn--coral {
+    --btn-bg: #fc8c84;
+    --btn-bg-hover: #fb7c72;
+    --btn-base: #e0726a;
+    --btn-text: #2f2d29;
+  }
+
+  .yco-btn--mint {
+    --btn-bg: #84c3ac;
+    --btn-bg-hover: #74bb9f;
+    --btn-base: #5fa78d;
+    --btn-text: #23332c;
+  }
+
+  .yco-btn--blue {
+    --btn-bg: #7ca4eb;
+    --btn-bg-hover: #6c98e7;
+    --btn-base: #5b86d4;
+    --btn-text: #21304f;
+  }
+
+  .yco-btn--ink {
+    --btn-bg: #2f2d29;
+    --btn-bg-hover: #403d38;
+    --btn-base: #17160f;
+    --btn-text: #ffffff;
+  }
+
+  /* Ghost / outline — still pressable, sits on a faint base. */
+  .yco-btn--outline {
+    --btn-bg: #ffffff;
+    --btn-bg-hover: #faf9f7;
+    --btn-base: rgba(47, 45, 41, 0.22);
+    --btn-text: #2f2d29;
+    border: 1.5px solid color-mix(in srgb, var(--btn-text) 35%, transparent);
+  }
+
+  .yco-btn--block {
+    width: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .yco-btn {
+      transition: background-color 200ms ease;
+    }
+    .yco-btn:active {
+      transform: none;
+    }
+  }
+}
+
 @keyframes yco-expand-open {
   from {
     height: 0;
@@ -229,9 +441,10 @@
 
 @layer components {
   .bs-rhode-hero {
-    --hero-a: #efe7ee;
-    --hero-b: #d8dce8;
-    --hero-c: #d4b3b6;
+    /* Soft wash blending the three YCO logo pastels: mint → coral → blue. */
+    --hero-a: #e8f3ee;
+    --hero-b: #f6dcd8;
+    --hero-c: #dde7fa;
     @apply bg-yco-cream px-3 pb-4 pt-4 small:px-7 small:pb-6;
   }
 

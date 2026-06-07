@@ -22,8 +22,21 @@ const reviews = [
   },
 ]
 
-const Stars = ({ count }: { count: number }) => (
-  <div className="flex gap-1">
+// Full literal class names so Tailwind keeps these hand-written @layer rules.
+const ACCENT_CLASSES = [
+  "yco-accent--mint",
+  "yco-accent--coral",
+  "yco-accent--blue",
+] as const
+
+const Stars = ({
+  count,
+  className = "text-yco-charcoal",
+}: {
+  count: number
+  className?: string
+}) => (
+  <div className={`flex gap-1 ${className}`}>
     {Array.from({ length: count }).map((_, i) => (
       <svg
         key={i}
@@ -31,7 +44,6 @@ const Stars = ({ count }: { count: number }) => (
         height="14"
         viewBox="0 0 14 14"
         fill="currentColor"
-        className="text-yco-charcoal"
       >
         <path d="M7 1l1.8 3.6 4 .6-2.9 2.8.7 4L7 10l-3.6 1.9.7-4L1.2 5.2l4-.6L7 1Z" />
       </svg>
@@ -46,6 +58,7 @@ export default function Testimonials() {
         <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="rhode-display text-4xl md:text-5xl">yco + you</h2>
+            <div className="yco-tricolor-rule mt-4" />
             <div className="mt-5 overflow-hidden rounded-large bg-yco-panel md:hidden">
               <img
                 src="/placeholder-images/yco-real/community.jpg"
@@ -65,17 +78,23 @@ export default function Testimonials() {
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
-          {reviews.map((review) => (
+          {reviews.map((review, index) => {
+            const accentClass = ACCENT_CLASSES[index % ACCENT_CLASSES.length]
+
+            return (
             <div
               key={review.name}
-              className="flex flex-col gap-5 rounded-large bg-yco-panel p-8"
+              className={`${accentClass} yco-accent-card flex flex-col gap-5 rounded-large p-8`}
             >
               <img
                 src="/placeholder-images/yco-real/community.jpg"
                 alt={`${review.name} customer lifestyle photography`}
                 className="h-28 w-full rounded-rounded object-cover"
               />
-              <Stars count={review.rating} />
+              <Stars
+                count={review.rating}
+                className="text-[color:var(--accent)]"
+              />
               <blockquote className="flex-1 font-sans text-yco-charcoal text-sm leading-[1.8]">
                 "{review.text}"
               </blockquote>
@@ -98,7 +117,8 @@ export default function Testimonials() {
                 </div>
               </div>
             </div>
-          ))}
+            )
+          })}
         </div>
 
         <div className="mt-8 flex flex-col items-center justify-center gap-2 text-center sm:flex-row">

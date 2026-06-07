@@ -1,6 +1,5 @@
 "use client"
 
-import { Button } from "@medusajs/ui"
 import { isEqual } from "lodash"
 import { useParams } from "next/navigation"
 import { useEffect, useMemo, useRef, useState } from "react"
@@ -135,20 +134,26 @@ export default function ProductActions({
 
         <ProductPrice product={product} variant={selectedVariant} />
 
-        <Button
+        <button
+          type="button"
           onClick={handleAddToCart}
           disabled={!inStock || !selectedVariant || !!disabled || isAdding}
-          variant="primary"
-          className="w-full h-10"
-          isLoading={isAdding}
+          className="yco-btn yco-btn--coral yco-btn--block"
           data-testid="add-product-button"
         >
-          {!selectedVariant
-            ? "Select variant"
-            : !inStock
-            ? "Out of stock"
-            : "Add to cart"}
-        </Button>
+          {isAdding ? (
+            <>
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+              Adding…
+            </>
+          ) : !selectedVariant ? (
+            "Select variant"
+          ) : !inStock ? (
+            "Out of stock"
+          ) : (
+            "Add to cart"
+          )}
+        </button>
         <MobileActions
           product={product}
           variant={selectedVariant}

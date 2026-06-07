@@ -20,7 +20,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
         )}
         <Heading
           level="h2"
-          className="rhode-display text-[clamp(42px,7vw,84px)]"
+          className="rhode-display max-w-full break-words text-[clamp(30px,4.2vw,52px)]"
           data-testid="product-title"
         >
           {product.title.toLowerCase()}

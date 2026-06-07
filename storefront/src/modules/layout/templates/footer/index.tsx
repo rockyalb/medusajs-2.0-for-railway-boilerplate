@@ -15,17 +15,21 @@ export default async function Footer() {
   return (
     <footer className="bg-yco-panel w-full">
       <div className="content-container">
-        {/* Oversized wordmark */}
-        <div className="pt-16 pb-10 border-b border-yco-cream-dark">
-          <span className="block font-sans font-black lowercase tracking-[-0.04em] leading-[0.8] text-yco-charcoal text-[24vw] small:text-[20vw]">
-            yco
-          </span>
-        </div>
-
         {/* Newsletter + link columns */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_2fr] gap-12 py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_2fr] gap-12 pt-14 pb-16 border-t border-yco-cream-dark">
           {/* Newsletter */}
           <div className="max-w-sm">
+            <LocalizedClientLink
+              href="/"
+              aria-label="YCO home"
+              className="inline-block mb-6 hover:opacity-80 transition-opacity duration-300"
+            >
+              <img
+                src="/image2vector (1).svg"
+                alt="YCO"
+                className="h-12 w-auto"
+              />
+            </LocalizedClientLink>
             <p className="font-sans text-yco-charcoal text-sm leading-relaxed mb-2">
               Join us for an effortless glow.
             </p>
@@ -150,7 +154,7 @@ export default async function Footer() {
             © {new Date().getFullYear()} YCO Organics
           </p>
           <p className="font-sans text-yco-charcoal-muted text-xs tracking-[0.1em]">
-            Country/region: United States (EUR €)
+            Country/region: Albania (ALL L)
           </p>
         </div>
       </div>

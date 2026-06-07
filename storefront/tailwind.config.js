@@ -10,6 +10,21 @@ module.exports = {
     "./src/modules/**/*.{js,ts,jsx,tsx}",
     "./node_modules/@medusajs/ui/dist/**/*.{js,jsx,ts,tsx}",
   ],
+  // Hand-written tri-color accent classes live in globals.css @layer
+  // components; safelist keeps them from being tree-shaken.
+  safelist: [
+    "yco-accent--mint",
+    "yco-accent--coral",
+    "yco-accent--blue",
+    "yco-accent-card",
+    "yco-btn",
+    "yco-btn--coral",
+    "yco-btn--mint",
+    "yco-btn--blue",
+    "yco-btn--ink",
+    "yco-btn--outline",
+    "yco-btn--block",
+  ],
   theme: {
     extend: {
       transitionProperty: {
@@ -53,6 +68,20 @@ module.exports = {
           terracotta: "#2F2D29",
           brown: "#67645E",
           "brown-muted": "#9C998F",
+        },
+        // Brand pastels, sampled from the YCO wordmark logo. Used as a tasteful
+        // tri-color accent system over the neutral base — soft tints for card
+        // surfaces, saturated hues for accents, ink shades for readable text.
+        pastel: {
+          blue: "#7CA4EB",
+          "blue-soft": "#DEE8FA",
+          "blue-ink": "#4A6CB0",
+          mint: "#84C3AC",
+          "mint-soft": "#E0F0EA",
+          "mint-ink": "#3D7D63",
+          coral: "#FC8C84",
+          "coral-soft": "#FEE2E0",
+          "coral-ink": "#C85850",
         },
       },
       borderRadius: {
@@ -173,6 +202,10 @@ module.exports = {
           "0%": { opacity: "0", transform: "translateY(20px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        "accent-pulse": {
+          "0%, 100%": { transform: "scale(1)", opacity: "1" },
+          "50%": { transform: "scale(1.35)", opacity: "0.65" },
+        },
       },
       animation: {
         ring: "ring 2.2s cubic-bezier(0.5, 0, 0.5, 1) infinite",
@@ -189,6 +222,7 @@ module.exports = {
         "slide-in": "slide-in 1.2s cubic-bezier(.41,.73,.51,1.02)",
         leave: "leave 150ms ease-in forwards",
         "fade-up": "fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "accent-pulse": "accent-pulse 2.6s ease-in-out infinite",
       },
     },
   },

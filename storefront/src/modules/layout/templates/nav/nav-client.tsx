@@ -424,12 +424,16 @@ export default function NavClient({
           <div className="flex items-center h-full">
             <LocalizedClientLink
               href="/"
-              className="font-sans text-yco-charcoal text-3xl font-black lowercase tracking-[-0.04em] leading-none hover:opacity-80 transition-opacity duration-300"
+              className="hover:opacity-80 transition-opacity duration-300"
               data-testid="nav-store-link"
               onClick={closeMobile}
               onMouseEnter={closeShop}
             >
-              yco
+              <img
+                src="/image2vector (1).svg"
+                alt="yco"
+                className="h-8 w-auto"
+              />
             </LocalizedClientLink>
           </div>
 
@@ -536,10 +540,14 @@ export default function NavClient({
           <div className="mb-8 flex items-center justify-between border-b border-yco-cream-dark pb-5">
             <LocalizedClientLink
               href="/"
-              className="font-sans text-yco-charcoal text-3xl font-black lowercase tracking-[-0.04em] leading-none"
+              className="hover:opacity-80 transition-opacity duration-300"
               onClick={closeMobile}
             >
-              yco
+              <img
+                src="/image2vector (1).svg"
+                alt="yco"
+                className="h-8 w-auto"
+              />
             </LocalizedClientLink>
             <button
               type="button"
