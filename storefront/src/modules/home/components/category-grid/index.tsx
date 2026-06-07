@@ -1,11 +1,17 @@
+"use client"
+
 import Link from "next/link"
-import { HttpTypes } from "@medusajs/types"
+import { useRef } from "react"
+import type { HttpTypes } from "@medusajs/types"
+import type { MouseEvent, PointerEvent } from "react"
 import type { CategoryProduct } from "./category-product-slider"
 
 type CategoryCard = {
   category: HttpTypes.StoreProductCategory
   products: CategoryProduct[]
 }
+
+const DRAG_THRESHOLD = 14
 
 export default function CategoryGrid({
   categories,
@@ -14,8 +20,76 @@ export default function CategoryGrid({
   categories: CategoryCard[]
   countryCode: string
 }) {
+  const scrollerRef = useRef<HTMLDivElement>(null)
+  const dragState = useRef({
+    active: false,
+    dragged: false,
+    suppressClick: false,
+    startX: 0,
+    scrollLeft: 0,
+  })
+
   if (!categories.length) {
     return null
+  }
+
+  const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === "touch" || !scrollerRef.current) {
+      return
+    }
+
+    dragState.current = {
+      active: true,
+      dragged: false,
+      suppressClick: false,
+      startX: event.clientX,
+      scrollLeft: scrollerRef.current.scrollLeft,
+    }
+  }
+
+  const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    const state = dragState.current
+
+    if (!state.active || !scrollerRef.current) {
+      return
+    }
+
+    const deltaX = event.clientX - state.startX
+
+    if (Math.abs(deltaX) <= DRAG_THRESHOLD) {
+      return
+    }
+
+    if (!state.dragged) {
+      state.dragged = true
+      state.suppressClick = true
+    }
+
+    scrollerRef.current.scrollLeft =
+      state.scrollLeft - (deltaX - Math.sign(deltaX) * DRAG_THRESHOLD)
+  }
+
+  const endDrag = () => {
+    const state = dragState.current
+
+    if (!state.active) {
+      return
+    }
+
+    state.active = false
+
+    if (state.suppressClick) {
+      window.setTimeout(() => {
+        state.suppressClick = false
+        state.dragged = false
+      }, 120)
+    }
+  }
+
+  const handleCategoryClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (dragState.current.suppressClick) {
+      event.preventDefault()
+    }
   }
 
   return (
@@ -37,9 +111,15 @@ export default function CategoryGrid({
         </div>
 
         <div
-          className="-mx-6 overflow-x-auto px-6 pb-3 no-scrollbar small:mx-0 small:px-0"
+          ref={scrollerRef}
+          className="-mx-6 cursor-grab overflow-x-auto px-6 pb-3 no-scrollbar active:cursor-grabbing small:mx-0 small:px-0"
           role="region"
           aria-label="Product categories"
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={endDrag}
+          onPointerCancel={endDrag}
+          onPointerLeave={endDrag}
         >
           <div className="flex snap-x snap-mandatory gap-4">
             {categories.map(({ category, products }, index) => {
@@ -51,6 +131,8 @@ export default function CategoryGrid({
                   href={`/${countryCode}/categories/${category.handle}`}
                   className="group relative flex min-h-[360px] w-[78vw] max-w-[25rem] shrink-0 snap-start flex-col justify-between overflow-hidden rounded-large bg-yco-panel p-5 transition-all duration-300 hover:bg-yco-panel-dark small:w-[38vw] medium:w-[30vw] large:w-[24rem]"
                   aria-label={`Shop ${category.name}`}
+                  draggable={false}
+                  onClick={handleCategoryClick}
                 >
                   <div>
                     <h3 className="rhode-display text-5xl md:text-6xl">
@@ -70,6 +152,7 @@ export default function CategoryGrid({
                         alt={products[0]?.title || category.name}
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                         loading={index > 1 ? "lazy" : undefined}
+                        draggable={false}
                       />
                     ) : (
                       <div className="flex h-full items-center justify-center font-sans text-6xl font-black lowercase text-yco-charcoal/20">
