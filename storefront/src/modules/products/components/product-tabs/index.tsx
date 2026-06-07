@@ -1,7 +1,5 @@
 "use client"
 
-import { useState } from "react"
-
 import Back from "@modules/common/icons/back"
 import FastDelivery from "@modules/common/icons/fast-delivery"
 import Refresh from "@modules/common/icons/refresh"
@@ -95,7 +93,6 @@ const MetadataValue = ({ value }: { value: unknown }) => {
 }
 
 const ProductTabs = ({ product }: ProductTabsProps) => {
-  const [openSection, setOpenSection] = useState<string | undefined>()
   const metadata = (product.metadata || {}) as ProductMetadata
   const dynamicTabs = metadataSections
     .map((section) => ({
@@ -128,10 +125,8 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
       <Accordion
         type="single"
         collapsible
-        value={openSection}
+        defaultValue={tabs[0]?.label}
         onValueChange={(value) => {
-          setOpenSection(value)
-
           if (value) {
             window.requestAnimationFrame(() => {
               const section = document.getElementById(getSectionId(value))
