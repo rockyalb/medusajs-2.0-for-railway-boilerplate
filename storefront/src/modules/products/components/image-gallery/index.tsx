@@ -1,20 +1,30 @@
+"use client"
+
 import { HttpTypes } from "@medusajs/types"
 import { Container } from "@medusajs/ui"
 import Image from "next/image"
+import { useState } from "react"
 
 type ImageGalleryProps = {
   images: HttpTypes.StoreProductImage[]
 }
 
 const ImageGallery = ({ images }: ImageGalleryProps) => {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const activeImage = images[activeIndex] ?? images[0]
+
+  if (!images.length) {
+    return null
+  }
+
   return (
-    <div className="flex items-start relative">
-      <div className="flex flex-col flex-1 small:mx-16 gap-y-4">
+    <div className="relative h-full">
+      <div className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto small:hidden">
         {images.map((image, index) => {
           return (
             <Container
               key={image.id}
-              className="relative aspect-[29/34] w-full overflow-hidden bg-ui-bg-subtle"
+              className="relative aspect-[4/5] w-[86vw] shrink-0 snap-center overflow-hidden rounded-rounded bg-yco-panel-dark shadow-none small:h-full small:w-full"
               id={image.id}
             >
               {!!image.url && (
@@ -24,7 +34,7 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
                   className="absolute inset-0 rounded-rounded"
                   alt={`Product image ${index + 1}`}
                   fill
-                  sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
+                  sizes="(max-width: 1023px) 86vw, 58vw"
                   style={{
                     objectFit: "cover",
                   }}
@@ -34,6 +44,67 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
           )
         })}
       </div>
+
+      <Container className="relative hidden h-full w-full overflow-hidden rounded-rounded bg-yco-panel-dark shadow-none small:block">
+        {!!activeImage?.url && (
+          <Image
+            src={activeImage.url}
+            priority
+            className="absolute inset-0 rounded-rounded"
+            alt={`Product image ${activeIndex + 1}`}
+            fill
+            sizes="58vw"
+            style={{
+              objectFit: "cover",
+            }}
+          />
+        )}
+
+        {images.length > 1 && (
+          <div className="absolute bottom-6 left-6 z-[2] flex flex-col gap-3">
+            {images.map((image, index) => (
+              <button
+                key={image.id}
+                type="button"
+                onMouseEnter={() => setActiveIndex(index)}
+                onFocus={() => setActiveIndex(index)}
+                onClick={() => setActiveIndex(index)}
+                className="relative h-14 w-14 overflow-hidden rounded-rounded border bg-white/60 transition-all duration-300 hover:scale-105"
+                style={{
+                  borderColor:
+                    activeIndex === index
+                      ? "rgba(103,100,94,0.95)"
+                      : "rgba(255,255,255,0.72)",
+                }}
+                aria-label={`Show product image ${index + 1}`}
+                aria-pressed={activeIndex === index}
+              >
+                {!!image.url && (
+                  <Image
+                    src={image.url}
+                    alt=""
+                    fill
+                    sizes="56px"
+                    className="object-cover"
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+      </Container>
+
+      {images.length > 1 && (
+        <div className="mt-3 flex justify-center gap-1.5 small:hidden">
+          {images.map((image, index) => (
+            <span
+              key={image.id}
+              className="h-1.5 w-1.5 rounded-circle bg-yco-charcoal/35"
+              aria-label={`Product image ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

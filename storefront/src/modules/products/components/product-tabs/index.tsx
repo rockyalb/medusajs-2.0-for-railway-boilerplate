@@ -1,5 +1,7 @@
 "use client"
 
+import { useState } from "react"
+
 import Back from "@modules/common/icons/back"
 import FastDelivery from "@modules/common/icons/fast-delivery"
 import Refresh from "@modules/common/icons/refresh"
@@ -12,6 +14,9 @@ type ProductTabsProps = {
 }
 
 type ProductMetadata = Record<string, unknown>
+
+const getSectionId = (label: string) =>
+  `product-section-${label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`
 
 const metadataSections = [
   {
@@ -90,6 +95,7 @@ const MetadataValue = ({ value }: { value: unknown }) => {
 }
 
 const ProductTabs = ({ product }: ProductTabsProps) => {
+  const [openSection, setOpenSection] = useState<string | undefined>()
   const metadata = (product.metadata || {}) as ProductMetadata
   const dynamicTabs = metadataSections
     .map((section) => ({
@@ -119,10 +125,43 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
 
   return (
     <div className="w-full">
-      <Accordion type="multiple">
+      <Accordion
+        type="single"
+        collapsible
+        value={openSection}
+        onValueChange={(value) => {
+          setOpenSection(value)
+
+          if (value) {
+            window.requestAnimationFrame(() => {
+              const section = document.getElementById(getSectionId(value))
+              const panel = document.getElementById("product-details-panel")
+              const isDesktop = window.matchMedia("(min-width: 1024px)").matches
+
+              if (section && panel && isDesktop) {
+                const sectionTop =
+                  section.getBoundingClientRect().top -
+                  panel.getBoundingClientRect().top +
+                  panel.scrollTop
+
+                panel.scrollTo({
+                  top: Math.max(sectionTop - 20, 0),
+                  behavior: "smooth",
+                })
+              } else {
+                section?.scrollIntoView({
+                  behavior: "smooth",
+                  block: "nearest",
+                })
+              }
+            })
+          }
+        }}
+      >
         {tabs.map((tab, i) => (
           <Accordion.Item
             key={i}
+            id={getSectionId(tab.label)}
             title={tab.label}
             headingSize="medium"
             value={tab.label}

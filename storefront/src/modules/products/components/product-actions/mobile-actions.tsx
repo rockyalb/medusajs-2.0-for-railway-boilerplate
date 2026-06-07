@@ -52,7 +52,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
   return (
     <>
       <div
-        className={clx("lg:hidden inset-x-0 bottom-0 fixed", {
+        className={clx("fixed inset-x-0 bottom-0 z-[80] lg:hidden", {
           "pointer-events-none": !show,
         })}
       >
@@ -129,7 +129,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
         </Transition>
       </div>
       <Transition appear show={state} as={Fragment}>
-        <Dialog as="div" className="relative z-[75]" onClose={close}>
+        <Dialog as="div" className="relative z-[90]" onClose={close}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"

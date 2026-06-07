@@ -352,8 +352,14 @@ function MobileCategoryPanel({
               </span>
             </button>
 
-            {expanded && (
-              <div className="pb-5">
+            <div
+              className={clx(
+                "yco-expand-grid",
+                expanded ? "yco-expand-grid--open" : "yco-expand-grid--closed"
+              )}
+            >
+              <div className="yco-expand-grid__inner">
+                <div className="pb-5">
                 <LocalizedClientLink
                   href={`/categories/${category.handle}`}
                   onClick={onNavigate}
@@ -398,8 +404,9 @@ function MobileCategoryPanel({
                     No products found in this category yet.
                   </div>
                 )}
+                </div>
               </div>
-            )}
+            </div>
           </div>
         )
       })}
@@ -696,14 +703,23 @@ export default function NavClient({
                 </span>
               </button>
 
-              {mobileSection === "categories" && (
-                <MobileCategoryPanel
-                  categories={categories}
-                  activeCategoryId={mobileActiveCategoryId}
-                  setActiveCategoryId={setMobileActiveCategoryId}
-                  onNavigate={closeMobile}
-                />
-              )}
+              <div
+                className={clx(
+                  "yco-expand-grid",
+                  mobileSection === "categories"
+                    ? "yco-expand-grid--open"
+                    : "yco-expand-grid--closed"
+                )}
+              >
+                <div className="yco-expand-grid__inner">
+                  <MobileCategoryPanel
+                    categories={categories}
+                    activeCategoryId={mobileActiveCategoryId}
+                    setActiveCategoryId={setMobileActiveCategoryId}
+                    onNavigate={closeMobile}
+                  />
+                </div>
+              </div>
             </div>
           )}
 
@@ -721,12 +737,21 @@ export default function NavClient({
                 </span>
               </button>
 
-              {mobileSection === "brands" && (
-                <MobileBrandPanel
-                  collections={collections}
-                  onNavigate={closeMobile}
-                />
-              )}
+              <div
+                className={clx(
+                  "yco-expand-grid",
+                  mobileSection === "brands"
+                    ? "yco-expand-grid--open"
+                    : "yco-expand-grid--closed"
+                )}
+              >
+                <div className="yco-expand-grid__inner">
+                  <MobileBrandPanel
+                    collections={collections}
+                    onNavigate={closeMobile}
+                  />
+                </div>
+              </div>
             </div>
           )}
 
