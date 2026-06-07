@@ -25,7 +25,7 @@ export default async function Footer() {
               className="inline-block mb-6 hover:opacity-80 transition-opacity duration-300"
             >
               <img
-                src="/image2vector (1).svg"
+                src="/image2vector.svg"
                 alt="YCO"
                 className="h-12 w-auto"
               />

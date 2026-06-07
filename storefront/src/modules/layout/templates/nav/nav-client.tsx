@@ -430,7 +430,7 @@ export default function NavClient({
               onMouseEnter={closeShop}
             >
               <img
-                src="/image2vector (1).svg"
+                src="/image2vector.svg"
                 alt="yco"
                 className="h-8 w-auto"
               />
@@ -544,7 +544,7 @@ export default function NavClient({
               onClick={closeMobile}
             >
               <img
-                src="/image2vector (1).svg"
+                src="/image2vector.svg"
                 alt="yco"
                 className="h-8 w-auto"
               />
