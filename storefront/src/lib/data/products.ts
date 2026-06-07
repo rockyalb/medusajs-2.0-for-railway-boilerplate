@@ -76,6 +76,72 @@ export const getMenuProductsByCollectionIds = cache(async function (
   return Object.fromEntries(entries)
 })
 
+const bestsellerTerms = [
+  { phrase: "amla juice", weight: 120 },
+  { phrase: "ashwagandha", weight: 110 },
+  { phrase: "here we flo", weight: 110 },
+  { phrase: "anti hair loss", weight: 110 },
+  { phrase: "hair loss", weight: 95 },
+  { phrase: "fushi", weight: 70 },
+  { phrase: "shampoo", weight: 45 },
+  { phrase: "flo", weight: 35 },
+]
+
+export const getBestsellerProducts = cache(async function (
+  countryCode: string,
+  limit: number = 6
+) {
+  const region = await getRegion(countryCode)
+
+  if (!region) {
+    return []
+  }
+
+  const { products } = await sdk.store.product.list(
+    {
+      limit: 100,
+      region_id: region.id,
+      fields:
+        "id,title,handle,subtitle,description,thumbnail,*images,*tags,*variants.calculated_price",
+    },
+    { next: { tags: ["products"] } }
+  )
+
+  const scoredProducts = products.map((product) => {
+    const searchable = [
+      product.title,
+      product.subtitle,
+      product.description,
+      product.handle,
+      product.tags?.map((tag) => tag.value).join(" "),
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase()
+
+    const score = bestsellerTerms.reduce((total, term) => {
+      return searchable.includes(term.phrase) ? total + term.weight : total
+    }, 0)
+
+    return {
+      product,
+      score,
+    }
+  })
+
+  const curatedProducts = scoredProducts
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score)
+    .map(({ product }) => product)
+
+  const fallbackProducts = products.filter(
+    (product) =>
+      !curatedProducts.some((curatedProduct) => curatedProduct.id === product.id)
+  )
+
+  return [...curatedProducts, ...fallbackProducts].slice(0, limit)
+})
+
 export const getProductByHandle = cache(async function (
   handle: string,
   regionId: string

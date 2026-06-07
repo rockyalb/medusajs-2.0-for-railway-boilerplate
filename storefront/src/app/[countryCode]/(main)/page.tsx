@@ -8,11 +8,13 @@ import HomeSearch from "@modules/home/components/home-search"
 import MissionSection from "@modules/home/components/mission-section"
 import Testimonials from "@modules/home/components/testimonials"
 import { getCategoriesList } from "@lib/data/categories"
+import { getCollectionsWithPreviewProducts } from "@lib/data/collections"
 import {
-  getCollectionsWithPreviewProducts,
-  getCollectionsWithProducts,
-} from "@lib/data/collections"
+  getBestsellerProducts,
+  getMenuProductsByCategoryIds,
+} from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
+import { HttpTypes } from "@medusajs/types"
 
 export const metadata: Metadata = {
   title: "YCO — Beauty essentials",
@@ -26,26 +28,57 @@ export default async function Home({
   params: Promise<{ countryCode: string }>
 }) {
   const { countryCode } = await params
-  const [collections, region, categoryResponse, collectionResponse] =
+  const [bestsellerProducts, region, categoryResponse, collectionResponse] =
     await Promise.all([
-      getCollectionsWithProducts(countryCode),
+      getBestsellerProducts(countryCode),
       getRegion(countryCode),
-      getCategoriesList(0, 6),
+      getCategoriesList(0, 100),
       getCollectionsWithPreviewProducts(countryCode, 12),
     ])
 
-  const topCategories = (categoryResponse.product_categories ?? []).filter(
-    (category) => !category.parent_category
-  )
+  const topCategories = (
+    (categoryResponse.product_categories ??
+      []) as HttpTypes.StoreProductCategory[]
+  ).filter((category) => !category.parent_category)
+  const categoryIds = topCategories.flatMap((category) => [
+    category.id,
+    ...(category.category_children?.map((child) => child.id) ?? []),
+  ])
+  const productsByCategoryId = await getMenuProductsByCategoryIds(categoryIds)
+  const categoryCards = topCategories
+    .map((category) => {
+      const categoryProducts = [
+        ...(productsByCategoryId[category.id] ?? []),
+        ...(category.category_children?.flatMap(
+          (child) => productsByCategoryId[child.id] ?? []
+        ) ?? []),
+      ]
+      const uniqueProducts = Array.from(
+        new Map(
+          categoryProducts.map((product) => [product.id, product])
+        ).values()
+      )
+
+      return {
+        category,
+        products: uniqueProducts.map((product) => ({
+          id: product.id,
+          title: product.title,
+          handle: product.handle,
+          image: product.thumbnail || product.images?.[0]?.url || "",
+        })),
+      }
+    })
+    .filter(({ products }) => products.length > 0)
 
   return (
     <div>
       <Hero />
       <HomeSearch />
-      <CategoryGrid categories={topCategories} />
+      <CategoryGrid categories={categoryCards} countryCode={countryCode} />
       <FeaturedBrands collections={collectionResponse ?? []} />
 
-      {collections && region && (
+      {bestsellerProducts.length > 0 && region && (
         <section className="bg-white py-16 px-6">
           <div className="max-w-6xl mx-auto mb-10">
             <span className="rhode-eyebrow">Handpicked for you</span>
@@ -60,9 +93,7 @@ export default async function Home({
               />
             </div>
           </div>
-          <ul className="flex flex-col gap-x-6">
-            <FeaturedProducts collections={collections} region={region} />
-          </ul>
+          <FeaturedProducts products={bestsellerProducts} region={region} />
         </section>
       )}
 

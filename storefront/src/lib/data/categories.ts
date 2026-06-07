@@ -1,17 +1,36 @@
 import { sdk } from "@lib/config"
 import { cache } from "react"
 
-const SEED_CATEGORY_HANDLES = ["shirts", "sweatshirts", "pants", "merch"]
+type CategoryWithChildren = {
+  handle?: string
+  name?: string
+  category_children?: CategoryWithChildren[]
+}
 
-const removeSeedCategories = <T extends { handle?: string; category_children?: T[] }>(
+const HIDDEN_CATEGORY_HANDLES = [
+  "shirts",
+  "sweatshirts",
+  "pants",
+  "merch",
+  "uncategorized",
+]
+
+const removeSeedCategories = <T extends CategoryWithChildren>(
   categories: T[]
-) =>
+): T[] =>
   categories
-    .filter((category) => !SEED_CATEGORY_HANDLES.includes(category.handle ?? ""))
+    .filter(
+      (category) =>
+        !HIDDEN_CATEGORY_HANDLES.includes(
+          (category.handle ?? "").toLowerCase()
+        ) && category.name?.toLowerCase() !== "uncategorized"
+    )
     .map((category) => ({
       ...category,
       category_children: category.category_children
-        ? removeSeedCategories(category.category_children)
+        ? (removeSeedCategories(
+            category.category_children
+          ) as T["category_children"])
         : category.category_children,
     }))
 
@@ -25,12 +44,13 @@ export const getCategoriesList = cache(async function (
   offset: number = 0,
   limit: number = 100
 ) {
-  return sdk.store.category.list(
-    // TODO: Look into fixing the type
-    // @ts-ignore
-    { limit, offset },
-    { next: { tags: ["categories"] } }
-  )
+  return sdk.store.category
+    .list(
+      // TODO: Look into fixing the type
+      // @ts-ignore
+      { limit, offset },
+      { next: { tags: ["categories"] } }
+    )
     .then((response) => ({
       ...response,
       product_categories: removeSeedCategories(response.product_categories),
@@ -40,13 +60,13 @@ export const getCategoriesList = cache(async function (
 export const getCategoryByHandle = cache(async function (
   categoryHandle: string[]
 ) {
-
-  return sdk.store.category.list(
-    // TODO: Look into fixing the type
-    // @ts-ignore
-    { handle: categoryHandle },
-    { next: { tags: ["categories"] } }
-  )
+  return sdk.store.category
+    .list(
+      // TODO: Look into fixing the type
+      // @ts-ignore
+      { handle: categoryHandle },
+      { next: { tags: ["categories"] } }
+    )
     .then((response) => ({
       ...response,
       product_categories: removeSeedCategories(response.product_categories),
