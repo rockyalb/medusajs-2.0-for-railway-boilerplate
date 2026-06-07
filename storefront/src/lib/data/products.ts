@@ -25,7 +25,8 @@ export const getProductsById = cache(async function ({
 })
 
 export const getMenuProductsByCategoryIds = cache(async function (
-  categoryIds: string[]
+  categoryIds: string[],
+  limit: number = 6
 ) {
   const uniqueCategoryIds = Array.from(new Set(categoryIds.filter(Boolean)))
 
@@ -33,7 +34,7 @@ export const getMenuProductsByCategoryIds = cache(async function (
     uniqueCategoryIds.map(async (categoryId) => {
       const { products } = await sdk.store.product.list(
         {
-          limit: 6,
+          limit,
           category_id: [categoryId],
           fields: "id,title,handle,thumbnail,*images",
         },
