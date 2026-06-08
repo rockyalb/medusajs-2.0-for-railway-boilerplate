@@ -24,9 +24,16 @@ const ACCENT_CLASSES = [
 
 // Some categories read better in a specific colour.
 // Pinned categories win; everything else rotates through the palette.
-const accentForCategory = (name: string, index: number) => {
-  const normalized = name.toLowerCase()
-  if (normalized.includes("period") || normalized.includes("menstr")) {
+const accentForCategory = (
+  category: HttpTypes.StoreProductCategory,
+  index: number
+) => {
+  const normalized = `${category.name} ${category.handle}`.toLowerCase()
+  if (
+    normalized.includes("period") ||
+    normalized.includes("menstr") ||
+    normalized.includes("periudh")
+  ) {
     return "yco-accent--coral"
   }
   if (normalized.includes("skin")) {
@@ -150,7 +157,7 @@ export default function CategoryGrid({
           <div className="flex snap-x snap-mandatory gap-4">
             {categories.map(({ category, productCount, products }, index) => {
               const image = products[0]?.image
-              const accentClass = accentForCategory(category.name, index)
+              const accentClass = accentForCategory(category, index)
 
               return (
                 <Link
