@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation"
-import Image from "next/image"
 import { Suspense } from "react"
 
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
@@ -98,16 +97,13 @@ export default async function CategoryTemplate({
                     className="group flex h-40 flex-col overflow-hidden rounded-rounded bg-yco-panel p-2 transition-all duration-300 hover:bg-yco-panel-dark small:h-44"
                     aria-label={`Shop ${child.name}`}
                   >
-                    <div className="relative aspect-[4/3] shrink-0 overflow-hidden rounded-base bg-white">
+                    <div className="aspect-[4/3] shrink-0 overflow-hidden rounded-base bg-white">
                       {image ? (
-                        <Image
+                        <img
                           src={image}
                           alt={imageAlt}
                           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                          fill
-                          sizes="(min-width: 640px) 160px, 152px"
                           loading={index > 3 ? "lazy" : undefined}
-                          priority={index <= 3}
                         />
                       ) : (
                         <div className="flex h-full w-full items-center justify-center font-sans text-5xl font-black lowercase text-yco-charcoal/20">

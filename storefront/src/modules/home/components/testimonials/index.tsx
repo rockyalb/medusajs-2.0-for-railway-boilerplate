@@ -1,5 +1,3 @@
-import Image from "next/image"
-
 const reviews = [
   {
     name: "Amelia R.",
@@ -61,13 +59,11 @@ export default function Testimonials() {
           <div>
             <h2 className="rhode-display text-4xl md:text-5xl">yco + you</h2>
             <div className="yco-tricolor-rule mt-4" />
-            <div className="relative mt-5 h-36 overflow-hidden rounded-large bg-yco-panel md:hidden">
-              <Image
+            <div className="mt-5 overflow-hidden rounded-large bg-yco-panel md:hidden">
+              <img
                 src="/placeholder-images/yco-real/community.jpg"
                 alt="YCO community lifestyle photography"
-                className="object-cover"
-                fill
-                sizes="100vw"
+                className="h-36 w-full object-cover"
               />
             </div>
           </div>
@@ -90,16 +86,11 @@ export default function Testimonials() {
               key={review.name}
               className={`${accentClass} yco-accent-card flex flex-col gap-5 rounded-large p-8`}
             >
-              <div className="relative h-28 overflow-hidden rounded-rounded">
-                <Image
-                  src="/placeholder-images/yco-real/community.jpg"
-                  alt={`${review.name} customer lifestyle photography`}
-                  className="object-cover"
-                  fill
-                  sizes="(min-width: 768px) 33vw, 100vw"
-                  loading="lazy"
-                />
-              </div>
+              <img
+                src="/placeholder-images/yco-real/community.jpg"
+                alt={`${review.name} customer lifestyle photography`}
+                className="h-28 w-full rounded-rounded object-cover"
+              />
               <Stars
                 count={review.rating}
                 className="text-[color:var(--accent)]"

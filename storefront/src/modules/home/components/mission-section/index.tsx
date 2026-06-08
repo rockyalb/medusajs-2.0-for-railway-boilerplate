@@ -1,17 +1,14 @@
 import Link from "next/link"
-import Image from "next/image"
 
 export default function MissionSection() {
   return (
     <section className="bg-white px-6 py-14 md:py-20">
       <div className="mx-auto grid max-w-6xl items-center gap-8 md:grid-cols-[0.9fr_1.1fr] md:gap-12">
-        <div className="relative min-h-[420px] overflow-hidden rounded-large bg-yco-panel">
-          <Image
+        <div className="overflow-hidden rounded-large bg-yco-panel">
+          <img
             src="/placeholder-images/yco-real/mission.jpg"
             alt="YCO clean beauty lifestyle photography"
-            className="object-cover"
-            fill
-            sizes="(min-width: 768px) 45vw, 100vw"
+            className="h-full min-h-[420px] w-full object-cover"
           />
         </div>
 

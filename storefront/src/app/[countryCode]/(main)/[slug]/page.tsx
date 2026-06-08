@@ -1,5 +1,4 @@
 import { Metadata } from "next"
-import Image from "next/image"
 import { notFound } from "next/navigation"
 
 import {
@@ -118,16 +117,11 @@ function BlogIndex({ posts }: { posts: NormalizedWordPressEntry[] }) {
                 className="bg-white border border-yco-cream-dark rounded-base overflow-hidden flex flex-col"
               >
                 {image && (
-                  <LocalizedClientLink
-                    href={`/${post.slug}`}
-                    className="relative block aspect-[4/3] overflow-hidden"
-                  >
-                    <Image
+                  <LocalizedClientLink href={`/${post.slug}`}>
+                    <img
                       src={image}
                       alt=""
-                      className="object-cover"
-                      fill
-                      sizes="(min-width: 768px) 50vw, 100vw"
+                      className="aspect-[4/3] w-full object-cover"
                       loading="lazy"
                     />
                   </LocalizedClientLink>

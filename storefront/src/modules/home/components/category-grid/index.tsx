@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import Image from "next/image"
 import { useRef } from "react"
 import type { HttpTypes } from "@medusajs/types"
 import type { MouseEvent, PointerEvent } from "react"
@@ -170,16 +169,13 @@ export default function CategoryGrid({
                     )}
                   </div>
 
-                  <div className="relative my-6 aspect-[4/3] overflow-hidden rounded-rounded bg-white">
+                  <div className="my-6 aspect-[4/3] overflow-hidden rounded-rounded bg-white">
                     {image ? (
-                      <Image
+                      <img
                         src={image}
                         alt={products[0]?.title || category.name}
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                        fill
-                        sizes="(min-width: 1024px) 384px, (min-width: 768px) 30vw, (min-width: 640px) 38vw, 78vw"
                         loading={index > 1 ? "lazy" : undefined}
-                        priority={index <= 1}
                         draggable={false}
                       />
                     ) : (

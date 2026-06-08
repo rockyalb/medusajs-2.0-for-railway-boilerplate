@@ -1,6 +1,5 @@
 import { getCategoriesList } from "@lib/data/categories"
 import { getCollectionsList } from "@lib/data/collections"
-import Image from "next/image"
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
@@ -25,12 +24,10 @@ export default async function Footer() {
               aria-label="YCO home"
               className="inline-block mb-6 hover:opacity-80 transition-opacity duration-300"
             >
-              <Image
+              <img
                 src="/image2vector.svg"
                 alt="YCO"
-                className="h-12 w-12"
-                width={48}
-                height={48}
+                className="h-12 w-auto"
               />
             </LocalizedClientLink>
             <p className="font-sans text-yco-charcoal text-sm leading-relaxed mb-2">

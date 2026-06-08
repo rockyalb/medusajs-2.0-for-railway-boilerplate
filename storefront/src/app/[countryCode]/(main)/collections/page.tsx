@@ -1,6 +1,5 @@
 import { Metadata } from "next"
 import Link from "next/link"
-import Image from "next/image"
 
 import { getCollectionsWithPreviewProducts } from "@lib/data/collections"
 import { BRAND_LOGOS } from "@lib/data/brand-logos"
@@ -43,14 +42,12 @@ export default async function CollectionsPage({
                 href={`/collections/${collection.handle}`}
                 className="group rounded-large bg-white p-4 transition-transform duration-300 hover:-translate-y-1"
               >
-                <div className="relative mb-5 aspect-[4/3] overflow-hidden rounded-base bg-white flex items-center justify-center p-8 border border-yco-cream-dark/40">
+                <div className="mb-5 aspect-[4/3] overflow-hidden rounded-base bg-white flex items-center justify-center p-8 border border-yco-cream-dark/40">
                   {logo ? (
-                    <Image
+                    <img
                       src={logo}
                       alt={`${collection.title} logo`}
-                      className="object-contain p-8 transition-transform duration-500 group-hover:scale-[1.06]"
-                      fill
-                      sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
+                      className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.06]"
                       loading="lazy"
                     />
                   ) : (
