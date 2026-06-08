@@ -1,7 +1,6 @@
-import { Container, Text } from "@medusajs/ui"
 import { useHits, useSearchBox } from "react-instantsearch-hooks-web"
 
-import InteractiveLink from "@modules/common/components/interactive-link"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 type ShowAllProps = {
   shown: number
@@ -16,25 +15,41 @@ const ShowAll = ({ shown, total }: ShowAllProps) => {
 
   if (hits.length === 0) {
     return (
-      <Container
-        className="flex gap-2 justify-center h-fit py-2"
+      <div
+        className="mt-3 rounded-large border border-yco-cream-dark bg-yco-panel p-6 text-center"
         data-testid="no-search-results-container"
       >
-        <Text>No results found.</Text>
-      </Container>
+        <p className="font-sans text-lg font-black lowercase text-yco-charcoal">
+          no results found
+        </p>
+        <p className="mx-auto mt-2 max-w-md font-sans text-sm leading-6 text-yco-charcoal-muted">
+          Try a broader term, a brand name, or browse the full shop.
+        </p>
+        <LocalizedClientLink
+          href="/store"
+          className="yco-btn yco-btn--outline mt-5"
+        >
+          Browse shop
+        </LocalizedClientLink>
+      </div>
     )
   }
 
   return (
-    <Container className="flex h-fit flex-col items-center justify-center gap-1.5 py-3 text-center small:flex-row small:gap-2 small:py-2">
-      <Text>
+    <div className="mt-4 flex h-fit flex-col items-center justify-between gap-4 rounded-large border border-yco-cream-dark bg-white p-4 text-center small:flex-row small:text-left">
+      <p className="font-sans text-sm font-semibold text-yco-charcoal-muted">
         Showing {shown}
         {typeof total === "number" ? ` of ${total}` : ""} results.
-      </Text>
+      </p>
       {typeof total !== "number" || total > shown ? (
-        <InteractiveLink href={`/results/${query}`}>View all</InteractiveLink>
+        <LocalizedClientLink
+          href={`/results/${query}`}
+          className="yco-btn yco-btn--coral min-h-[44px] px-6 text-[0.7rem]"
+        >
+          View all
+        </LocalizedClientLink>
       ) : null}
-    </Container>
+    </div>
   )
 }
 

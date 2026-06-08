@@ -1,6 +1,5 @@
 import { XMarkMini } from "@medusajs/icons"
 import { FormEvent } from "react"
-import { useRouter } from "next/navigation"
 
 import SearchBoxWrapper, {
   ControlledSearchBoxProps,
@@ -54,16 +53,17 @@ const ControlledSearchBox = ({
             type="search"
             value={value}
             onChange={onChange}
-            className="txt-compact-large h-6 placeholder:text-ui-fg-on-color placeholder:transition-colors focus:outline-none flex-1 bg-transparent "
+            className="h-9 min-w-0 flex-1 bg-transparent font-sans text-base font-semibold text-yco-charcoal placeholder:text-yco-charcoal-muted focus:outline-none"
           />
           {value && (
             <button
               onClick={handleReset}
               type="button"
-              className="items-center justify-center text-ui-fg-on-color focus:outline-none gap-x-2 px-2 txt-compact-large flex"
+              aria-label="Clear search"
+              className="flex h-9 shrink-0 items-center justify-center gap-1 rounded-circle border border-yco-charcoal/20 px-3 font-sans text-[11px] font-bold uppercase tracking-[0.08em] text-yco-charcoal transition-colors duration-200 hover:bg-yco-charcoal hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-pastel-coral/50"
             >
               <XMarkMini />
-              Cancel
+              <span className="hidden xsmall:inline">Clear</span>
             </button>
           )}
         </div>
@@ -73,8 +73,6 @@ const ControlledSearchBox = ({
 }
 
 const SearchBox = () => {
-  const router = useRouter()
-
   return (
     <SearchBoxWrapper>
       {(props) => {
