@@ -22,11 +22,14 @@ const ACCENT_CLASSES = [
   "yco-accent--blue",
 ] as const
 
-// Some categories read better in a specific colour (e.g. period care → blue).
+// Some categories read better in a specific colour.
 // Pinned categories win; everything else rotates through the palette.
 const accentForCategory = (name: string, index: number) => {
   const normalized = name.toLowerCase()
   if (normalized.includes("period") || normalized.includes("menstr")) {
+    return "yco-accent--coral"
+  }
+  if (normalized.includes("skin")) {
     return "yco-accent--blue"
   }
   return ACCENT_CLASSES[index % ACCENT_CLASSES.length]
