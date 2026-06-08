@@ -308,6 +308,8 @@ export default async function setupAllShipping({ container }: ExecArgs) {
     },
   ]
 
+  const FREE_DELIVERY_THRESHOLD_ALL = 8000
+
   await createShippingOptionsWorkflow(container).run({
     input: [
       {
@@ -318,7 +320,7 @@ export default async function setupAllShipping({ container }: ExecArgs) {
         shipping_profile_id: shippingProfile.id,
         type: {
           label: "Free Delivery",
-          description: "Free delivery for orders over 7,500 Lek.",
+          description: "Free delivery for orders over 8,000 Lek.",
           code: "free-delivery",
         },
         prices: [
@@ -329,7 +331,7 @@ export default async function setupAllShipping({ container }: ExecArgs) {
               {
                 attribute: "item_total",
                 operator: "gte",
-                value: 7500,
+                value: FREE_DELIVERY_THRESHOLD_ALL,
               },
             ],
           },
@@ -339,7 +341,7 @@ export default async function setupAllShipping({ container }: ExecArgs) {
           {
             attribute: "item_total",
             operator: "gte",
-            value: "7500",
+            value: String(FREE_DELIVERY_THRESHOLD_ALL),
           },
         ],
       },
@@ -351,7 +353,7 @@ export default async function setupAllShipping({ container }: ExecArgs) {
         shipping_profile_id: shippingProfile.id,
         type: {
           label: "Tirane Delivery",
-          description: "Delivery in Tirane for orders under 7,500 Lek.",
+          description: "Delivery in Tirane for orders under 8,000 Lek.",
           code: "tirane-delivery",
         },
         prices: [
@@ -362,7 +364,7 @@ export default async function setupAllShipping({ container }: ExecArgs) {
               {
                 attribute: "item_total",
                 operator: "lt",
-                value: 7500,
+                value: FREE_DELIVERY_THRESHOLD_ALL,
               },
             ],
           },
@@ -377,7 +379,7 @@ export default async function setupAllShipping({ container }: ExecArgs) {
           {
             attribute: "item_total",
             operator: "lt" as const,
-            value: "7500",
+            value: String(FREE_DELIVERY_THRESHOLD_ALL),
           },
         ],
       },
@@ -389,7 +391,7 @@ export default async function setupAllShipping({ container }: ExecArgs) {
         shipping_profile_id: shippingProfile.id,
         type: {
           label: "Standard Delivery",
-          description: "Delivery outside Tirane for orders under 7,500 Lek.",
+          description: "Delivery outside Tirane for orders under 8,000 Lek.",
           code: "standard-delivery",
         },
         prices: [
@@ -400,7 +402,7 @@ export default async function setupAllShipping({ container }: ExecArgs) {
               {
                 attribute: "item_total",
                 operator: "lt",
-                value: 7500,
+                value: FREE_DELIVERY_THRESHOLD_ALL,
               },
             ],
           },
@@ -415,7 +417,7 @@ export default async function setupAllShipping({ container }: ExecArgs) {
           {
             attribute: "item_total",
             operator: "lt" as const,
-            value: "7500",
+            value: String(FREE_DELIVERY_THRESHOLD_ALL),
           },
         ],
       },

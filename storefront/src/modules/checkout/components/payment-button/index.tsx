@@ -59,7 +59,11 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
         />
       )
     default:
-      return <Button disabled>Select a payment method</Button>
+      return (
+        <Button disabled className="yco-btn yco-btn--outline">
+          Select a payment method
+        </Button>
+      )
   }
 }
 
@@ -75,6 +79,7 @@ const GiftCardPaymentButton = () => {
     <Button
       onClick={handleOrder}
       isLoading={submitting}
+      className="yco-btn yco-btn--coral"
       data-testid="submit-order-button"
     >
       Place order
@@ -177,6 +182,7 @@ const StripePaymentButton = ({
         onClick={handlePayment}
         size="large"
         isLoading={submitting}
+        className="yco-btn yco-btn--coral"
         data-testid={dataTestId}
       >
         Place order
@@ -286,6 +292,7 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
         isLoading={submitting}
         onClick={handlePayment}
         size="large"
+        className="yco-btn yco-btn--coral"
         data-testid="submit-order-button"
       >
         Place order

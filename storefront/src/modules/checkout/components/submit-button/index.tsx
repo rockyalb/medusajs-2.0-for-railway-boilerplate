@@ -20,7 +20,7 @@ export function SubmitButton({
   return (
     <Button
       size="large"
-      className={className}
+      className={className ?? "yco-btn yco-btn--coral"}
       type="submit"
       isLoading={pending}
       variant={variant || "primary"}

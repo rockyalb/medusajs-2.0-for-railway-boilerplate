@@ -24,9 +24,9 @@ const PaymentContainer: React.FC<PaymentContainerProps> = ({
         value={paymentProviderId}
         disabled={disabled}
         className={clx(
-          "flex flex-col gap-y-2 text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
+          "mb-2 flex cursor-pointer flex-col gap-y-2 rounded-large border px-5 py-4 text-small-regular transition-colors hover:border-yco-charcoal/40 hover:bg-yco-panel",
           {
-            "border-ui-border-interactive":
+            "border-pastel-coral bg-pastel-coral-soft":
               selectedPaymentOptionId === paymentProviderId,
           }
         )}

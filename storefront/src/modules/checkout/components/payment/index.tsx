@@ -118,7 +118,7 @@ const Payment = ({
   }, [isOpen])
 
   return (
-    <div className="bg-white">
+    <div className="rounded-large border border-yco-cream-dark bg-white p-5 small:p-6">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           level="h2"
@@ -137,7 +137,7 @@ const Payment = ({
           <Text>
             <button
               onClick={handleEdit}
-              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+              className="rhode-eyebrow text-yco-charcoal hover:text-yco-coral"
               data-testid="edit-payment-button"
             >
               Edit
@@ -211,7 +211,7 @@ const Payment = ({
 
           <Button
             size="large"
-            className="mt-6"
+            className="yco-btn yco-btn--coral mt-6"
             onClick={handleSubmit}
             isLoading={isLoading}
             disabled={
@@ -228,8 +228,8 @@ const Payment = ({
 
         <div className={isOpen ? "hidden" : "block"}>
           {cart && paymentReady && activeSession ? (
-            <div className="flex items-start gap-x-1 w-full">
-              <div className="flex flex-col w-1/3">
+            <div className="grid w-full grid-cols-1 gap-3 small:grid-cols-3">
+              <div className="flex flex-col rounded-large bg-yco-panel p-4">
                 <Text className="txt-medium-plus text-ui-fg-base mb-1">
                   Payment method
                 </Text>
@@ -241,7 +241,7 @@ const Payment = ({
                     selectedPaymentMethod}
                 </Text>
               </div>
-              <div className="flex flex-col w-1/3">
+              <div className="flex flex-col rounded-large bg-yco-panel p-4">
                 <Text className="txt-medium-plus text-ui-fg-base mb-1">
                   Payment details
                 </Text>
@@ -258,14 +258,14 @@ const Payment = ({
                     {isManual(selectedPaymentMethod)
                       ? "Pay when your order is delivered"
                       : isStripeFunc(selectedPaymentMethod) && cardBrand
-                      ? cardBrand
-                      : "Another step will appear"}
+                        ? cardBrand
+                        : "Another step will appear"}
                   </Text>
                 </div>
               </div>
             </div>
           ) : paidByGiftcard ? (
-            <div className="flex flex-col w-1/3">
+            <div className="flex flex-col rounded-large bg-yco-panel p-4 small:w-1/3">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
                 Payment method
               </Text>

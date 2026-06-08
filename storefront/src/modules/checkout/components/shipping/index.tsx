@@ -12,13 +12,13 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { setShippingMethod } from "@lib/data/cart"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
+import { FREE_SHIPPING_THRESHOLD_ALL } from "@lib/constants"
+import FreeShippingProgress from "@modules/common/components/free-shipping-progress"
 
 type ShippingProps = {
   cart: HttpTypes.StoreCart
   availableShippingMethods: HttpTypes.StoreCartShippingOption[] | null
 }
-
-const FREE_DELIVERY_THRESHOLD = 7500
 
 const normalizeCity = (city?: string | null) => {
   return city
@@ -66,11 +66,11 @@ const Shipping: React.FC<ShippingProps> = ({
         ? "tirane"
         : "other"
     const targetCode =
-      (cart.subtotal ?? 0) >= FREE_DELIVERY_THRESHOLD
+      (cart.subtotal ?? 0) >= FREE_SHIPPING_THRESHOLD_ALL
         ? "free-delivery"
         : cityGroup === "tirane"
-        ? "tirane-delivery"
-        : "standard-delivery"
+          ? "tirane-delivery"
+          : "standard-delivery"
 
     return (
       selectableShippingMethods.find(
@@ -98,21 +98,24 @@ const Shipping: React.FC<ShippingProps> = ({
     router.push(pathname + "?step=payment", { scroll: false })
   }
 
-  const set = useCallback(async (id: string) => {
-    setIsLoading(true)
-    setError(null)
-    lastAppliedOptionIdRef.current = id
-    return await setShippingMethod({ cartId: cart.id, shippingMethodId: id })
-      .then(() => true)
-      .catch((err) => {
-        lastAppliedOptionIdRef.current = null
-        setError(err.message)
-        return false
-      })
-      .finally(() => {
-        setIsLoading(false)
-      })
-  }, [cart.id])
+  const set = useCallback(
+    async (id: string) => {
+      setIsLoading(true)
+      setError(null)
+      lastAppliedOptionIdRef.current = id
+      return await setShippingMethod({ cartId: cart.id, shippingMethodId: id })
+        .then(() => true)
+        .catch((err) => {
+          lastAppliedOptionIdRef.current = null
+          setError(err.message)
+          return false
+        })
+        .finally(() => {
+          setIsLoading(false)
+        })
+    },
+    [cart.id]
+  )
 
   useEffect(() => {
     if (
@@ -125,19 +128,14 @@ const Shipping: React.FC<ShippingProps> = ({
     }
 
     set(automaticShippingMethod.id)
-  }, [
-    automaticShippingMethod,
-    selectedShippingMethod?.id,
-    isLoading,
-    set,
-  ])
+  }, [automaticShippingMethod, selectedShippingMethod?.id, isLoading, set])
 
   useEffect(() => {
     setError(null)
   }, [isOpen])
 
   return (
-    <div className="bg-white">
+    <div className="rounded-large border border-yco-cream-dark bg-white p-5 small:p-6">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           level="h2"
@@ -161,7 +159,7 @@ const Shipping: React.FC<ShippingProps> = ({
             <Text>
               <button
                 onClick={handleEdit}
-                className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+                className="rhode-eyebrow text-yco-charcoal hover:text-yco-coral"
                 data-testid="edit-delivery-button"
               >
                 Edit
@@ -171,7 +169,11 @@ const Shipping: React.FC<ShippingProps> = ({
       </div>
       {isOpen ? (
         <div data-testid="delivery-options-container">
-          <div className="pb-8">
+          <FreeShippingProgress
+            subtotal={cart.subtotal}
+            currency_code={cart.currency_code}
+          />
+          <div className="pb-8 pt-5">
             <RadioGroup value={selectedShippingMethod?.id} onChange={set}>
               {selectableShippingMethods.map((option) => {
                 return (
@@ -180,9 +182,9 @@ const Shipping: React.FC<ShippingProps> = ({
                     value={option.id}
                     data-testid="delivery-option-radio"
                     className={clx(
-                      "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
+                      "flex cursor-pointer items-center justify-between rounded-large border px-5 py-4 text-small-regular transition-colors hover:border-yco-charcoal/40 hover:bg-yco-panel",
                       {
-                        "border-ui-border-interactive":
+                        "border-pastel-coral bg-pastel-coral-soft":
                           option.id === selectedShippingMethod?.id,
                       }
                     )}
@@ -212,7 +214,7 @@ const Shipping: React.FC<ShippingProps> = ({
 
           <Button
             size="large"
-            className="mt-6"
+            className="yco-btn yco-btn--coral mt-6"
             onClick={handleSubmit}
             isLoading={isLoading}
             disabled={!selectedShippingMethod && !automaticShippingMethod}
@@ -225,7 +227,7 @@ const Shipping: React.FC<ShippingProps> = ({
         <div>
           <div className="text-small-regular">
             {cart && (cart.shipping_methods?.length ?? 0) > 0 && (
-              <div className="flex flex-col w-1/3">
+              <div className="flex flex-col rounded-large bg-yco-panel p-4 small:w-1/3">
                 <Text className="txt-medium-plus text-ui-fg-base mb-1">
                   Method
                 </Text>

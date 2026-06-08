@@ -6,6 +6,7 @@ import DiscountCode from "@modules/checkout/components/discount-code"
 import StoreCreditApply from "@modules/checkout/components/store-credit-apply"
 import CartTotals from "@modules/common/components/cart-totals"
 import Divider from "@modules/common/components/divider"
+import FreeShippingProgress from "@modules/common/components/free-shipping-progress"
 import LoyaltyCreditNotice from "@modules/common/components/loyalty-credit-notice"
 import {
   getLoyaltyRewardSetting,
@@ -53,9 +54,8 @@ const CheckoutSummary = async ({
     ) {
       const rewardBase = cart.item_total ?? cart.subtotal ?? 0
       const estimatedReward =
-        Math.round(
-          ((rewardBase * loyaltySettings.percentage) / 100) * 100
-        ) / 100
+        Math.round(((rewardBase * loyaltySettings.percentage) / 100) * 100) /
+        100
 
       if (estimatedReward > 0) {
         loyaltyCreditNotice = (
@@ -70,17 +70,24 @@ const CheckoutSummary = async ({
   }
 
   return (
-    <div className="sticky top-0 flex flex-col-reverse small:flex-col gap-y-8 py-8 small:py-0">
-      <div className="w-full bg-white flex flex-col">
+    <div className="sticky top-6 flex flex-col-reverse gap-y-8 py-8 small:flex-col small:py-0">
+      <div className="flex w-full flex-col rounded-large border border-yco-cream-dark bg-white p-5 small:p-6">
         <Divider className="my-6 small:hidden" />
         <Heading
           level="h2"
-          className="flex flex-row text-3xl-regular items-baseline"
+          className="rhode-display flex flex-row items-baseline text-4xl"
         >
-          In your Cart
+          In your cart
         </Heading>
         <Divider className="my-6" />
-        <CartTotals totals={cart} />
+        <FreeShippingProgress
+          subtotal={cart.subtotal}
+          currency_code={cart.currency_code}
+          compact
+        />
+        <div className="mt-6">
+          <CartTotals totals={cart} />
+        </div>
         {storeCreditApply}
         {loyaltyCreditNotice}
         <ItemsPreviewTemplate items={cart?.items} />

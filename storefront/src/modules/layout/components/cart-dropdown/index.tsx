@@ -1,12 +1,12 @@
 "use client"
 
-import { Button } from "@medusajs/ui"
 import { usePathname } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
 import DeleteButton from "@modules/common/components/delete-button"
+import FreeShippingProgress from "@modules/common/components/free-shipping-progress"
 import LineItemOptions from "@modules/common/components/line-item-options"
 import LineItemPrice from "@modules/common/components/line-item-price"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
@@ -59,7 +59,14 @@ const CartDropdown = ({
           Cart ({totalItems})
         </span>
         <span className="small:hidden relative text-yco-charcoal">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+          >
             <path d="M6 8h12l-1 12H7L6 8Z" strokeLinejoin="round" />
             <path d="M9 8V6a3 3 0 0 1 6 0v2" strokeLinecap="round" />
           </svg>
@@ -85,7 +92,7 @@ const CartDropdown = ({
         {/* Panel */}
         <div
           data-testid="nav-cart-dropdown"
-          className={`absolute right-0 top-0 flex h-full w-full max-w-[420px] flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${
+          className={`absolute right-0 top-0 flex h-full w-full max-w-[440px] flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${
             open ? "translate-x-0" : "translate-x-full"
           }`}
         >
@@ -100,7 +107,15 @@ const CartDropdown = ({
               aria-label="Close cart"
               className="text-yco-charcoal-muted hover:text-yco-charcoal transition-colors"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              >
                 <path d="M6 6l12 12M18 6L6 18" />
               </svg>
             </button>
@@ -108,14 +123,22 @@ const CartDropdown = ({
 
           {cartState && cartState.items?.length ? (
             <>
-              <div className="flex-1 overflow-y-auto px-6 py-6 grid grid-cols-1 gap-y-7 no-scrollbar">
+              <div className="border-b border-yco-cream-dark px-6 py-5">
+                <FreeShippingProgress
+                  subtotal={subtotal}
+                  currency_code={cartState.currency_code}
+                  compact
+                />
+              </div>
+
+              <div className="flex-1 overflow-y-auto px-6 py-6 grid grid-cols-1 gap-y-5 no-scrollbar">
                 {cartState.items
                   .sort((a, b) =>
                     (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
                   )
                   .map((item) => (
                     <div
-                      className="grid grid-cols-[100px_1fr] gap-x-4"
+                      className="grid grid-cols-[92px_1fr] gap-x-4 rounded-large border border-yco-cream-dark bg-yco-panel/70 p-3"
                       key={item.id}
                       data-testid="cart-item"
                     >
@@ -133,7 +156,7 @@ const CartDropdown = ({
                       <div className="flex flex-col justify-between flex-1">
                         <div className="flex flex-col flex-1">
                           <div className="flex items-start justify-between">
-                            <div className="flex flex-col overflow-ellipsis whitespace-nowrap mr-4 w-[160px]">
+                            <div className="mr-4 flex min-w-0 flex-col">
                               <h3 className="text-sm font-bold text-yco-charcoal overflow-hidden text-ellipsis">
                                 <LocalizedClientLink
                                   href={`/products/${item.variant?.product?.handle}`}
@@ -189,20 +212,26 @@ const CartDropdown = ({
                     })}
                   </span>
                 </div>
-                <LocalizedClientLink href="/cart" passHref onClick={() => setOpen(false)}>
-                  <Button
-                    className="w-full rounded-circle"
-                    size="large"
-                    variant="secondary"
+                <LocalizedClientLink
+                  href="/cart"
+                  passHref
+                  onClick={() => setOpen(false)}
+                >
+                  <span
+                    className="yco-btn yco-btn--outline yco-btn--block"
                     data-testid="go-to-cart-button"
                   >
                     View cart
-                  </Button>
+                  </span>
                 </LocalizedClientLink>
-                <LocalizedClientLink href="/checkout?step=address" passHref onClick={() => setOpen(false)}>
-                  <Button className="w-full rounded-circle" size="large">
+                <LocalizedClientLink
+                  href="/checkout?step=address"
+                  passHref
+                  onClick={() => setOpen(false)}
+                >
+                  <span className="yco-btn yco-btn--coral yco-btn--block">
                     Checkout
-                  </Button>
+                  </span>
                 </LocalizedClientLink>
               </div>
             </>
@@ -215,9 +244,9 @@ const CartDropdown = ({
                 Your shopping bag is empty.
               </span>
               <LocalizedClientLink href="/store" onClick={() => setOpen(false)}>
-                <Button className="rounded-circle" variant="secondary">
+                <span className="yco-btn yco-btn--outline">
                   Explore products
-                </Button>
+                </span>
               </LocalizedClientLink>
             </div>
           )}

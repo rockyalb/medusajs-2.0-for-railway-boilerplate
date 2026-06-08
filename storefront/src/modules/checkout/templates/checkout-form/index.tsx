@@ -42,21 +42,13 @@ export default async function CheckoutForm({
           countryCode={countryCode}
         />
 
-        <div>
-          <Addresses cart={cart} customer={customer} />
-        </div>
+        <Addresses cart={cart} customer={customer} />
 
-        <div>
-          <Shipping cart={cart} availableShippingMethods={shippingMethods} />
-        </div>
+        <Shipping cart={cart} availableShippingMethods={shippingMethods} />
 
-        <div>
-          <Payment cart={cart} availablePaymentMethods={paymentMethods} />
-        </div>
+        <Payment cart={cart} availablePaymentMethods={paymentMethods} />
 
-        <div>
-          <Review cart={cart} />
-        </div>
+        <Review cart={cart} />
       </div>
     </div>
   )

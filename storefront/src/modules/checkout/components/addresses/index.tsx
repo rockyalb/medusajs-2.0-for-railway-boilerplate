@@ -42,7 +42,7 @@ const Addresses = ({
   const [message, formAction] = useFormState(setAddresses, null)
 
   return (
-    <div className="bg-white">
+    <div className="rounded-large border border-yco-cream-dark bg-white p-5 small:p-6">
       <div className="flex flex-row items-center justify-between mb-6">
         <Heading
           level="h2"
@@ -55,7 +55,7 @@ const Addresses = ({
           <Text>
             <button
               onClick={handleEdit}
-              className="text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+              className="rhode-eyebrow text-yco-charcoal hover:text-yco-coral"
               data-testid="edit-address-button"
             >
               Edit
@@ -85,7 +85,10 @@ const Addresses = ({
                 <BillingAddress cart={cart} />
               </div>
             )}
-            <SubmitButton className="mt-6" data-testid="submit-address-button">
+            <SubmitButton
+              className="yco-btn yco-btn--coral mt-6"
+              data-testid="submit-address-button"
+            >
               Continue to delivery
             </SubmitButton>
             <ErrorMessage error={message} data-testid="address-error-message" />
@@ -95,10 +98,10 @@ const Addresses = ({
         <div>
           <div className="text-small-regular">
             {cart && cart.shipping_address ? (
-              <div className="flex items-start gap-x-8">
-                <div className="flex items-start gap-x-1 w-full">
+              <div>
+                <div className="grid w-full grid-cols-1 gap-3 small:grid-cols-3">
                   <div
-                    className="flex flex-col w-1/3"
+                    className="flex flex-col rounded-large bg-yco-panel p-4"
                     data-testid="shipping-address-summary"
                   >
                     <Text className="txt-medium-plus text-ui-fg-base mb-1">
@@ -122,7 +125,7 @@ const Addresses = ({
                   </div>
 
                   <div
-                    className="flex flex-col w-1/3 "
+                    className="flex flex-col rounded-large bg-yco-panel p-4"
                     data-testid="shipping-contact-summary"
                   >
                     <Text className="txt-medium-plus text-ui-fg-base mb-1">
@@ -137,7 +140,7 @@ const Addresses = ({
                   </div>
 
                   <div
-                    className="flex flex-col w-1/3"
+                    className="flex flex-col rounded-large bg-yco-panel p-4"
                     data-testid="billing-address-summary"
                   >
                     <Text className="txt-medium-plus text-ui-fg-base mb-1">
