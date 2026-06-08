@@ -1,6 +1,7 @@
 "use client"
 
 import { clx } from "@medusajs/ui"
+import Image from "next/image"
 import { ReactNode, useEffect, useState } from "react"
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
@@ -429,10 +430,12 @@ export default function NavClient({
               onClick={closeMobile}
               onMouseEnter={closeShop}
             >
-              <img
+              <Image
                 src="/image2vector.svg"
                 alt="yco"
-                className="h-8 w-auto"
+                className="h-8 w-8"
+                width={32}
+                height={32}
               />
             </LocalizedClientLink>
           </div>
@@ -543,10 +546,12 @@ export default function NavClient({
               className="hover:opacity-80 transition-opacity duration-300"
               onClick={closeMobile}
             >
-              <img
+              <Image
                 src="/image2vector.svg"
                 alt="yco"
-                className="h-8 w-auto"
+                className="h-8 w-8"
+                width={32}
+                height={32}
               />
             </LocalizedClientLink>
             <button

@@ -51,6 +51,34 @@ export const getMenuProductsByCategoryIds = cache(async function (
   return Object.fromEntries(entries)
 })
 
+export const getProductCountsByCategoryGroups = cache(async function (
+  categoryGroups: string[][]
+) {
+  const entries = await Promise.all(
+    categoryGroups.map(async (categoryIds) => {
+      const uniqueCategoryIds = Array.from(new Set(categoryIds.filter(Boolean)))
+      const groupKey = uniqueCategoryIds[0]
+
+      if (!groupKey) {
+        return ["", 0] as const
+      }
+
+      const { count } = await sdk.store.product.list(
+        {
+          limit: 1,
+          category_id: uniqueCategoryIds,
+          fields: "id",
+        },
+        { next: { tags: ["products"] } }
+      )
+
+      return [groupKey, count] as const
+    })
+  )
+
+  return Object.fromEntries(entries.filter(([categoryId]) => categoryId))
+})
+
 export const getMenuProductsByCollectionIds = cache(async function (
   collectionIds: string[]
 ) {

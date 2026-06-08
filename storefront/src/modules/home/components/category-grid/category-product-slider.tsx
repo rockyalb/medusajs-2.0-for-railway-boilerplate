@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { useCallback, useEffect, useRef, useState } from "react"
 import type { WheelEvent } from "react"
 
@@ -119,15 +120,18 @@ export default function CategoryProductSlider({
               href={`/${countryCode}/products/${product.handle}`}
               className="group/product w-[68%] min-w-[12rem] max-w-[15rem] shrink-0 snap-start rounded-rounded bg-white/70 p-3 transition-transform duration-300 hover:-translate-y-1 sm:w-[54%] lg:w-[72%]"
             >
-              <div className="aspect-square overflow-hidden rounded-base bg-white">
+              <div className="relative aspect-square overflow-hidden rounded-base bg-white">
                 {product.image ? (
-                  <img
+                  <Image
                     src={product.image}
                     alt={product.title}
                     className="h-full w-full object-cover transition-transform duration-500 group-hover/product:scale-[1.04]"
+                    fill
+                    sizes="(min-width: 1024px) 180px, (min-width: 640px) 216px, 68vw"
                     loading={
                       cardIndex > 1 || productIndex > 1 ? "lazy" : undefined
                     }
+                    priority={cardIndex <= 1 && productIndex <= 1}
                   />
                 ) : (
                   <div className="flex h-full items-center justify-center font-sans text-5xl font-black lowercase text-yco-charcoal/20">

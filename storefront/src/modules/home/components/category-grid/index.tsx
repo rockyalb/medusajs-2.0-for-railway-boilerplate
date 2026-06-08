@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { useRef } from "react"
 import type { HttpTypes } from "@medusajs/types"
 import type { MouseEvent, PointerEvent } from "react"
@@ -8,6 +9,7 @@ import type { CategoryProduct } from "./category-product-slider"
 
 type CategoryCard = {
   category: HttpTypes.StoreProductCategory
+  productCount: number
   products: CategoryProduct[]
 }
 
@@ -21,12 +23,12 @@ const ACCENT_CLASSES = [
   "yco-accent--blue",
 ] as const
 
-// Some categories read better in a specific colour (e.g. period care → pink).
+// Some categories read better in a specific colour (e.g. period care → blue).
 // Pinned categories win; everything else rotates through the palette.
 const accentForCategory = (name: string, index: number) => {
   const normalized = name.toLowerCase()
   if (normalized.includes("period") || normalized.includes("menstr")) {
-    return "yco-accent--coral"
+    return "yco-accent--blue"
   }
   return ACCENT_CLASSES[index % ACCENT_CLASSES.length]
 }
@@ -144,7 +146,7 @@ export default function CategoryGrid({
           onPointerLeave={endDrag}
         >
           <div className="flex snap-x snap-mandatory gap-4">
-            {categories.map(({ category, products }, index) => {
+            {categories.map(({ category, productCount, products }, index) => {
               const image = products[0]?.image
               const accentClass = accentForCategory(category.name, index)
 
@@ -168,13 +170,16 @@ export default function CategoryGrid({
                     )}
                   </div>
 
-                  <div className="my-6 aspect-[4/3] overflow-hidden rounded-rounded bg-white">
+                  <div className="relative my-6 aspect-[4/3] overflow-hidden rounded-rounded bg-white">
                     {image ? (
-                      <img
+                      <Image
                         src={image}
                         alt={products[0]?.title || category.name}
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                        fill
+                        sizes="(min-width: 1024px) 384px, (min-width: 768px) 30vw, (min-width: 640px) 38vw, 78vw"
                         loading={index > 1 ? "lazy" : undefined}
+                        priority={index <= 1}
                         draggable={false}
                       />
                     ) : (
@@ -190,7 +195,7 @@ export default function CategoryGrid({
                         {category.name}
                       </div>
                       <p className="mt-1 font-sans text-xs text-yco-charcoal-muted">
-                        {products.length} products
+                        {productCount} products
                       </p>
                     </div>
                     <span className="rhode-round-btn rhode-round-btn--accent shrink-0">

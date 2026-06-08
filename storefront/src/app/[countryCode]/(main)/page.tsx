@@ -11,6 +11,7 @@ import { getCollectionsWithPreviewProducts } from "@lib/data/collections"
 import {
   getBestsellerProducts,
   getMenuProductsByCategoryIds,
+  getProductCountsByCategoryGroups,
 } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
 import { listWordPressPosts } from "@lib/data/wordpress"
@@ -20,6 +21,35 @@ export const metadata: Metadata = {
   title: "YCO — Beauty essentials",
   description:
     "A clean, editorial storefront for daily skin, body, and beauty essentials.",
+}
+
+const normalizedCategoryName = (name: string) => name.toLowerCase()
+
+const isSkinCareCategory = (category: HttpTypes.StoreProductCategory) =>
+  normalizedCategoryName(category.name).includes("skin")
+
+const isPeriodCareCategory = (category: HttpTypes.StoreProductCategory) => {
+  const name = normalizedCategoryName(category.name)
+
+  return name.includes("period") || name.includes("menstr")
+}
+
+const swapSkinAndPeriodCare = (
+  categories: HttpTypes.StoreProductCategory[]
+) => {
+  const orderedCategories = [...categories]
+  const skinCareIndex = orderedCategories.findIndex(isSkinCareCategory)
+  const periodCareIndex = orderedCategories.findIndex(isPeriodCareCategory)
+
+  if (skinCareIndex === -1 || periodCareIndex === -1) {
+    return orderedCategories
+  }
+
+  const skinCareCategory = orderedCategories[skinCareIndex]
+  orderedCategories[skinCareIndex] = orderedCategories[periodCareIndex]
+  orderedCategories[periodCareIndex] = skinCareCategory
+
+  return orderedCategories
 }
 
 export default async function Home({
@@ -47,12 +77,17 @@ export default async function Home({
     (categoryResponse.product_categories ??
       []) as HttpTypes.StoreProductCategory[]
   ).filter((category) => !category.parent_category)
-  const categoryIds = topCategories.flatMap((category) => [
+  const orderedTopCategories = swapSkinAndPeriodCare(topCategories)
+  const categoryIdGroups = topCategories.map((category) => [
     category.id,
     ...(category.category_children?.map((child) => child.id) ?? []),
   ])
-  const productsByCategoryId = await getMenuProductsByCategoryIds(categoryIds)
-  const categoryCards = topCategories
+  const categoryIds = categoryIdGroups.flat()
+  const [productsByCategoryId, productCountsByCategoryId] = await Promise.all([
+    getMenuProductsByCategoryIds(categoryIds),
+    getProductCountsByCategoryGroups(categoryIdGroups),
+  ])
+  const categoryCards = orderedTopCategories
     .map((category) => {
       const categoryProducts = [
         ...(productsByCategoryId[category.id] ?? []),
@@ -68,6 +103,7 @@ export default async function Home({
 
       return {
         category,
+        productCount: productCountsByCategoryId[category.id] ?? 0,
         products: uniqueProducts.map((product) => ({
           id: product.id,
           title: product.title,

@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Image from "next/image"
 import { HttpTypes } from "@medusajs/types"
 import { BRAND_LOGOS } from "@lib/data/brand-logos"
 
@@ -50,12 +51,14 @@ export default function FeaturedBrands({
               href={`/collections/${brand.handle}`}
               className={`group ${accentClass} flex w-[42vw] min-w-[9.5rem] max-w-[12rem] shrink-0 flex-col rounded-2xl border border-yco-cream-dark/40 bg-yco-cream p-3 transition-all duration-300 hover:-translate-y-1 hover:border-[color:var(--accent)] hover:shadow-[0_20px_42px_-20px_var(--accent-glow)] active:scale-95 md:w-auto md:min-w-0 md:max-w-none`}
             >
-              <div className="mb-4 aspect-square overflow-hidden rounded-large bg-white flex items-center justify-center p-5">
+              <div className="relative mb-4 aspect-square overflow-hidden rounded-large bg-white flex items-center justify-center p-5">
                 {logo ? (
-                  <img
+                  <Image
                     src={logo}
                     alt={`${brand.title} logo`}
-                    className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.06]"
+                    className="object-contain p-5 transition-transform duration-500 group-hover:scale-[1.06]"
+                    fill
+                    sizes="(min-width: 1024px) 160px, (min-width: 768px) 33vw, 42vw"
                     loading="lazy"
                   />
                 ) : (

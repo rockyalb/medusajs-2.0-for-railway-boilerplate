@@ -3,6 +3,7 @@ import {
   formatWordPressDate,
   getWordPressEntryImage,
 } from "@lib/data/wordpress"
+import Image from "next/image"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 type LatestBlogPostsProps = {
@@ -54,11 +55,16 @@ export default function LatestBlogPosts({ posts }: LatestBlogPostsProps) {
                 className={`${accentClass} group bg-white border border-yco-cream-dark border-t-[3px] border-t-[color:var(--accent)] rounded-base overflow-hidden flex flex-col min-h-full transition-shadow duration-300 hover:shadow-[0_22px_46px_-24px_var(--accent-glow)]`}
               >
                 {image && (
-                  <LocalizedClientLink href={`/${post.slug}`}>
-                    <img
+                  <LocalizedClientLink
+                    href={`/${post.slug}`}
+                    className="relative block aspect-[4/3] overflow-hidden"
+                  >
+                    <Image
                       src={image}
                       alt=""
-                      className="aspect-[4/3] w-full object-cover"
+                      className="object-cover"
+                      fill
+                      sizes="(min-width: 768px) 33vw, 100vw"
                       loading="lazy"
                     />
                   </LocalizedClientLink>
