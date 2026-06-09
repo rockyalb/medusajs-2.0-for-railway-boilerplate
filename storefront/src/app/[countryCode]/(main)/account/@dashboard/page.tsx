@@ -17,11 +17,12 @@ export const dynamic = "force-dynamic"
 export default async function OverviewTemplate({
   params,
 }: {
-  params: { countryCode: string }
+  params: Promise<{ countryCode: string }>
 }) {
+  const { countryCode } = await params
   const customer = await getCustomer().catch(() => null)
   const orders = (await listOrders().catch(() => null)) || null
-  const region = await getRegion(params.countryCode).catch(() => null)
+  const region = await getRegion(countryCode).catch(() => null)
   const creditAccounts = await getCustomerStoreCreditAccounts(
     region?.currency_code ?? "all"
   ).catch(() => [])

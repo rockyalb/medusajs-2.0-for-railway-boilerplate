@@ -25,11 +25,12 @@ export const dynamic = "force-dynamic"
 export default async function Profile({
   params,
 }: {
-  params: { countryCode: string }
+  params: Promise<{ countryCode: string }>
 }) {
+  const { countryCode } = await params
   const customer = await getCustomer()
   const regions = await listRegions()
-  const region = await getRegion(params.countryCode)
+  const region = await getRegion(countryCode)
 
   if (!customer || !regions) {
     notFound()

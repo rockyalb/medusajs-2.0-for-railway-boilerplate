@@ -1,4 +1,4 @@
-import { useHits, useSearchBox } from "react-instantsearch"
+import { useHits, useInstantSearch, useSearchBox } from "react-instantsearch"
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
@@ -9,7 +9,14 @@ type ShowAllProps = {
 
 const ShowAll = ({ shown, total }: ShowAllProps) => {
   const { hits } = useHits()
-  const { query } = useSearchBox()
+  const { indexUiState } = useInstantSearch()
+  const { query: searchBoxQuery } = useSearchBox()
+  const query =
+    typeof searchBoxQuery === "string"
+      ? searchBoxQuery.trim()
+      : typeof indexUiState.query === "string"
+      ? indexUiState.query.trim()
+      : ""
 
   if (query === "") return null
 
@@ -43,7 +50,7 @@ const ShowAll = ({ shown, total }: ShowAllProps) => {
       </p>
       {typeof total !== "number" || total > shown ? (
         <LocalizedClientLink
-          href={`/results/${query}`}
+          href={`/results/${encodeURIComponent(query)}`}
           className="yco-btn yco-btn--coral min-h-[44px] px-6 text-[0.7rem]"
         >
           View all

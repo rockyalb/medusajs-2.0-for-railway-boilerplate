@@ -68,7 +68,7 @@ export const getCategoryByHandle = cache(async function (
     .list(
       // TODO: Look into fixing the type
       // @ts-ignore
-      { handle: categoryHandle },
+      { handle: categoryHandle, fields: "+category_children" },
       { next: { tags: ["categories"] } }
     )
     .then((response) => ({

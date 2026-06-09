@@ -12,10 +12,11 @@ export const metadata: Metadata = {
 export default async function CollectionsPage({
   params,
 }: {
-  params: { countryCode: string }
+  params: Promise<{ countryCode: string }>
 }) {
+  const { countryCode } = await params
   const collections = await getCollectionsWithPreviewProducts(
-    params.countryCode,
+    countryCode,
     100
   )
 

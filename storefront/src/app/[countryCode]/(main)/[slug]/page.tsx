@@ -14,16 +14,18 @@ import {
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 type PageProps = {
-  params: {
+  params: Promise<{
     countryCode: string
     slug: string
-  }
+  }>
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  if (params.slug === "blog") {
+  const { slug } = await params
+
+  if (slug === "blog") {
     return {
       title: "Blog | YCO",
       description: "Artikuj nga YCO Organics.",
@@ -31,7 +33,7 @@ export async function generateMetadata({
   }
 
   const entry =
-    (await getWordPressPage(params.slug)) || (await getWordPressPost(params.slug))
+    (await getWordPressPage(slug)) || (await getWordPressPost(slug))
 
   if (!entry) {
     return {}
@@ -56,13 +58,15 @@ export async function generateStaticParams() {
 }
 
 export default async function LegacyWordPressRoute({ params }: PageProps) {
-  if (params.slug === "blog") {
+  const { slug } = await params
+
+  if (slug === "blog") {
     const posts = await listWordPressPosts()
     return <BlogIndex posts={posts} />
   }
 
-  const page = await getWordPressPage(params.slug)
-  const post = page ? null : await getWordPressPost(params.slug)
+  const page = await getWordPressPage(slug)
+  const post = page ? null : await getWordPressPost(slug)
   const entry = page || post
 
   if (!entry) {

@@ -564,7 +564,7 @@
     background:
       radial-gradient(circle at 74% 44%, rgba(255, 255, 255, 0.76), transparent 0 18%, transparent 39%),
       linear-gradient(118deg, var(--hero-a), var(--hero-b) 54%, var(--hero-c));
-    @apply relative grid overflow-hidden rounded-rounded small:min-h-[calc(100vh-156px)] small:grid-cols-[0.44fr_0.56fr];
+    @apply relative grid overflow-hidden rounded-rounded small:h-[calc(100svh-88px)] small:min-h-[560px] small:max-h-[760px] small:grid-cols-[0.44fr_0.56fr];
   }
 
   .bs-rhode-hero__stage::after {
@@ -576,7 +576,7 @@
   }
 
   .bs-rhode-hero__image-wrap {
-    @apply relative order-1 min-h-[54vh] overflow-hidden small:order-2 small:min-h-[calc(100vh-156px)];
+    @apply relative order-1 min-h-[54vh] overflow-hidden small:order-2 small:min-h-0;
   }
 
   .bs-rhode-hero__image {

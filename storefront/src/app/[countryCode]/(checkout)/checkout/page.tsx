@@ -31,8 +31,9 @@ const fetchCart = async () => {
 export default async function Checkout({
   params,
 }: {
-  params: { countryCode: string }
+  params: Promise<{ countryCode: string }>
 }) {
+  const { countryCode } = await params
   const cart = await fetchCart()
   const customer = await getCustomer()
 
@@ -42,7 +43,7 @@ export default async function Checkout({
         <CheckoutForm
           cart={cart}
           customer={customer}
-          countryCode={params.countryCode}
+          countryCode={countryCode}
         />
       </Wrapper>
       <CheckoutSummary cart={cart} customer={customer} />

@@ -58,7 +58,9 @@ export default async function CategoryTemplate({
       className="flex flex-col small:flex-row small:items-start py-6 content-container"
       data-testid="category-container"
     >
-      <RefinementList sortBy={sort} data-testid="sort-by-container" />
+      <Suspense fallback={null}>
+        <RefinementList sortBy={sort} data-testid="sort-by-container" />
+      </Suspense>
       <div className="w-full">
         <div className="flex flex-row mb-8 text-2xl-semi gap-4">
           {parents &&
@@ -147,7 +149,10 @@ export default async function CategoryTemplate({
           <PaginatedProducts
             sortBy={sort}
             page={pageNumber}
-            categoryId={category.id}
+            categoryIds={[
+              category.id,
+              ...childCategories.map((child) => child.id),
+            ]}
             countryCode={countryCode}
           />
         </Suspense>
