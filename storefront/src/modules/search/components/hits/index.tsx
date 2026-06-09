@@ -5,7 +5,7 @@ import {
   useHits,
   useSearchBox,
   useStats,
-} from "react-instantsearch-hooks-web"
+} from "react-instantsearch"
 
 import { ProductHit } from "../hit"
 import ShowAll from "../show-all"

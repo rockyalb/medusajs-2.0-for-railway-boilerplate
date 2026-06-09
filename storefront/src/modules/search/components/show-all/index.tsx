@@ -1,4 +1,4 @@
-import { useHits, useSearchBox } from "react-instantsearch-hooks-web"
+import { useHits, useSearchBox } from "react-instantsearch"
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 

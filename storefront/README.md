@@ -187,7 +187,7 @@ export async function search(query: string) {
 }
 ```
 
-After this you will need to set up Algolia with your Medusa server, and then you should be good to go. For a more thorough walkthrough of using Algolia with Medusa – [see our documentation](https://docs.medusajs.com/add-plugins/algolia), and the [documentation for using `react-instantsearch-hooks-web`](https://www.algolia.com/doc/guides/building-search-ui/getting-started/react-hooks/).
+After this you will need to set up Algolia with your Medusa server, and then you should be good to go. For a more thorough walkthrough of using Algolia with Medusa – [see our documentation](https://docs.medusajs.com/add-plugins/algolia), and the [documentation for using `react-instantsearch`](https://www.algolia.com/doc/guides/building-search-ui/getting-started/react/).
 
 ## App structure
 
@@ -201,7 +201,7 @@ For the new version, the main folder structure remains unchanged. The contents h
     ├── modules
     ├── styles
     ├── types
-    └── middleware.ts
+    └── proxy.ts
 
 ```
 
@@ -265,9 +265,9 @@ This is where all the components, templates and Server Actions are, grouped by s
 
 Contains global TypeScript type defintions.
 
-### `middleware.ts`
+### `proxy.ts`
 
-Next.js Middleware, which is basically an Edge function that runs before (almost) every request. In our case it enforces a `countryCode` in the url. So when a user visits any url on your storefront without a `countryCode` param, it will redirect the user to the url for the most relevant region.
+Next.js Proxy, which is basically an Edge function that runs before (almost) every request. In our case it enforces a `countryCode` in the url. So when a user visits any url on your storefront without a `countryCode` param, it will redirect the user to the url for the most relevant region.
 
 The region will be decided as follows:
 
@@ -302,7 +302,7 @@ If you want to use the `countryCode` param in your code, there's two ways to do 
     ```
     
 
-The middleware also sets a cookie based on the onboarding status of a user. This is related to the Medusa Admin onboarding flow, and may be safely removed in your production storefront.
+The proxy also sets a cookie based on the onboarding status of a user. This is related to the Medusa Admin onboarding flow, and may be safely removed in your production storefront.
 
 # Resources
 
