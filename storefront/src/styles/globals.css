@@ -614,16 +614,16 @@
     @apply relative order-2 z-[2] mx-auto flex min-h-[270px] w-full max-w-[46rem] flex-col items-start justify-start px-6 pb-10 pt-10 text-yco-charcoal small:order-1 small:min-h-0 small:max-w-none small:justify-center small:px-[clamp(48px,7vw,132px)] small:py-12;
   }
 
-  .bs-rhode-hero__copy p {
-    @apply mb-3 text-xs font-bold tracking-[0.08em];
+  .bs-rhode-hero__eyebrow {
+    @apply mb-3 inline-flex items-center gap-2 text-xs font-bold tracking-[0.08em];
   }
 
   .bs-rhode-hero__copy h1 {
     @apply mb-5 max-w-[760px] text-[clamp(34px,8vw,56px)] font-semibold leading-[0.98] tracking-normal small:text-[clamp(48px,5vw,88px)];
   }
 
-  .bs-rhode-hero__copy a {
-    @apply inline-flex min-h-[44px] items-center justify-center rounded-circle border border-current bg-white/20 px-7 text-xs font-bold transition hover:-translate-y-px hover:bg-white/50;
+  .bs-rhode-hero__support {
+    @apply mb-7 max-w-[34rem] text-sm leading-relaxed text-yco-charcoal/80 small:text-base;
   }
 
   .bs-rhode-hero__controls {

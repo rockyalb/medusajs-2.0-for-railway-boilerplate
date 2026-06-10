@@ -1,4 +1,4 @@
-import Link from "next/link"
+import HeroCopy from "./hero-copy"
 
 export default function Hero() {
   return (
@@ -9,14 +9,10 @@ export default function Hero() {
             src="https://bucket-production-a1707.up.railway.app/medusa-media/static/yco-hero-davines-shampoo-01.jpg"
             alt="Davines shampoo bottles on a light surface"
             className="bs-rhode-hero__image"
+            fetchPriority="high"
           />
         </div>
-
-        <div className="bs-rhode-hero__copy">
-          <p>{"MIRË PËR JU, MIRË PËR PLANETIN."}</p>
-          <h1>{"Shtëpia e produkteve zero-waste, organike dhe natyrale."}</h1>
-          <Link href="/store">Shiko produktet</Link>
-        </div>
+        <HeroCopy />
       </div>
     </section>
   )

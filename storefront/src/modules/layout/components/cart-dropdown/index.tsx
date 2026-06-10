@@ -3,14 +3,147 @@
 import { usePathname } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 
+import { deleteLineItem, updateLineItem } from "@lib/data/cart"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
-import DeleteButton from "@modules/common/components/delete-button"
 import FreeShippingProgress from "@modules/common/components/free-shipping-progress"
 import LineItemOptions from "@modules/common/components/line-item-options"
 import LineItemPrice from "@modules/common/components/line-item-price"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import QuantityStepper from "@modules/common/components/quantity-stepper"
 import Thumbnail from "@modules/products/components/thumbnail"
+
+const DropdownItem = ({
+  item,
+  onNavigate,
+}: {
+  item: HttpTypes.StoreCartLineItem
+  onNavigate: () => void
+}) => {
+  const [updating, setUpdating] = useState(false)
+  const [removing, setRemoving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const changeQuantity = async (quantity: number) => {
+    setError(null)
+    setUpdating(true)
+
+    await updateLineItem({ lineId: item.id, quantity })
+      .catch((err) => setError(err.message))
+      .finally(() => setUpdating(false))
+  }
+
+  const removeItem = async () => {
+    setError(null)
+    setRemoving(true)
+
+    await deleteLineItem(item.id).catch((err) => {
+      setError(err.message)
+      setRemoving(false)
+    })
+  }
+
+  // TODO: Update this to grab the actual max inventory
+  const maxQuantity = 10
+
+  return (
+    <div
+      className={`grid grid-cols-[92px_1fr] gap-x-4 rounded-large border border-yco-cream-dark bg-yco-panel/70 p-3 transition-opacity ${
+        removing ? "opacity-50" : "opacity-100"
+      }`}
+      data-testid="cart-item"
+    >
+      <LocalizedClientLink
+        href={`/products/${item.variant?.product?.handle}`}
+        className="w-24"
+        onClick={onNavigate}
+      >
+        <Thumbnail
+          thumbnail={item.variant?.product?.thumbnail}
+          images={item.variant?.product?.images}
+          size="square"
+        />
+      </LocalizedClientLink>
+
+      <div className="flex min-w-0 flex-col">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex min-w-0 flex-col">
+            <h3 className="text-sm font-bold text-yco-charcoal overflow-hidden text-ellipsis">
+              <LocalizedClientLink
+                href={`/products/${item.variant?.product?.handle}`}
+                data-testid="product-link"
+                onClick={onNavigate}
+              >
+                {item.title}
+              </LocalizedClientLink>
+            </h3>
+            <LineItemOptions
+              variant={item.variant}
+              data-testid="cart-item-variant"
+              data-value={item.variant}
+            />
+          </div>
+          <button
+            type="button"
+            onClick={removeItem}
+            disabled={removing}
+            aria-label={`Remove ${item.title} from cart`}
+            data-testid="cart-item-remove-button"
+            className="grid h-8 w-8 shrink-0 place-items-center rounded-circle text-yco-charcoal-muted transition-colors hover:bg-white hover:text-yco-charcoal disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal"
+          >
+            {removing ? (
+              <span className="h-3.5 w-3.5 animate-spin rounded-full border-[1.5px] border-current border-t-transparent" />
+            ) : (
+              <svg
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                aria-hidden
+              >
+                <path d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            )}
+          </button>
+        </div>
+
+        <div className="mt-auto flex items-end justify-between gap-3 pt-2">
+          <div
+            className="flex items-center gap-2"
+            data-testid="cart-item-quantity"
+            data-value={item.quantity}
+          >
+            <QuantityStepper
+              quantity={item.quantity}
+              onChange={changeQuantity}
+              max={maxQuantity}
+              disabled={updating || removing}
+              size="compact"
+            />
+            {updating && (
+              <span
+                className="h-3.5 w-3.5 animate-spin rounded-full border-[1.5px] border-yco-charcoal-muted border-t-transparent"
+                aria-label="Updating quantity"
+              />
+            )}
+          </div>
+          <div className="flex justify-end text-yco-charcoal text-sm">
+            <LineItemPrice item={item} style="tight" />
+          </div>
+        </div>
+
+        {error && (
+          <p className="mt-2 font-sans text-xs text-pastel-coral-ink" role="alert">
+            {error}
+          </p>
+        )}
+      </div>
+    </div>
+  )
+}
 
 const CartDropdown = ({
   cart: cartState,
@@ -131,68 +264,17 @@ const CartDropdown = ({
                 />
               </div>
 
-              <div className="flex-1 overflow-y-auto px-6 py-6 grid grid-cols-1 gap-y-5 no-scrollbar">
+              <div className="flex-1 overflow-y-auto px-6 py-6 flex flex-col content-start gap-y-5 no-scrollbar">
                 {cartState.items
                   .sort((a, b) =>
                     (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
                   )
                   .map((item) => (
-                    <div
-                      className="grid grid-cols-[92px_1fr] gap-x-4 rounded-large border border-yco-cream-dark bg-yco-panel/70 p-3"
+                    <DropdownItem
                       key={item.id}
-                      data-testid="cart-item"
-                    >
-                      <LocalizedClientLink
-                        href={`/products/${item.variant?.product?.handle}`}
-                        className="w-24"
-                        onClick={() => setOpen(false)}
-                      >
-                        <Thumbnail
-                          thumbnail={item.variant?.product?.thumbnail}
-                          images={item.variant?.product?.images}
-                          size="square"
-                        />
-                      </LocalizedClientLink>
-                      <div className="flex flex-col justify-between flex-1">
-                        <div className="flex flex-col flex-1">
-                          <div className="flex items-start justify-between">
-                            <div className="mr-4 flex min-w-0 flex-col">
-                              <h3 className="text-sm font-bold text-yco-charcoal overflow-hidden text-ellipsis">
-                                <LocalizedClientLink
-                                  href={`/products/${item.variant?.product?.handle}`}
-                                  data-testid="product-link"
-                                  onClick={() => setOpen(false)}
-                                >
-                                  {item.title}
-                                </LocalizedClientLink>
-                              </h3>
-                              <LineItemOptions
-                                variant={item.variant}
-                                data-testid="cart-item-variant"
-                                data-value={item.variant}
-                              />
-                              <span
-                                className="text-yco-charcoal-muted text-xs mt-1"
-                                data-testid="cart-item-quantity"
-                                data-value={item.quantity}
-                              >
-                                Quantity: {item.quantity}
-                              </span>
-                            </div>
-                            <div className="flex justify-end text-yco-charcoal text-sm">
-                              <LineItemPrice item={item} style="tight" />
-                            </div>
-                          </div>
-                        </div>
-                        <DeleteButton
-                          id={item.id}
-                          className="mt-1 text-yco-charcoal-muted text-xs"
-                          data-testid="cart-item-remove-button"
-                        >
-                          Remove
-                        </DeleteButton>
-                      </div>
-                    </div>
+                      item={item}
+                      onNavigate={() => setOpen(false)}
+                    />
                   ))}
               </div>
 

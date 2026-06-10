@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { useRef } from "react"
+import { motion, useReducedMotion } from "motion/react"
 import type { HttpTypes } from "@medusajs/types"
 import type { MouseEvent, PointerEvent } from "react"
 import type { CategoryProduct } from "./category-product-slider"
@@ -49,6 +50,7 @@ export default function CategoryGrid({
   categories: CategoryCard[]
   countryCode: string
 }) {
+  const reducedMotion = useReducedMotion()
   const scrollerRef = useRef<HTMLDivElement>(null)
   const dragState = useRef({
     active: false,
@@ -124,7 +126,13 @@ export default function CategoryGrid({
   return (
     <section className="bg-white px-6 py-10 small:py-12">
       <div className="max-w-6xl mx-auto">
-        <div className="mb-7 flex items-end justify-between gap-6">
+        <motion.div
+          initial={reducedMotion ? false : { opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.4 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-7 flex items-end justify-between gap-6"
+        >
           <div>
             <span className="rhode-eyebrow inline-flex items-center gap-2">
               <span className="yco-accent-dot" aria-hidden />
@@ -141,7 +149,7 @@ export default function CategoryGrid({
           >
             View all
           </Link>
-        </div>
+        </motion.div>
 
         <div
           ref={scrollerRef}
@@ -160,10 +168,21 @@ export default function CategoryGrid({
               const accentClass = accentForCategory(category, index)
 
               return (
-                <Link
+                <motion.div
                   key={category.id}
+                  initial={reducedMotion ? false : { opacity: 0, y: 32 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.25 }}
+                  transition={{
+                    duration: 0.75,
+                    ease: [0.22, 1, 0.36, 1],
+                    delay: (index % 4) * 0.07,
+                  }}
+                  className="w-[78vw] max-w-[25rem] shrink-0 snap-start small:w-[38vw] medium:w-[30vw] large:w-[24rem]"
+                >
+                <Link
                   href={`/${countryCode}/categories/${category.handle}`}
-                  className={`group ${accentClass} yco-accent-card relative flex min-h-[360px] w-[78vw] max-w-[25rem] shrink-0 snap-start flex-col justify-between overflow-hidden rounded-large p-5 small:w-[38vw] medium:w-[30vw] large:w-[24rem]`}
+                  className={`group ${accentClass} yco-accent-card relative flex h-full min-h-[360px] flex-col justify-between overflow-hidden rounded-large p-5 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2`}
                   aria-label={`Shop ${category.name}`}
                   draggable={false}
                   onClick={handleCategoryClick}
@@ -217,6 +236,7 @@ export default function CategoryGrid({
                     </span>
                   </div>
                 </Link>
+                </motion.div>
               )
             })}
           </div>

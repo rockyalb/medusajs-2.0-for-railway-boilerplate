@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { HttpTypes } from "@medusajs/types"
 import { BRAND_LOGOS } from "@lib/data/brand-logos"
+import { Reveal, Stagger, StaggerItem } from "@modules/common/components/motion"
 
 type BrandCollection = HttpTypes.StoreCollection & {
   products?: HttpTypes.StoreProduct[]
@@ -28,7 +29,7 @@ export default function FeaturedBrands({
     <section className="bg-yco-cream-dark px-6 py-12 small:py-14">
       <div className="max-w-6xl mx-auto">
 
-        <div className="text-center mb-9 small:mb-10">
+        <Reveal className="text-center mb-9 small:mb-10">
           <span className="font-sans text-pastel-mint-ink text-xs tracking-[0.3em] uppercase font-semibold">Curated Partners</span>
           <h2 className="font-serif text-yco-charcoal text-3xl md:text-4xl mt-3">
             Brands We Trust
@@ -37,18 +38,26 @@ export default function FeaturedBrands({
           <p className="font-sans text-yco-charcoal-muted text-sm mt-4 max-w-md mx-auto leading-relaxed">
             Every brand is hand-selected for their commitment to sustainability, ethics, and exceptional quality.
           </p>
-        </div>
+        </Reveal>
 
-        <div className="-mx-6 flex gap-4 overflow-x-auto px-6 pb-2 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-6">
+        <Stagger
+          stagger={0.06}
+          role="list"
+          className="-mx-6 flex gap-4 overflow-x-auto px-6 pb-2 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-6"
+        >
           {brands.map((brand, index) => {
             const logo = brand.handle ? BRAND_LOGOS[brand.handle] : undefined
             const accentClass = accentClasses[index % accentClasses.length]
 
             return (
-            <Link
+            <StaggerItem
               key={brand.id}
+              role="listitem"
+              className="w-[42vw] min-w-[9.5rem] max-w-[12rem] shrink-0 md:w-auto md:min-w-0 md:max-w-none"
+            >
+            <Link
               href={`/collections/${brand.handle}`}
-              className={`group ${accentClass} flex w-[42vw] min-w-[9.5rem] max-w-[12rem] shrink-0 flex-col rounded-2xl border border-yco-cream-dark/40 bg-yco-cream p-3 transition-all duration-300 hover:-translate-y-1 hover:border-[color:var(--accent)] hover:shadow-[0_20px_42px_-20px_var(--accent-glow)] active:scale-95 md:w-auto md:min-w-0 md:max-w-none`}
+              className={`group ${accentClass} flex h-full flex-col rounded-2xl border border-yco-cream-dark/40 bg-yco-cream p-3 transition-all duration-300 hover:-translate-y-1 hover:border-[color:var(--accent)] hover:shadow-[0_20px_42px_-20px_var(--accent-glow)] active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2`}
             >
               <div className="mb-4 aspect-square overflow-hidden rounded-large bg-white flex items-center justify-center p-5">
                 {logo ? (
@@ -73,8 +82,9 @@ export default function FeaturedBrands({
                 Shop brand
               </div>
             </Link>
+            </StaggerItem>
           )})}
-        </div>
+        </Stagger>
 
         <div className="text-center mt-8">
           <Link

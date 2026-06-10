@@ -3,6 +3,7 @@
 import { clx } from "@medusajs/ui"
 import { ReactNode, useEffect, useState } from "react"
 
+import { BRAND_LOGOS } from "@lib/data/brand-logos"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import AnnouncementBar from "@modules/layout/components/announcement-bar"
 
@@ -10,8 +11,16 @@ type SimpleCategory = {
   id: string
   name: string
   handle: string
+  image?: string
   children?: SimpleCategory[]
 }
+
+// Full literal class names so Tailwind keeps these hand-written @layer rules.
+const ACCENT_CLASSES = [
+  "yco-accent--mint",
+  "yco-accent--coral",
+  "yco-accent--blue",
+] as const
 type SimpleCollection = {
   id: string
   title: string
@@ -92,45 +101,71 @@ function CategoryNestedList({
   setActiveCategoryId: (id: string) => void
   onNavigate: () => void
 }) {
-  const activeCategory =
-    categories.find((category) => category.id === activeCategoryId) ??
-    categories[0]
+  const activeIndex = Math.max(
+    categories.findIndex((category) => category.id === activeCategoryId),
+    0
+  )
+  const activeCategory = categories[activeIndex]
   const children = activeCategory?.children ?? []
+  const accentClass = ACCENT_CLASSES[activeIndex % ACCENT_CLASSES.length]
 
   return (
-    <div className="grid min-h-[22rem] grid-cols-[0.78fr_1.22fr] gap-10">
-      <div className="overflow-y-auto pr-4">
+    <div className="grid min-h-[24rem] grid-cols-[0.62fr_1fr_0.72fr] gap-10">
+      <div className="overflow-y-auto pr-2">
         <div className="mb-4 font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal-muted">
           Categories
         </div>
         <ul className="space-y-1">
-          {categories.map((category) => (
-            <li key={category.id}>
-              <LocalizedClientLink
-                href={`/categories/${category.handle}`}
-                onMouseEnter={() => setActiveCategoryId(category.id)}
-                onFocus={() => setActiveCategoryId(category.id)}
-                onClick={onNavigate}
-                className={clx(
-                  "group flex items-center justify-between rounded-base px-3 py-3 font-sans text-sm font-bold uppercase tracking-[0.08em] transition-colors",
-                  activeCategory?.id === category.id
-                    ? "bg-white text-yco-charcoal"
-                    : "text-yco-charcoal-muted hover:bg-white hover:text-yco-charcoal"
-                )}
-              >
-                <span>{category.name}</span>
-                {(category.children?.length ?? 0) > 0 && (
-                  <span className="text-yco-charcoal-muted transition-transform group-hover:translate-x-1">
-                    {category.children?.length}
-                  </span>
-                )}
-              </LocalizedClientLink>
-            </li>
-          ))}
+          {categories.map((category) => {
+            const isActive = activeCategory?.id === category.id
+
+            return (
+              <li key={category.id}>
+                <LocalizedClientLink
+                  href={`/categories/${category.handle}`}
+                  onMouseEnter={() => setActiveCategoryId(category.id)}
+                  onFocus={() => setActiveCategoryId(category.id)}
+                  onClick={onNavigate}
+                  className={clx(
+                    "group flex items-center justify-between rounded-base px-3 py-3 font-sans text-sm font-bold uppercase tracking-[0.08em] transition-colors",
+                    isActive
+                      ? "bg-white text-yco-charcoal shadow-sm"
+                      : "text-yco-charcoal-muted hover:bg-white hover:text-yco-charcoal"
+                  )}
+                >
+                  <span>{category.name}</span>
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden
+                    className={clx(
+                      "shrink-0 transition-all duration-200",
+                      isActive
+                        ? "translate-x-0 opacity-100"
+                        : "-translate-x-1 opacity-0 group-hover:translate-x-0 group-hover:opacity-60"
+                    )}
+                  >
+                    <path
+                      d="M9 8l4 4-4 4"
+                      stroke="currentColor"
+                      strokeWidth="1.4"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </LocalizedClientLink>
+              </li>
+            )
+          })}
         </ul>
       </div>
 
-      <div className="overflow-y-auto border-l border-yco-cream-dark pl-10">
+      <div
+        key={activeCategory?.id}
+        className="animate-fade-in-top overflow-y-auto border-l border-yco-cream-dark pl-10 motion-reduce:animate-none"
+      >
         {activeCategory && (
           <>
             <div className="mb-5 flex items-center justify-between gap-6">
@@ -168,6 +203,55 @@ function CategoryNestedList({
           </>
         )}
       </div>
+
+      {activeCategory && (
+        <LocalizedClientLink
+          key={`${activeCategory.id}-card`}
+          href={`/categories/${activeCategory.handle}`}
+          onClick={onNavigate}
+          className={clx(
+            accentClass,
+            "yco-accent-card group flex animate-fade-in-top flex-col justify-between overflow-hidden rounded-large p-4 motion-reduce:animate-none"
+          )}
+          aria-label={`Shop ${activeCategory.name}`}
+        >
+          <div className="aspect-[4/3] overflow-hidden rounded-rounded bg-white">
+            {activeCategory.image ? (
+              <img
+                src={activeCategory.image}
+                alt=""
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
+                loading="lazy"
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center font-sans text-6xl font-black lowercase text-yco-charcoal/20">
+                {activeCategory.name.slice(0, 1)}
+              </div>
+            )}
+          </div>
+          <div className="mt-4 flex items-end justify-between gap-3">
+            <div>
+              <div className="font-sans text-sm font-bold text-yco-charcoal">
+                {activeCategory.name}
+              </div>
+              <p className="mt-0.5 font-sans text-xs text-yco-charcoal-muted">
+                Shop the category
+              </p>
+            </div>
+            <span className="rhode-round-btn rhode-round-btn--accent h-9 w-9 shrink-0">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+                <path
+                  d="M9 8l4 4-4 4"
+                  stroke="currentColor"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+          </div>
+        </LocalizedClientLink>
+      )}
     </div>
   )
 }
@@ -180,8 +264,8 @@ function BrandsList({
   onNavigate: () => void
 }) {
   return (
-    <div className="min-h-[22rem] overflow-y-auto pr-2">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="min-h-[24rem] animate-fade-in-top overflow-y-auto pr-2 motion-reduce:animate-none">
+      <div className="mb-5 flex items-center justify-between">
         <div className="font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal-muted">
           Brands
         </div>
@@ -193,18 +277,38 @@ function BrandsList({
           View all
         </LocalizedClientLink>
       </div>
-      <ul className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-1">
-        {collections.map((collection) => (
-          <li key={collection.id}>
-            <LocalizedClientLink
-              href={`/collections/${collection.handle}`}
-              onClick={onNavigate}
-              className="block rounded-base px-3 py-2 font-sans text-sm text-yco-charcoal-muted transition-colors hover:bg-white hover:text-yco-charcoal"
-            >
-              {collection.title}
-            </LocalizedClientLink>
-          </li>
-        ))}
+      <ul className="grid grid-cols-3 gap-3 lg:grid-cols-6">
+        {collections.map((collection) => {
+          const logo = BRAND_LOGOS[collection.handle]
+
+          return (
+            <li key={collection.id}>
+              <LocalizedClientLink
+                href={`/collections/${collection.handle}`}
+                onClick={onNavigate}
+                className="group flex h-full flex-col items-center gap-3 rounded-large border border-transparent bg-white p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-yco-cream-dark hover:shadow-md"
+              >
+                <span className="grid aspect-square w-full place-items-center overflow-hidden rounded-rounded p-2">
+                  {logo ? (
+                    <img
+                      src={logo}
+                      alt=""
+                      className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.06]"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <span className="font-sans text-3xl font-black lowercase text-yco-charcoal/30">
+                      {collection.title.slice(0, 1)}
+                    </span>
+                  )}
+                </span>
+                <span className="text-center font-sans text-xs font-bold leading-tight text-yco-charcoal">
+                  {collection.title}
+                </span>
+              </LocalizedClientLink>
+            </li>
+          )
+        })}
       </ul>
     </div>
   )
@@ -354,19 +458,20 @@ export default function NavClient({
   }, [mobileOpen])
 
   useEffect(() => {
-    if (!mobileOpen) {
+    if (!mobileOpen && !shopOpen) {
       return
     }
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setMobileOpen(false)
+        setShopOpen(false)
       }
     }
 
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
-  }, [mobileOpen])
+  }, [mobileOpen, shopOpen])
 
   const closeMobile = () => setMobileOpen(false)
   const closeShop = () => setShopOpen(false)
@@ -465,11 +570,20 @@ export default function NavClient({
           </div>
         </nav>
 
+        {/* Dim the page below while the megamenu is open. */}
+        <div
+          aria-hidden
+          className={clx(
+            "pointer-events-none absolute left-0 right-0 top-full hidden h-screen bg-yco-charcoal/25 transition-opacity duration-300 small:block",
+            shopOpen ? "opacity-100" : "opacity-0"
+          )}
+        />
+
         {hasMenu && (
           <div
             id="shop-megamenu"
             className={clx(
-              "absolute left-0 right-0 top-full hidden small:block bg-yco-panel border-b border-yco-cream-dark transition-all duration-300 ease-out",
+              "absolute left-0 right-0 top-full hidden small:block bg-yco-panel border-b border-yco-cream-dark shadow-[0_32px_60px_-36px_rgba(47,45,41,0.45)] transition-all duration-300 ease-out",
               shopOpen
                 ? "visible opacity-100 translate-y-0"
                 : "invisible opacity-0 -translate-y-2 pointer-events-none"

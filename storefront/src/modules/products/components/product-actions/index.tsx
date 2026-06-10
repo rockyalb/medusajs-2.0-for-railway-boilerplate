@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 
 import { useIntersection } from "@lib/hooks/use-in-view"
 import Divider from "@modules/common/components/divider"
+import QuantityStepper from "@modules/common/components/quantity-stepper"
 import OptionSelect from "@modules/products/components/product-actions/option-select"
 
 import MobileActions from "./mobile-actions"
@@ -35,6 +36,7 @@ export default function ProductActions({
 }: ProductActionsProps) {
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
+  const [quantity, setQuantity] = useState(1)
   const countryCode = useParams().countryCode as string
 
   // If there is only 1 variant, preselect the options
@@ -88,6 +90,24 @@ export default function ProductActions({
     return false
   }, [selectedVariant])
 
+  // Cap the selectable quantity by available inventory (TODO: real max inventory).
+  const maxQuantity = useMemo(() => {
+    if (!selectedVariant) {
+      return 1
+    }
+
+    if (!selectedVariant.manage_inventory || selectedVariant.allow_backorder) {
+      return 10
+    }
+
+    return Math.max(Math.min(selectedVariant.inventory_quantity ?? 0, 10), 1)
+  }, [selectedVariant])
+
+  // Reset the quantity when the variant changes.
+  useEffect(() => {
+    setQuantity(1)
+  }, [selectedVariant?.id])
+
   const actionsRef = useRef<HTMLDivElement>(null)
 
   const inView = useIntersection(actionsRef, "0px")
@@ -100,7 +120,7 @@ export default function ProductActions({
 
     await addToCart({
       variantId: selectedVariant.id,
-      quantity: 1,
+      quantity,
       countryCode,
     })
 
@@ -133,6 +153,19 @@ export default function ProductActions({
         </div>
 
         <ProductPrice product={product} variant={selectedVariant} />
+
+        <div className="flex items-center gap-3">
+          <span className="font-sans text-xs font-bold uppercase tracking-[0.14em] text-yco-charcoal-muted">
+            Qty
+          </span>
+          <QuantityStepper
+            quantity={quantity}
+            onChange={setQuantity}
+            max={maxQuantity}
+            disabled={!inStock || !selectedVariant || !!disabled || isAdding}
+            data-testid="product-quantity-stepper"
+          />
+        </div>
 
         <button
           type="button"

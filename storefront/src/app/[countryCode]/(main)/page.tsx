@@ -2,10 +2,15 @@ import { Metadata } from "next"
 
 import Hero from "@modules/home/components/hero"
 import CategoryGrid from "@modules/home/components/category-grid"
+import EditorialBanner from "@modules/home/components/editorial-banner"
 import FeaturedBrands from "@modules/home/components/featured-brands"
 import FeaturedProducts from "@modules/home/components/featured-products"
 import LatestBlogPosts from "@modules/home/components/latest-blog-posts"
+import MissionSection from "@modules/home/components/mission-section"
+import Newsletter from "@modules/home/components/newsletter"
 import Testimonials from "@modules/home/components/testimonials"
+import TrustBadges from "@modules/home/components/trust-badges"
+import { Reveal } from "@modules/common/components/motion"
 import { getCategoriesList } from "@lib/data/categories"
 import { getCollectionsWithPreviewProducts } from "@lib/data/collections"
 import {
@@ -118,11 +123,11 @@ export default async function Home({
     <div>
       <Hero />
       <CategoryGrid categories={categoryCards} countryCode={countryCode} />
-      <FeaturedBrands collections={collectionResponse ?? []} />
+      <MissionSection />
 
       {bestsellerProducts.length > 0 && region && (
         <section className="bg-white px-6 py-10 small:py-12">
-          <div className="max-w-6xl mx-auto mb-7 small:mb-8">
+          <Reveal className="max-w-6xl mx-auto mb-7 small:mb-8">
             <span className="rhode-eyebrow inline-flex items-center gap-2">
               <span className="yco-accent-dot" aria-hidden />
               Handpicked for you
@@ -131,13 +136,17 @@ export default async function Home({
               bestsellers
             </h2>
             <div className="yco-tricolor-rule mt-4" />
-          </div>
+          </Reveal>
           <FeaturedProducts products={bestsellerProducts} region={region} />
         </section>
       )}
 
-      <LatestBlogPosts posts={latestPosts} />
+      <FeaturedBrands collections={collectionResponse ?? []} />
+      <TrustBadges />
+      <EditorialBanner />
       <Testimonials />
+      <LatestBlogPosts posts={latestPosts} />
+      <Newsletter />
     </div>
   )
 }

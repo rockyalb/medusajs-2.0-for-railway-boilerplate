@@ -1,3 +1,5 @@
+import { Reveal, Stagger, StaggerItem } from "@modules/common/components/motion"
+
 const reviews = [
   {
     name: "Amelia R.",
@@ -55,7 +57,7 @@ export default function Testimonials() {
   return (
     <section className="bg-white px-6 py-14 small:py-16">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <Reveal className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 className="rhode-display text-4xl md:text-5xl">yco + you</h2>
             <div className="yco-tricolor-rule mt-4" />
@@ -75,14 +77,17 @@ export default function Testimonials() {
           >
             Find us on social
           </a>
-        </div>
+        </Reveal>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
+        <Stagger
+          stagger={0.1}
+          className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6"
+        >
           {reviews.map((review, index) => {
             const accentClass = ACCENT_CLASSES[index % ACCENT_CLASSES.length]
 
             return (
-            <div
+            <StaggerItem
               key={review.name}
               className={`${accentClass} yco-accent-card flex flex-col gap-5 rounded-large p-8`}
             >
@@ -116,10 +121,10 @@ export default function Testimonials() {
                   </div>
                 </div>
               </div>
-            </div>
+            </StaggerItem>
             )
           })}
-        </div>
+        </Stagger>
 
         <div className="mt-8 flex flex-col items-center justify-center gap-2 text-center sm:flex-row">
           <Stars count={5} />
