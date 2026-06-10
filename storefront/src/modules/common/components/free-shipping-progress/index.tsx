@@ -4,17 +4,21 @@ import { FREE_SHIPPING_THRESHOLD_ALL } from "@lib/constants"
 import { convertToLocale } from "@lib/util/money"
 
 type FreeShippingProgressProps = {
+  item_total?: number | null
   subtotal?: number | null
+  tax_total?: number | null
   currency_code: string
   compact?: boolean
 }
 
 const FreeShippingProgress = ({
+  item_total,
   subtotal = 0,
+  tax_total = 0,
   currency_code,
   compact = false,
 }: FreeShippingProgressProps) => {
-  const current = Math.max(0, subtotal ?? 0)
+  const current = Math.max(0, item_total ?? (subtotal ?? 0) + (tax_total ?? 0))
   const remaining = Math.max(FREE_SHIPPING_THRESHOLD_ALL - current, 0)
   const progress = Math.min((current / FREE_SHIPPING_THRESHOLD_ALL) * 100, 100)
   const hasFreeShipping = remaining <= 0

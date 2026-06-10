@@ -81,7 +81,9 @@ const CheckoutSummary = async ({
         </Heading>
         <Divider className="my-6" />
         <FreeShippingProgress
+          item_total={cart.item_total}
           subtotal={cart.subtotal}
+          tax_total={cart.tax_total}
           currency_code={cart.currency_code}
           compact
         />

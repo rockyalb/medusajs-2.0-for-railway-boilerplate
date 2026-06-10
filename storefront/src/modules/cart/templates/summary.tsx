@@ -34,7 +34,9 @@ const Summary = ({ cart }: SummaryProps) => {
         Summary
       </Heading>
       <FreeShippingProgress
+        item_total={cart.item_total}
         subtotal={cart.subtotal}
+        tax_total={cart.tax_total}
         currency_code={cart.currency_code}
       />
       <DiscountCode cart={cart} />

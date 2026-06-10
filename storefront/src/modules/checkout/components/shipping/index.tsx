@@ -170,7 +170,9 @@ const Shipping: React.FC<ShippingProps> = ({
       {isOpen ? (
         <div data-testid="delivery-options-container">
           <FreeShippingProgress
+            item_total={cart.item_total}
             subtotal={cart.subtotal}
+            tax_total={cart.tax_total}
             currency_code={cart.currency_code}
           />
           <div className="pb-8 pt-5">
