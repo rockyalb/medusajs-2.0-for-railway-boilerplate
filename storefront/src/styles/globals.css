@@ -564,7 +564,9 @@
     background:
       radial-gradient(circle at 74% 44%, rgba(255, 255, 255, 0.76), transparent 0 18%, transparent 39%),
       linear-gradient(118deg, var(--hero-a), var(--hero-b) 54%, var(--hero-c));
-    @apply relative grid overflow-hidden rounded-rounded small:h-[calc(100svh-88px)] small:min-h-[560px] small:max-h-[760px] small:grid-cols-[0.44fr_0.56fr];
+    /* Mobile: hero fits the viewport below the sticky header — the photo row
+       flexes, the copy row sizes to content. Desktop: side-by-side columns. */
+    @apply relative grid h-[max(calc(100svh-136px),480px)] grid-rows-[minmax(0,1fr)_auto] overflow-hidden rounded-rounded small:h-[calc(100svh-88px)] small:min-h-[560px] small:max-h-[760px] small:grid-cols-[0.44fr_0.56fr] small:grid-rows-none;
   }
 
   .bs-rhode-hero__stage::after {
@@ -576,7 +578,7 @@
   }
 
   .bs-rhode-hero__image-wrap {
-    @apply relative order-1 min-h-[54vh] overflow-hidden small:order-2 small:min-h-0;
+    @apply relative order-1 min-h-0 overflow-hidden small:order-2;
   }
 
   .bs-rhode-hero__image {
@@ -611,7 +613,7 @@
   }
 
   .bs-rhode-hero__copy {
-    @apply relative order-2 z-[2] mx-auto flex min-h-[270px] w-full max-w-[46rem] flex-col items-start justify-start px-6 pb-10 pt-10 text-yco-charcoal small:order-1 small:min-h-0 small:max-w-none small:justify-center small:px-[clamp(48px,7vw,132px)] small:py-12;
+    @apply relative order-2 z-[2] mx-auto flex w-full max-w-[46rem] flex-col items-start justify-start px-6 pb-7 pt-6 text-yco-charcoal small:order-1 small:max-w-none small:justify-center small:px-[clamp(48px,7vw,132px)] small:py-12;
   }
 
   .bs-rhode-hero__eyebrow {
