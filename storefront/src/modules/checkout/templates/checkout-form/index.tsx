@@ -11,11 +11,9 @@ import Shipping from "@modules/checkout/components/shipping"
 export default async function CheckoutForm({
   cart,
   customer,
-  countryCode,
 }: {
   cart: HttpTypes.StoreCart | null
   customer: HttpTypes.StoreCustomer | null
-  countryCode: string
 }) {
   if (!cart) {
     return null
@@ -39,7 +37,6 @@ export default async function CheckoutForm({
           isEnabled={loyaltyRewardSetting.is_enabled}
           isActive={loyaltyRewardSetting.is_active}
           endDate={loyaltyRewardSetting.end_date}
-          countryCode={countryCode}
         />
 
         <Addresses cart={cart} customer={customer} />

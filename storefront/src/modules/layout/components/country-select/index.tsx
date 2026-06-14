@@ -5,7 +5,7 @@ import { Fragment, useEffect, useMemo, useState } from "react"
 import ReactCountryFlag from "react-country-flag"
 
 import { StateType } from "@lib/hooks/use-toggle-state"
-import { useParams, usePathname } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { updateRegion } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
 
@@ -20,14 +20,26 @@ type CountrySelectProps = {
   regions: HttpTypes.StoreRegion[]
 }
 
+const COUNTRY_CODE_COOKIE_NAME = "_medusa_country_code"
+
+function getCookie(name: string): string | null {
+  if (typeof document === "undefined") {
+    return null
+  }
+
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  return parts.length === 2 ? parts.pop()?.split(";").shift() ?? null : null
+}
+
 const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
   const [current, setCurrent] = useState<
     | { country: string | undefined; region: string; label: string | undefined }
     | undefined
   >(undefined)
+  const [countryCode, setCountryCode] = useState<string | null>(null)
 
-  const { countryCode } = useParams()
-  const currentPath = usePathname().split(`/${countryCode}`)[1]
+  const currentPath = usePathname()
 
   const { state, close } = toggleState
 
@@ -45,13 +57,20 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
   }, [regions])
 
   useEffect(() => {
+    setCountryCode(getCookie(COUNTRY_CODE_COOKIE_NAME))
+  }, [])
+
+  useEffect(() => {
     if (countryCode) {
-      const option = options?.find((o) => o?.country === countryCode)
+      const option = options?.find(
+        (o) => o?.country?.toLowerCase() === countryCode.toLowerCase()
+      )
       setCurrent(option)
     }
   }, [options, countryCode])
 
   const handleChange = (option: CountryOption) => {
+    setCountryCode(option.country.toLowerCase())
     updateRegion(option.country, currentPath)
     close()
   }
@@ -63,7 +82,9 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
         onChange={handleChange}
         defaultValue={
           countryCode
-            ? options?.find((o) => o?.country === countryCode)
+            ? options?.find(
+                (o) => o?.country?.toLowerCase() === countryCode.toLowerCase()
+              )
             : undefined
         }
       >

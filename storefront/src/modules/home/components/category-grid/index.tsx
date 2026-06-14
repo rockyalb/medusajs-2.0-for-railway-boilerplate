@@ -45,10 +45,8 @@ const accentForCategory = (
 
 export default function CategoryGrid({
   categories,
-  countryCode,
 }: {
   categories: CategoryCard[]
-  countryCode: string
 }) {
   const reducedMotion = useReducedMotion()
   const scrollerRef = useRef<HTMLDivElement>(null)
@@ -144,7 +142,7 @@ export default function CategoryGrid({
             <div className="yco-tricolor-rule mt-4" />
           </div>
           <Link
-            href={`/${countryCode}/store`}
+            href="/store"
             className="hidden font-sans text-xs font-bold uppercase tracking-[0.18em] text-yco-charcoal transition-colors hover:text-pastel-coral-ink small:block"
           >
             View all
@@ -180,62 +178,67 @@ export default function CategoryGrid({
                   }}
                   className="w-[78vw] max-w-[25rem] shrink-0 snap-start small:w-[38vw] medium:w-[30vw] large:w-[24rem]"
                 >
-                <Link
-                  href={`/${countryCode}/categories/${category.handle}`}
-                  className={`group ${accentClass} yco-accent-card relative flex h-full min-h-[360px] flex-col justify-between overflow-hidden rounded-large p-5 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2`}
-                  aria-label={`Shop ${category.name}`}
-                  draggable={false}
-                  onClick={handleCategoryClick}
-                >
-                  <div>
-                    <h3 className="rhode-display text-5xl md:text-6xl">
-                      {category.name.toLowerCase()}
-                    </h3>
-                    {category.description && (
-                      <p className="mt-2 max-w-[17rem] font-sans text-xs leading-relaxed text-yco-charcoal-muted">
-                        {category.description}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="my-6 aspect-[4/3] overflow-hidden rounded-rounded bg-white">
-                    {image ? (
-                      <img
-                        src={image}
-                        alt={products[0]?.title || category.name}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                        loading={index > 1 ? "lazy" : undefined}
-                        draggable={false}
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center font-sans text-6xl font-black lowercase text-yco-charcoal/20">
-                        {category.name.slice(0, 1)}
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="flex items-end justify-between gap-4">
+                  <Link
+                    href={`/categories/${category.handle}`}
+                    className={`group ${accentClass} yco-accent-card relative flex h-full min-h-[360px] flex-col justify-between overflow-hidden rounded-large p-5 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2`}
+                    aria-label={`Shop ${category.name}`}
+                    draggable={false}
+                    onClick={handleCategoryClick}
+                  >
                     <div>
-                      <div className="font-sans text-yco-charcoal text-sm font-bold">
-                        {category.name}
-                      </div>
-                      <p className="mt-1 font-sans text-xs text-yco-charcoal-muted">
-                        {productCount} products
-                      </p>
+                      <h3 className="rhode-display text-5xl md:text-6xl">
+                        {category.name.toLowerCase()}
+                      </h3>
+                      {category.description && (
+                        <p className="mt-2 max-w-[17rem] font-sans text-xs leading-relaxed text-yco-charcoal-muted">
+                          {category.description}
+                        </p>
+                      )}
                     </div>
-                    <span className="rhode-round-btn rhode-round-btn--accent shrink-0">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                        <path
-                          d="M9 8l4 4-4 4"
-                          stroke="currentColor"
-                          strokeWidth="1.3"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
+
+                    <div className="my-6 aspect-[4/3] overflow-hidden rounded-rounded bg-white">
+                      {image ? (
+                        <img
+                          src={image}
+                          alt={products[0]?.title || category.name}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                          loading={index > 1 ? "lazy" : undefined}
+                          draggable={false}
                         />
-                      </svg>
-                    </span>
-                  </div>
-                </Link>
+                      ) : (
+                        <div className="flex h-full items-center justify-center font-sans text-6xl font-black lowercase text-yco-charcoal/20">
+                          {category.name.slice(0, 1)}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-end justify-between gap-4">
+                      <div>
+                        <div className="font-sans text-yco-charcoal text-sm font-bold">
+                          {category.name}
+                        </div>
+                        <p className="mt-1 font-sans text-xs text-yco-charcoal-muted">
+                          {productCount} products
+                        </p>
+                      </div>
+                      <span className="rhode-round-btn rhode-round-btn--accent shrink-0">
+                        <svg
+                          width="22"
+                          height="22"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                        >
+                          <path
+                            d="M9 8l4 4-4 4"
+                            stroke="currentColor"
+                            strokeWidth="1.3"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </span>
+                    </div>
+                  </Link>
                 </motion.div>
               )
             })}

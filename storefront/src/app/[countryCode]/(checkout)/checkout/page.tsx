@@ -40,11 +40,7 @@ export default async function Checkout({
   return (
     <div className="content-container grid grid-cols-1 gap-8 py-10 small:grid-cols-[1fr_416px] small:gap-10 small:py-12">
       <Wrapper cart={cart}>
-        <CheckoutForm
-          cart={cart}
-          customer={customer}
-          countryCode={countryCode}
-        />
+        <CheckoutForm cart={cart} customer={customer} />
       </Wrapper>
       <CheckoutSummary cart={cart} customer={customer} />
     </div>

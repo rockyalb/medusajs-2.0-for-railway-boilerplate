@@ -7,7 +7,13 @@ import { omit } from "lodash"
 import { revalidateTag } from "next/cache"
 import { cookies, headers } from "next/headers"
 import { redirect } from "next/navigation"
-import { getAuthHeaders, getCartId, removeCartId, setCartId } from "./cookies"
+import {
+  getAuthHeaders,
+  getCartId,
+  removeCartId,
+  setCartId,
+  setCountryCode,
+} from "./cookies"
 import { getProductsById } from "./products"
 import { getRegion, listRegions } from "./regions"
 
@@ -390,9 +396,7 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
     return e.message
   }
 
-  redirect(
-    `/${formData.get("shipping_address.country_code")}/checkout?step=delivery`
-  )
+  redirect("/checkout?step=delivery")
 }
 
 export async function placeOrder() {
@@ -413,10 +417,8 @@ export async function placeOrder() {
     .catch(medusaError)
 
   if (cartRes?.type === "order") {
-    const countryCode =
-      cartRes.order.shipping_address?.country_code?.toLowerCase()
     await removeCartId()
-    redirect(`/${countryCode}/order/confirmed/${cartRes?.order.id}`)
+    redirect(`/order/confirmed/${cartRes?.order.id}`)
   }
 
   return cartRes.cart
@@ -508,6 +510,8 @@ export async function updateRegion(countryCode: string, currentPath: string) {
     throw new Error(`Region not found for country code: ${countryCode}`)
   }
 
+  await setCountryCode(countryCode)
+
   if (cartId) {
     await updateCart({ region_id: region.id })
     revalidateTag("cart")
@@ -516,5 +520,5 @@ export async function updateRegion(countryCode: string, currentPath: string) {
   revalidateTag("regions")
   revalidateTag("products")
 
-  redirect(`/${countryCode}${currentPath}`)
+  redirect(currentPath || "/")
 }

@@ -69,14 +69,13 @@ export default async function Home({
     categoryResponse,
     collectionResponse,
     latestPosts,
-  ] =
-    await Promise.all([
-      getBestsellerProducts(countryCode),
-      getRegion(countryCode),
-      getCategoriesList(0, 100),
-      getCollectionsWithPreviewProducts(countryCode, 12),
-      listWordPressPosts(3),
-    ])
+  ] = await Promise.all([
+    getBestsellerProducts(countryCode),
+    getRegion(countryCode),
+    getCategoriesList(0, 100),
+    getCollectionsWithPreviewProducts(countryCode, 12),
+    listWordPressPosts(3),
+  ])
 
   const topCategories = (
     (categoryResponse.product_categories ??
@@ -122,7 +121,7 @@ export default async function Home({
   return (
     <div>
       <Hero />
-      <CategoryGrid categories={categoryCards} countryCode={countryCode} />
+      <CategoryGrid categories={categoryCards} />
       <MissionSection />
 
       {bestsellerProducts.length > 0 && region && (

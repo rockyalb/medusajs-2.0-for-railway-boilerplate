@@ -1,7 +1,26 @@
 import "server-only"
 import { cookies } from "next/headers"
 
-export const getAuthHeaders = async (): Promise<{ authorization: string } | {}> => {
+export const COUNTRY_CODE_COOKIE_NAME = "_medusa_country_code"
+
+export const getCountryCode = async (): Promise<string | null> => {
+  const cookiesStore = await cookies()
+  return cookiesStore.get(COUNTRY_CODE_COOKIE_NAME)?.value ?? null
+}
+
+export const setCountryCode = async (countryCode: string) => {
+  const cookiesStore = await cookies()
+  cookiesStore.set(COUNTRY_CODE_COOKIE_NAME, countryCode.toLowerCase(), {
+    maxAge: 60 * 60 * 24 * 365,
+    httpOnly: false,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+  })
+}
+
+export const getAuthHeaders = async (): Promise<
+  { authorization: string } | {}
+> => {
   const cookiesStore = await cookies()
   const token = cookiesStore.get("_medusa_jwt")?.value
 

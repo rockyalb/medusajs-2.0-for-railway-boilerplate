@@ -13,7 +13,6 @@ export type CategoryProduct = {
 
 type CategoryProductSliderProps = {
   products: CategoryProduct[]
-  countryCode: string
   categoryName: string
   cardIndex: number
 }
@@ -32,7 +31,6 @@ const ArrowIcon = ({ direction }: { direction: "left" | "right" }) => (
 
 export default function CategoryProductSlider({
   products,
-  countryCode,
   categoryName,
   cardIndex,
 }: CategoryProductSliderProps) {
@@ -116,7 +114,7 @@ export default function CategoryProductSlider({
           {products.slice(0, 8).map((product, productIndex) => (
             <Link
               key={product.id}
-              href={`/${countryCode}/products/${product.handle}`}
+              href={`/products/${product.handle}`}
               className="group/product w-[68%] min-w-[12rem] max-w-[15rem] shrink-0 snap-start rounded-rounded bg-white/70 p-3 transition-transform duration-300 hover:-translate-y-1 sm:w-[54%] lg:w-[72%]"
             >
               <div className="aspect-square overflow-hidden rounded-base bg-white">
