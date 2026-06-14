@@ -9,7 +9,7 @@ export const retrieveOrder = cache(async function (id: string) {
   return sdk.store.order
     .retrieve(
       id,
-      { fields: "*payment_collections.payments" },
+      { fields: "*payment_collections.payments,+metadata" },
       { next: { tags: ["order"] }, ...(await getAuthHeaders()) }
     )
     .then(({ order }) => order)

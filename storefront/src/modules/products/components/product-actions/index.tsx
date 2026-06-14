@@ -13,6 +13,7 @@ import MobileActions from "./mobile-actions"
 import ProductPrice from "../product-price"
 import { addToCart } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
+import { buildMetaContents, trackMetaEvent } from "@lib/meta-pixel"
 
 type ProductActionsProps = {
   product: HttpTypes.StoreProduct
@@ -122,6 +123,24 @@ export default function ProductActions({
       variantId: selectedVariant.id,
       quantity,
       countryCode,
+    })
+
+    const price = (selectedVariant as any).calculated_price
+    const itemPrice = price?.calculated_amount
+
+    trackMetaEvent("AddToCart", {
+      content_ids: [selectedVariant.id],
+      content_name: product.title,
+      content_type: "product",
+      contents: buildMetaContents([
+        {
+          id: selectedVariant.id,
+          item_price: itemPrice,
+          quantity,
+        },
+      ]),
+      currency: price?.currency_code?.toUpperCase() ?? region.currency_code?.toUpperCase(),
+      value: typeof itemPrice === "number" ? itemPrice * quantity : undefined,
     })
 
     setIsAdding(false)

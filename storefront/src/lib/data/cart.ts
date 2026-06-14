@@ -5,6 +5,7 @@ import medusaError from "@lib/util/medusa-error"
 import { HttpTypes } from "@medusajs/types"
 import { omit } from "lodash"
 import { revalidateTag } from "next/cache"
+import { cookies, headers } from "next/headers"
 import { redirect } from "next/navigation"
 import { getAuthHeaders, getCartId, removeCartId, setCartId } from "./cookies"
 import { getProductsById } from "./products"
@@ -401,6 +402,7 @@ export async function placeOrder() {
   }
 
   await transferCartToCustomer(cartId)
+  await attachMetaTrackingToCart(cartId)
 
   const cartRes = await sdk.store.cart
     .complete(cartId, {}, await getAuthHeaders())
@@ -418,6 +420,50 @@ export async function placeOrder() {
   }
 
   return cartRes.cart
+}
+
+async function attachMetaTrackingToCart(cartId: string) {
+  const [cookiesStore, headersList, authHeaders] = await Promise.all([
+    cookies(),
+    headers(),
+    getAuthHeaders(),
+  ])
+  const fbp = cookiesStore.get("_fbp")?.value
+  const fbc = cookiesStore.get("_fbc")?.value
+  const fbclid = cookiesStore.get("fbclid")?.value
+
+  if (!fbp && !fbc && !fbclid) {
+    return
+  }
+
+  const cart = await sdk.store.cart
+    .retrieve(cartId, { fields: "+metadata" }, authHeaders)
+    .then(({ cart }) => cart)
+    .catch(() => null)
+
+  await sdk.store.cart.update(
+    cartId,
+    {
+      metadata: {
+        ...((cart?.metadata || {}) as Record<string, unknown>),
+        meta_tracking: {
+          fbp,
+          fbc,
+          fbclid,
+          purchase_event_id: `purchase.${cartId}.${Date.now()}`,
+          client_user_agent: headersList.get("user-agent") || undefined,
+          client_ip_address:
+            headersList.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+            headersList.get("x-real-ip") ||
+            undefined,
+          source_url: headersList.get("referer") || undefined,
+          captured_at: new Date().toISOString(),
+        },
+      },
+    } as HttpTypes.StoreUpdateCart,
+    {},
+    authHeaders
+  )
 }
 
 export async function transferCartToCustomer(

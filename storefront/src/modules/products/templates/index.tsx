@@ -7,10 +7,12 @@ import ProductTabs from "@modules/products/components/product-tabs"
 import RelatedProducts from "@modules/products/components/related-products"
 import ProductInfo from "@modules/products/templates/product-info"
 import SkeletonRelatedProducts from "@modules/skeletons/templates/skeleton-related-products"
+import MetaViewContent from "@modules/analytics/components/meta-view-content"
 import { notFound } from "next/navigation"
 import ProductActionsWrapper from "./product-actions-wrapper"
 import ProductScrollStage from "./product-scroll-stage"
 import { HttpTypes } from "@medusajs/types"
+import { getProductPrice } from "@lib/util/get-product-price"
 
 type ProductTemplateProps = {
   product: HttpTypes.StoreProduct
@@ -27,8 +29,17 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
     return notFound()
   }
 
+  const price = getProductPrice({ product }).cheapestPrice
+
   return (
     <>
+      <MetaViewContent
+        productId={product.id}
+        variantId={product.variants?.[0]?.id}
+        title={product.title}
+        value={price?.calculated_price_number}
+        currency={price?.currency_code ?? region.currency_code}
+      />
       <ProductScrollStage>
         <div className="order-1 small:h-full">
           <ImageGallery images={product?.images || []} />
