@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ftesë për YCO Admin</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: #f1f0ed;
+        color: #67645e;
+        font-family: Fredoka, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+      .wrap {
+        width: 100%;
+        padding: 28px 12px;
+      }
+      .container {
+        max-width: 580px;
+        margin: 0 auto;
+        overflow: hidden;
+        background: #ffffff;
+        border: 1px solid #e7e5e0;
+        border-radius: 18px;
+      }
+      .hero {
+        padding: 30px;
+        background: linear-gradient(118deg, #e0f0ea, #fee2e0 54%, #dee8fa);
+      }
+      .logo-mark {
+        display: block;
+        width: 58px;
+        height: 58px;
+        margin: 0 0 28px;
+      }
+      .eyebrow {
+        margin: 0 0 10px;
+        color: #67645e;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      h1 {
+        margin: 0;
+        color: #2f2d29;
+        font-size: 32px;
+        line-height: 1.05;
+        font-weight: 700;
+      }
+      .content {
+        padding: 30px;
+      }
+      p {
+        margin: 0 0 16px;
+        font-size: 15px;
+        line-height: 1.65;
+      }
+      .button {
+        display: inline-block;
+        margin: 10px 0 24px;
+        padding: 15px 24px;
+        background: #fc8c84;
+        border-radius: 999px;
+        box-shadow: 0 5px 0 #e0726a;
+        color: #2f2d29 !important;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-decoration: none;
+        text-transform: uppercase;
+      }
+      .url {
+        padding: 14px;
+        background: #faf9f7;
+        border: 1px solid #e7e5e0;
+        border-radius: 12px;
+        color: #4a6cb0;
+        font-size: 13px;
+        line-height: 1.5;
+        word-break: break-all;
+      }
+      .footer {
+        padding: 22px 30px;
+        background: #faf9f7;
+        border-top: 1px solid #e7e5e0;
+        color: #9c998f;
+        font-size: 12px;
+        line-height: 1.55;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="container">
+        <div class="hero">
+          <svg class="logo-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="YCO">
+            <path d="M166.556 20.240 C 123.353 23.602,88.905 60.186,88.889 102.722 L 88.889 104.222 190.582 104.222 L 292.276 104.222 292.128 101.167 C 290.073 58.744,260.019 26.146,217.778 20.522 C 214.637 20.103,171.368 19.865,166.556 20.240" fill="#7ca4eb"></path>
+            <path d="M126.294 295.799 C 95.055 299.439,78.662 335.010,96.187 361.131 C 113.883 387.508,153.722 385.282,168.412 357.096 C 183.938 327.306,159.621 291.916,126.294 295.799" fill="#84c3ac"></path>
+            <path d="M88.945 172.500 C 89.026 209.638,88.943 207.499,90.561 214.126 C 95.846 235.780,112.904 252.811,134.423 257.918 C 140.477 259.354,141.156 259.400,157.833 259.498 L 173.111 259.588 173.111 199.350 L 173.111 139.111 130.992 139.111 L 88.873 139.111 88.945 172.500 M208.000 259.444 L 208.000 379.778 209.278 379.776 C 248.603 379.716,283.526 350.242,290.774 310.997 C 292.191 303.328,292.090 309.871,292.164 220.389 L 292.232 139.111 250.116 139.111 L 208.000 139.111 208.000 259.444" fill="#fc8c84"></path>
+          </svg>
+          <p class="eyebrow">Paneli i administrimit</p>
+          <h1>Je ftuar në YCO Admin.</h1>
+        </div>
+
+        <div class="content">
+          <p>Një llogari administratori është përgatitur për {{ params.email }}.</p>
+          <p>Përdor butonin më poshtë për të pranuar ftesën dhe për të përfunduar konfigurimin e llogarisë.</p>
+          <p>
+            <a class="button" href="{{ params.invite_link }}">Prano ftesën</a>
+          </p>
+          <p>Nëse butoni nuk hapet, kopjo dhe vendos këtë link në shfletues:</p>
+          <p class="url">{{ params.invite_link }}</p>
+        </div>
+
+        <div class="footer">
+          Nëse nuk e prisje këtë ftesë, mund ta shpërfillësh këtë email.
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

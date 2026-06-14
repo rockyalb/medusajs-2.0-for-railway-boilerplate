@@ -7,10 +7,9 @@ import {
   DATABASE_URL,
   JWT_SECRET,
   REDIS_URL,
-  RESEND_API_KEY,
-  RESEND_FROM_EMAIL,
-  SENDGRID_API_KEY,
-  SENDGRID_FROM_EMAIL,
+  BREVO_API_KEY,
+  BREVO_FROM_EMAIL,
+  BREVO_FROM_NAME,
   SHOULD_DISABLE_ADMIN,
   STORE_CORS,
   STRIPE_API_KEY,
@@ -94,29 +93,21 @@ const medusaConfig = {
         }
       }
     }] : []),
-    ...(SENDGRID_API_KEY && SENDGRID_FROM_EMAIL || RESEND_API_KEY && RESEND_FROM_EMAIL ? [{
+    ...(BREVO_API_KEY && BREVO_FROM_EMAIL ? [{
       key: Modules.NOTIFICATION,
       resolve: '@medusajs/notification',
       options: {
         providers: [
-          ...(SENDGRID_API_KEY && SENDGRID_FROM_EMAIL ? [{
-            resolve: '@medusajs/notification-sendgrid',
-            id: 'sendgrid',
-            options: {
-              channels: ['email'],
-              api_key: SENDGRID_API_KEY,
-              from: SENDGRID_FROM_EMAIL,
-            }
-          }] : []),
-          ...(RESEND_API_KEY && RESEND_FROM_EMAIL ? [{
+          {
             resolve: './src/modules/email-notifications',
-            id: 'resend',
+            id: 'brevo',
             options: {
               channels: ['email'],
-              api_key: RESEND_API_KEY,
-              from: RESEND_FROM_EMAIL,
+              api_key: BREVO_API_KEY,
+              from: BREVO_FROM_EMAIL,
+              from_name: BREVO_FROM_NAME,
             },
-          }] : []),
+          },
         ]
       }
     }] : []),
@@ -167,5 +158,4 @@ const medusaConfig = {
   ]
 };
 
-console.log(JSON.stringify(medusaConfig, null, 2));
 export default defineConfig(medusaConfig);

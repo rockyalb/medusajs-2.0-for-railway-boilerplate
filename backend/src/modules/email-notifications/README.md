@@ -32,9 +32,9 @@ await notificationModuleService.createNotifications({
   channel: 'email',
   template: EmailTemplates.INVITE_USER, // Use the enum for the template key
   data: {
-    emailOptions: {
-      replyTo: 'info@example.com',
-      subject: "You've been invited!",
+        emailOptions: {
+          replyTo: 'support@example.com',
+          subject: "You've been invited!",
     },
     inviteLink: `${BACKEND_URL}/app/invite?token=${invite.token}`,
     preview: 'Get started with your invitation...',
@@ -145,12 +145,8 @@ await notificationModuleService.createNotifications({
 
 ## Additional Info & Documentation
 
-I based this module off of [@typed-dev/medusa-notification-resend](https://github.com/typed-development/medusa-notification-resend) but added
-the ability to use `react-email` templates and extended the functionality to include more Resend options. 
-
-In the original module, you're limited to just `subject`, `from`, `to`, the body, and the attachments. You also could
-only send HTML, which means you have to render the email body using `@react-email/render` instead of using the
-`react` email option which renders it for you.
+This module uses Brevo's transactional email API with `react-email` templates. Templates are rendered to HTML and
+plain text with `@react-email/render` before being sent to Brevo.
 
 ### Medusa
 
@@ -163,6 +159,6 @@ For more information on how to use `react-email`, refer to the official [documen
 
 You can also use [these example templates](https://demo.react.email/preview/magic-links/aws-verify-email) as a reference.
 
-### Resend
+### Brevo
 
-* Docs: [Node.js Quickstart](https://resend.com/docs/send-with-nodejs)
+* Docs: [Send a transactional email](https://developers.brevo.com/docs/send-a-transactional-email)

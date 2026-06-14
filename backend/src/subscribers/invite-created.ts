@@ -1,7 +1,7 @@
 import { INotificationModuleService, IUserModuleService } from '@medusajs/framework/types'
 import { Modules } from '@medusajs/framework/utils'
 import { SubscriberArgs, SubscriberConfig } from '@medusajs/framework'
-import { BACKEND_URL } from '../lib/constants'
+import { BACKEND_URL, BREVO_INVITE_USER_TEMPLATE_ID, BREVO_REPLY_TO_EMAIL } from '../lib/constants'
 import { EmailTemplates } from '../modules/email-notifications/templates'
 
 export default async function userInviteHandler({
@@ -14,6 +14,7 @@ export default async function userInviteHandler({
   )
   const userModuleService: IUserModuleService = container.resolve(Modules.USER)
   const invite = await userModuleService.retrieveInvite(data.id)
+  const inviteLink = `${BACKEND_URL}/app/invite?token=${invite.token}`
 
   try {
     await notificationModuleService.createNotifications({
@@ -22,10 +23,16 @@ export default async function userInviteHandler({
       template: EmailTemplates.INVITE_USER,
       data: {
         emailOptions: {
-          replyTo: 'info@example.com',
-          subject: "You've been invited to Medusa!"
+          replyTo: BREVO_REPLY_TO_EMAIL,
+          ...(BREVO_INVITE_USER_TEMPLATE_ID
+            ? { templateId: BREVO_INVITE_USER_TEMPLATE_ID }
+            : { subject: 'Je ftuar në YCO Admin' })
         },
-        inviteLink: `${BACKEND_URL}/app/invite?token=${invite.token}`,
+        params: {
+          invite_link: inviteLink,
+          email: invite.email,
+        },
+        inviteLink,
         preview: 'The administration dashboard awaits...'
       }
     })
