@@ -17,9 +17,18 @@ import { sdk } from "../lib/client"
 type ProductMetadata = Record<string, unknown>
 
 type MetadataField = {
-  key: "details" | "ingredients" | "how_to_use"
+  key:
+    | "details"
+    | "ingredients"
+    | "how_to_use"
+    | "meta_custom_label_0"
+    | "meta_custom_label_1"
+    | "meta_custom_label_2"
+    | "meta_custom_label_3"
+    | "meta_custom_label_4"
   label: string
   aliases?: string[]
+  rows?: number
 }
 
 const fields: MetadataField[] = [
@@ -36,6 +45,31 @@ const fields: MetadataField[] = [
     key: "how_to_use",
     label: "How to use",
     aliases: ["howToUse", "how-to-use", "how to use"],
+  },
+  {
+    key: "meta_custom_label_0",
+    label: "Meta custom label 0",
+    rows: 2,
+  },
+  {
+    key: "meta_custom_label_1",
+    label: "Meta custom label 1",
+    rows: 2,
+  },
+  {
+    key: "meta_custom_label_2",
+    label: "Meta custom label 2",
+    rows: 2,
+  },
+  {
+    key: "meta_custom_label_3",
+    label: "Meta custom label 3",
+    rows: 2,
+  },
+  {
+    key: "meta_custom_label_4",
+    label: "Meta custom label 4",
+    rows: 2,
   },
 ]
 
@@ -111,7 +145,7 @@ const ProductContentMetadataWidget = ({
         ...values,
         [field.key]: formValues[field.key].trim(),
       }),
-      {} as Record<MetadataField["key"], string>
+      { ...metadata } as ProductMetadata
     )
 
     try {
@@ -143,7 +177,7 @@ const ProductContentMetadataWidget = ({
             Product content
           </Text>
           <Text size="small" leading="compact" className="text-ui-fg-subtle">
-            Edit the details, ingredients, and usage notes shown on the PDP.
+            Edit PDP content and Meta catalog labels.
           </Text>
         </div>
         <Button size="small" variant="secondary" onClick={() => setOpen(true)}>
@@ -189,7 +223,7 @@ const ProductContentMetadataWidget = ({
                     </Label>
                     <Textarea
                       id={`product-content-${field.key}`}
-                      rows={8}
+                      rows={field.rows || 8}
                       value={formValues[field.key]}
                       onChange={(event) =>
                         setFormValues((current) => ({
