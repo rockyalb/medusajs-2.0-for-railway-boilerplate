@@ -67,16 +67,14 @@ export const MINIO_SECRET_KEY = process.env.MINIO_SECRET_KEY;
 export const MINIO_BUCKET = process.env.MINIO_BUCKET; // Optional, if not set bucket will be called: medusa-media
 
 /**
- * (optional) Resend API Key and from Email - do not set if using SendGrid
+ * (optional) Brevo transactional email configuration
  */
-export const RESEND_API_KEY = process.env.RESEND_API_KEY;
-export const RESEND_FROM_EMAIL = process.env.RESEND_FROM_EMAIL || process.env.RESEND_FROM;
-
-/**
- * (optionl) SendGrid API Key and from Email - do not set if using Resend
- */
-export const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
-export const SENDGRID_FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || process.env.SENDGRID_FROM;
+export const BREVO_API_KEY = process.env.BREVO_API_KEY;
+export const BREVO_FROM_EMAIL = process.env.BREVO_FROM_EMAIL || process.env.BREVO_FROM;
+export const BREVO_FROM_NAME = process.env.BREVO_FROM_NAME;
+export const BREVO_REPLY_TO_EMAIL = process.env.BREVO_REPLY_TO_EMAIL || BREVO_FROM_EMAIL;
+export const BREVO_ORDER_PLACED_TEMPLATE_ID = process.env.BREVO_ORDER_PLACED_TEMPLATE_ID;
+export const BREVO_INVITE_USER_TEMPLATE_ID = process.env.BREVO_INVITE_USER_TEMPLATE_ID;
 
 /**
  * (optional) Stripe API key and webhook secret
