@@ -536,7 +536,7 @@
     --hero-a: #e8f3ee;
     --hero-b: #f6dcd8;
     --hero-c: #dde7fa;
-    @apply bg-yco-cream px-3 pb-4 pt-4 small:px-7 small:pb-6;
+    @apply mx-auto w-full max-w-6xl bg-yco-cream px-3 pb-4 pt-4 small:px-0 small:pb-6;
   }
 
   .bs-rhode-hero--sage {
@@ -564,9 +564,7 @@
     background:
       radial-gradient(circle at 74% 44%, rgba(255, 255, 255, 0.76), transparent 0 18%, transparent 39%),
       linear-gradient(118deg, var(--hero-a), var(--hero-b) 54%, var(--hero-c));
-    /* Mobile: hero fits the viewport below the sticky header — the photo row
-       flexes, the copy row sizes to content. Desktop: side-by-side columns. */
-    @apply relative grid h-[max(calc(100svh-136px),480px)] grid-rows-[minmax(0,1fr)_auto] overflow-hidden rounded-rounded small:h-[calc(100svh-88px)] small:min-h-[560px] small:max-h-[760px] small:grid-cols-[0.44fr_0.56fr] small:grid-rows-none;
+    @apply relative grid overflow-hidden rounded-rounded small:h-[calc(100svh-88px)] small:min-h-[560px] small:max-h-[760px] small:grid-cols-[minmax(0,0.44fr)_minmax(0,0.56fr)];
   }
 
   .bs-rhode-hero__stage::after {
@@ -578,7 +576,7 @@
   }
 
   .bs-rhode-hero__image-wrap {
-    @apply relative order-1 min-h-0 overflow-hidden small:order-2;
+    @apply relative order-1 min-w-0 aspect-[16/9] min-h-[190px] overflow-hidden bg-white/35 small:order-2 small:aspect-auto small:min-h-0;
   }
 
   .bs-rhode-hero__image {
@@ -613,7 +611,7 @@
   }
 
   .bs-rhode-hero__copy {
-    @apply relative order-2 z-[2] mx-auto flex w-full max-w-[46rem] flex-col items-start justify-start px-6 pb-7 pt-6 text-yco-charcoal small:order-1 small:max-w-none small:justify-center small:px-[clamp(48px,7vw,132px)] small:py-12;
+    @apply relative order-2 z-[2] mx-auto flex w-full min-w-0 max-w-[46rem] flex-col items-start justify-start px-6 pb-7 pt-6 text-yco-charcoal small:order-1 small:max-w-none small:justify-center small:px-[clamp(36px,4vw,64px)] small:py-12;
   }
 
   .bs-rhode-hero__eyebrow {
@@ -621,7 +619,7 @@
   }
 
   .bs-rhode-hero__copy h1 {
-    @apply mb-5 max-w-[760px] text-[clamp(34px,8vw,56px)] font-semibold leading-[0.98] tracking-normal small:text-[clamp(48px,5vw,88px)];
+    @apply mb-5 max-w-full text-[clamp(24px,6.4vw,34px)] font-semibold leading-[1.04] tracking-normal small:text-[clamp(40px,3vw,54px)];
   }
 
   .bs-rhode-hero__support {
