@@ -63,12 +63,16 @@ export default async function OrderCompletedTemplate({
             level="h1"
             className="flex flex-col gap-y-3 text-ui-fg-base text-3xl mb-4"
           >
-            <span>Thank you!</span>
-            <span>Your order was placed successfully.</span>
+            <span>Faleminderit!</span>
+            <span>Porosia juaj u vendos me sukses.</span>
           </Heading>
+          <div className="rounded-large border border-yco-cream-dark bg-yco-panel p-4 text-sm font-medium text-yco-charcoal">
+            Email-i i konfirmimit mund të përfundojë në dosjen Spam/Junk.
+            Kontrollojeni atje nëse nuk e shihni në kutinë kryesore.
+          </div>
           <OrderDetails order={order} />
           <Heading level="h2" className="flex flex-row text-3xl-regular">
-            Summary
+            Përmbledhje
           </Heading>
           <Items items={order.items} />
           <CartTotals totals={order} />

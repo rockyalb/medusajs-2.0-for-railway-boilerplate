@@ -30,13 +30,13 @@ export default function FeaturedBrands({
       <div className="max-w-6xl mx-auto">
 
         <Reveal className="text-center mb-9 small:mb-10">
-          <span className="font-sans text-pastel-mint-ink text-xs tracking-[0.3em] uppercase font-semibold">Curated Partners</span>
+          <span className="font-sans text-pastel-mint-ink text-xs tracking-[0.3em] uppercase font-semibold">Partnerë të përzgjedhur</span>
           <h2 className="font-serif text-yco-charcoal text-3xl md:text-4xl mt-3">
-            Brands We Trust
+            Brende që u besojmë
           </h2>
           <div className="yco-tricolor-rule mt-4 mx-auto" />
           <p className="font-sans text-yco-charcoal-muted text-sm mt-4 max-w-md mx-auto leading-relaxed">
-            Every brand is hand-selected for their commitment to sustainability, ethics, and exceptional quality.
+            Çdo brend përzgjidhet me kujdes për cilësinë, etikën dhe përkushtimin ndaj qëndrueshmërisë.
           </p>
         </Reveal>
 

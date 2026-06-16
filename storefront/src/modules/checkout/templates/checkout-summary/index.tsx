@@ -77,7 +77,7 @@ const CheckoutSummary = async ({
           level="h2"
           className="rhode-display flex flex-row items-baseline text-4xl"
         >
-          In your cart
+          Në shportën tuaj
         </Heading>
         <Divider className="my-6" />
         <FreeShippingProgress

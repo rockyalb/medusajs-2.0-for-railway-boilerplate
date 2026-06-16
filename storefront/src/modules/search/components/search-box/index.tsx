@@ -59,11 +59,11 @@ const ControlledSearchBox = ({
             <button
               onClick={handleReset}
               type="button"
-              aria-label="Clear search"
+              aria-label="Pastro kërkimin"
               className="flex h-9 shrink-0 items-center justify-center gap-1 rounded-circle border border-yco-charcoal/20 px-3 font-sans text-[11px] font-bold uppercase tracking-[0.08em] text-yco-charcoal transition-colors duration-200 hover:bg-yco-charcoal hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-pastel-coral/50"
             >
               <XMarkMini />
-              <span className="hidden xsmall:inline">Clear</span>
+              <span className="hidden xsmall:inline">Pastro</span>
             </button>
           )}
         </div>

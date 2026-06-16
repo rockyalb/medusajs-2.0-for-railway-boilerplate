@@ -21,7 +21,7 @@ export default async function Footer() {
           <div className="max-w-sm">
             <LocalizedClientLink
               href="/"
-              aria-label="YCO home"
+              aria-label="Kreu i YCO"
               className="inline-block mb-6 hover:opacity-80 transition-opacity duration-300"
             >
               <img
@@ -31,24 +31,24 @@ export default async function Footer() {
               />
             </LocalizedClientLink>
             <p className="font-sans text-yco-charcoal text-sm leading-relaxed mb-2">
-              Join us for an effortless glow.
+              Bashkohuni me ne për një shkëlqim natyral.
             </p>
             <p className="font-sans text-yco-charcoal-muted text-sm leading-relaxed mb-6">
-              Tips, new arrivals, and the occasional treat — straight to your
-              inbox.
+              Këshilla, produkte të reja dhe oferta të veçanta direkt në
+              emailin tuaj.
             </p>
             <form className="flex items-center border-b border-yco-charcoal/40 max-w-xs">
               <input
                 type="email"
-                placeholder="Email address"
-                aria-label="Email address"
+                placeholder="Adresa e email-it"
+                aria-label="Adresa e email-it"
                 className="flex-1 bg-transparent py-2 text-sm text-yco-charcoal placeholder:text-yco-charcoal-muted focus:outline-none"
               />
               <button
                 type="submit"
                 className="font-sans text-yco-charcoal text-[11px] font-bold tracking-[0.18em] uppercase pl-4 py-2 hover:text-yco-coral transition-colors"
               >
-                Subscribe
+                Abonohu
               </button>
             </form>
           </div>
@@ -57,26 +57,26 @@ export default async function Footer() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
             {/* Navigate */}
             <div>
-              <span className={colHeading}>Navigate</span>
+              <span className={colHeading}>Navigo</span>
               <ul className="grid grid-cols-1 gap-3">
                 <li>
                   <LocalizedClientLink className={colLink} href="/store">
-                    Shop
+                    Dyqani
                   </LocalizedClientLink>
                 </li>
                 <li>
                   <LocalizedClientLink className={colLink} href="/collections">
-                    Brands
+                    Brendet
                   </LocalizedClientLink>
                 </li>
                 <li>
                   <LocalizedClientLink className={colLink} href="/account">
-                    Account
+                    Llogaria
                   </LocalizedClientLink>
                 </li>
                 <li>
                   <LocalizedClientLink className={colLink} href="/cart">
-                    Cart
+                    Shporta
                   </LocalizedClientLink>
                 </li>
               </ul>
@@ -85,7 +85,7 @@ export default async function Footer() {
             {/* Shop categories */}
             {product_categories && product_categories.length > 0 && (
               <div>
-                <span className={colHeading}>Categories</span>
+                <span className={colHeading}>Kategoritë</span>
                 <ul className="grid grid-cols-1 gap-3" data-testid="footer-categories">
                   {product_categories.slice(0, 6).map((c) => {
                     if (c.parent_category) return null
@@ -108,7 +108,7 @@ export default async function Footer() {
             {/* Collections / brands */}
             {collections && collections.length > 0 && (
               <div>
-                <span className={colHeading}>Brands</span>
+                <span className={colHeading}>Brendet</span>
                 <ul className="grid grid-cols-1 gap-3">
                   {collections.slice(0, 6).map((c) => (
                     <li key={c.id}>
@@ -126,7 +126,7 @@ export default async function Footer() {
 
             {/* Support */}
             <div>
-              <span className={colHeading}>Support</span>
+              <span className={colHeading}>Mbështetje</span>
               <ul className="grid grid-cols-1 gap-3">
                 {[
                   { label: "Historia jone", href: "/historia-jone" },
@@ -154,7 +154,7 @@ export default async function Footer() {
             © {new Date().getFullYear()} YCO Organics
           </p>
           <p className="font-sans text-yco-charcoal-muted text-xs tracking-[0.1em]">
-            Country/region: Albania (ALL L)
+            Shteti/rajoni: Shqipëri (ALL L)
           </p>
         </div>
       </div>

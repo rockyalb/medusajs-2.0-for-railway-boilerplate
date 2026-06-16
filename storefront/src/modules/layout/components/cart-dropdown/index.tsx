@@ -87,7 +87,7 @@ const DropdownItem = ({
             type="button"
             onClick={removeItem}
             disabled={removing}
-            aria-label={`Remove ${item.title} from cart`}
+            aria-label={`Hiq ${item.title} nga shporta`}
             data-testid="cart-item-remove-button"
             className="grid h-8 w-8 shrink-0 place-items-center rounded-circle text-yco-charcoal-muted transition-colors hover:bg-white hover:text-yco-charcoal disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal"
           >
@@ -126,7 +126,7 @@ const DropdownItem = ({
             {updating && (
               <span
                 className="h-3.5 w-3.5 animate-spin rounded-full border-[1.5px] border-yco-charcoal-muted border-t-transparent"
-                aria-label="Updating quantity"
+                aria-label="Duke përditësuar sasinë"
               />
             )}
           </div>
@@ -184,12 +184,12 @@ const CartDropdown = ({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="Open cart"
+        aria-label="Hap shportën"
         data-testid="nav-cart-link"
         className="h-full flex items-center"
       >
         <span className="hidden small:inline-block font-sans text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300">
-          Cart ({totalItems})
+          Shporta ({totalItems})
         </span>
         <span className="small:hidden relative text-yco-charcoal">
           <svg
@@ -232,12 +232,12 @@ const CartDropdown = ({
           {/* Header */}
           <div className="flex items-center justify-between border-b border-yco-cream-dark px-6 py-5">
             <h3 className="font-sans text-yco-charcoal text-sm font-bold uppercase tracking-[0.18em]">
-              Cart ({totalItems})
+              Shporta ({totalItems})
             </h3>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              aria-label="Close cart"
+              aria-label="Mbyll shportën"
               className="text-yco-charcoal-muted hover:text-yco-charcoal transition-colors"
             >
               <svg
@@ -281,7 +281,7 @@ const CartDropdown = ({
               <div className="border-t border-yco-cream-dark px-6 py-6 flex flex-col gap-y-4">
                 <div className="flex items-center justify-between">
                   <span className="font-sans text-yco-charcoal text-sm font-bold uppercase tracking-[0.12em]">
-                    Subtotal
+                    Nëntotali
                   </span>
                   <span
                     className="font-sans text-yco-charcoal text-base font-bold"
@@ -303,7 +303,7 @@ const CartDropdown = ({
                     className="yco-btn yco-btn--outline yco-btn--block"
                     data-testid="go-to-cart-button"
                   >
-                    View cart
+                    Shiko shportën
                   </span>
                 </LocalizedClientLink>
                 <LocalizedClientLink
@@ -312,7 +312,7 @@ const CartDropdown = ({
                   onClick={() => setOpen(false)}
                 >
                   <span className="yco-btn yco-btn--coral yco-btn--block">
-                    Checkout
+                    Përfundo blerjen
                   </span>
                 </LocalizedClientLink>
               </div>
@@ -323,11 +323,11 @@ const CartDropdown = ({
                 0
               </div>
               <span className="font-sans text-yco-charcoal text-sm">
-                Your shopping bag is empty.
+                Shporta juaj është bosh.
               </span>
               <LocalizedClientLink href="/store" onClick={() => setOpen(false)}>
                 <span className="yco-btn yco-btn--outline">
-                  Explore products
+                  Shfleto produktet
                 </span>
               </LocalizedClientLink>
             </div>

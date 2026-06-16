@@ -9,7 +9,7 @@ import { HttpTypes } from "@medusajs/types"
 import { getCustomer } from "@lib/data/customer"
 
 export const metadata: Metadata = {
-  title: "Checkout",
+  title: "Përfundo blerjen",
 }
 
 export const dynamic = "force-dynamic"

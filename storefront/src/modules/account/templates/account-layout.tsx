@@ -23,15 +23,15 @@ const AccountLayout: React.FC<AccountLayoutProps> = ({
         </div>
         <div className="flex flex-col small:flex-row items-end justify-between small:border-t border-gray-200 py-12 gap-8">
           <div>
-            <h3 className="text-xl-semi mb-4">Got questions?</h3>
+            <h3 className="text-xl-semi mb-4">Keni pyetje?</h3>
             <span className="txt-medium">
-              You can find frequently asked questions and answers on our
-              customer service page.
+              Pyetjet më të shpeshta dhe përgjigjet i gjeni në faqen tonë të
+              shërbimit ndaj klientit.
             </span>
           </div>
           <div>
             <UnderlineLink href="/customer-service">
-              Customer Service
+              Shërbimi ndaj klientit
             </UnderlineLink>
           </div>
         </div>

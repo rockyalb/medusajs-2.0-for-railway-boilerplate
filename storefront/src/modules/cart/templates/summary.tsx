@@ -31,7 +31,7 @@ const Summary = ({ cart }: SummaryProps) => {
   return (
     <div className="flex flex-col gap-y-4">
       <Heading level="h2" className="rhode-display text-4xl">
-        Summary
+        Përmbledhje
       </Heading>
       <FreeShippingProgress
         item_total={cart.item_total}
@@ -47,7 +47,7 @@ const Summary = ({ cart }: SummaryProps) => {
         data-testid="checkout-button"
       >
         <span className="yco-btn yco-btn--coral yco-btn--block">
-          Go to checkout
+          Vazhdo në checkout
         </span>
       </LocalizedClientLink>
     </div>

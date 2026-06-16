@@ -32,15 +32,15 @@ const FreeShippingProgress = ({
     >
       <div className="mb-3 flex items-start justify-between gap-4">
         <div>
-          <p className="rhode-eyebrow text-pastel-mint-ink">Free shipping</p>
+          <p className="rhode-eyebrow text-pastel-mint-ink">Transport falas</p>
           <p className="mt-1 text-sm font-bold text-yco-charcoal">
             {hasFreeShipping
-              ? "You unlocked free delivery."
+              ? "Keni përfituar transport falas."
               : `${convertToLocale({
                   amount: remaining,
                   currency_code,
                   maximumFractionDigits: 0,
-                })} away from free delivery`}
+                })} larg transportit falas`}
           </p>
         </div>
         <span className="shrink-0 rounded-circle bg-white px-3 py-1 text-xs font-bold text-pastel-mint-ink">

@@ -5,8 +5,8 @@ import { getCollectionsWithPreviewProducts } from "@lib/data/collections"
 import { BRAND_LOGOS } from "@lib/data/brand-logos"
 
 export const metadata: Metadata = {
-  title: "Brands | YCO",
-  description: "Browse YCO brand collections.",
+  title: "Brendet | YCO",
+  description: "Shfletoni koleksionet e brendeve në YCO.",
 }
 
 export default async function CollectionsPage({
@@ -24,12 +24,12 @@ export default async function CollectionsPage({
     <main className="bg-yco-cream min-h-screen">
       <section className="content-container py-14 small:py-20">
         <div className="max-w-3xl">
-          <span className="rhode-eyebrow">Brands</span>
+          <span className="rhode-eyebrow">Brendet</span>
           <h1 className="rhode-display mt-3 text-5xl small:text-6xl">
-            shop by brand
+            blini sipas brendit
           </h1>
           <p className="mt-5 max-w-2xl font-sans text-sm leading-6 text-yco-charcoal-muted">
-            Explore the collections imported into Medusa.
+            Shfletoni koleksionet tona sipas brendit.
           </p>
         </div>
 
@@ -63,7 +63,7 @@ export default async function CollectionsPage({
                   {collection.title}
                 </h2>
                 <p className="mt-2 font-sans text-xs text-yco-charcoal-muted">
-                  Shop brand
+                  Shfleto brendin
                 </p>
               </Link>
             )

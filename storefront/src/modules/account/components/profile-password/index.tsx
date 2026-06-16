@@ -33,9 +33,9 @@ const ProfileName: React.FC<MyInformationProps> = ({ customer }) => {
   return (
     <form action={formAction} onReset={() => clearState()} className="w-full">
       <AccountInfo
-        label="Password"
+        label="Fjalëkalimi"
         currentInfo={
-          <span>The password is not shown for security reasons</span>
+          <span>Fjalëkalimi nuk shfaqet për arsye sigurie</span>
         }
         isSuccess={successState}
         isError={!!state.error}
@@ -45,21 +45,21 @@ const ProfileName: React.FC<MyInformationProps> = ({ customer }) => {
       >
         <div className="grid grid-cols-2 gap-4">
           <Input
-            label="Old password"
+            label="Fjalëkalimi i vjetër"
             name="old_password"
             required
             type="password"
             data-testid="old-password-input"
           />
           <Input
-            label="New password"
+            label="Fjalëkalimi i ri"
             type="password"
             name="new_password"
             required
             data-testid="new-password-input"
           />
           <Input
-            label="Confirm password"
+            label="Konfirmo fjalëkalimin"
             type="password"
             name="confirm_password"
             required

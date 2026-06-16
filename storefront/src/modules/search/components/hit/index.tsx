@@ -49,7 +49,7 @@ const Hit = ({ hit }: HitProps) => {
             )}
           </div>
           <span className="inline-flex w-fit items-center gap-1 rounded-circle bg-white px-3 py-1.5 font-sans text-[10px] font-bold uppercase tracking-[0.08em] text-yco-charcoal transition-colors duration-200 group-hover:bg-pastel-coral-soft group-hover:text-pastel-coral-ink">
-            View product
+            Shiko produktin
           </span>
         </div>
       </article>

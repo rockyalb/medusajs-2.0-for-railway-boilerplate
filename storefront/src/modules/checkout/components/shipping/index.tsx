@@ -147,7 +147,7 @@ const Shipping: React.FC<ShippingProps> = ({
             }
           )}
         >
-          Delivery
+          Dërgesa
           {!isOpen && (cart.shipping_methods?.length ?? 0) > 0 && (
             <CheckCircleSolid />
           )}
@@ -162,7 +162,7 @@ const Shipping: React.FC<ShippingProps> = ({
                 className="rhode-eyebrow text-yco-charcoal hover:text-yco-coral"
                 data-testid="edit-delivery-button"
               >
-                Edit
+                Ndrysho
               </button>
             </Text>
           )}
@@ -222,7 +222,7 @@ const Shipping: React.FC<ShippingProps> = ({
             disabled={!selectedShippingMethod && !automaticShippingMethod}
             data-testid="submit-delivery-option-button"
           >
-            Continue to payment
+            Vazhdo te pagesa
           </Button>
         </div>
       ) : (
@@ -231,7 +231,7 @@ const Shipping: React.FC<ShippingProps> = ({
             {cart && (cart.shipping_methods?.length ?? 0) > 0 && (
               <div className="flex flex-col rounded-large bg-yco-panel p-4 small:w-1/3">
                 <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                  Method
+                  Metoda
                 </Text>
                 <Text className="txt-medium text-ui-fg-subtle">
                   {selectedShippingMethod?.name}{" "}

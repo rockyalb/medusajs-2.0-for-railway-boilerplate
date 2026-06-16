@@ -33,9 +33,9 @@ const navLink =
   "font-sans text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300"
 
 const secondaryLinks = [
-  { label: "About", href: "/store" },
+  { label: "Rreth nesh", href: "/store" },
   { label: "FAQ", href: "/store" },
-  { label: "Contact", href: "/store" },
+  { label: "Kontakt", href: "/store" },
 ]
 
 function Hamburger({
@@ -49,7 +49,7 @@ function Hamburger({
     <button
       type="button"
       onClick={onClick}
-      aria-label={open ? "Close menu" : "Open menu"}
+      aria-label={open ? "Mbyll menunë" : "Hap menunë"}
       aria-expanded={open}
       data-testid="nav-menu-button"
       className="flex flex-col justify-center gap-[5px] h-full w-7"
@@ -113,7 +113,7 @@ function CategoryNestedList({
     <div className="grid min-h-[24rem] grid-cols-[0.62fr_1fr_0.72fr] gap-10">
       <div className="overflow-y-auto pr-2">
         <div className="mb-4 font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal-muted">
-          Categories
+          Kategoritë
         </div>
         <ul className="space-y-1">
           {categories.map((category) => {
@@ -177,7 +177,7 @@ function CategoryNestedList({
                 onClick={onNavigate}
                 className="font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:text-yco-coral transition-colors"
               >
-                View all
+                Shiko të gjitha
               </LocalizedClientLink>
             </div>
 
@@ -197,7 +197,7 @@ function CategoryNestedList({
               </ul>
             ) : (
               <div className="rounded-large bg-white p-6 font-sans text-sm text-yco-charcoal-muted">
-                No subcategories found in this category yet.
+                Nuk ka ende nënkategori në këtë kategori.
               </div>
             )}
           </>
@@ -213,7 +213,7 @@ function CategoryNestedList({
             accentClass,
             "yco-accent-card group flex animate-fade-in-top flex-col justify-between overflow-hidden rounded-large p-4 motion-reduce:animate-none"
           )}
-          aria-label={`Shop ${activeCategory.name}`}
+          aria-label={`Bli ${activeCategory.name}`}
         >
           <div className="aspect-[4/3] overflow-hidden rounded-rounded bg-white">
             {activeCategory.image ? (
@@ -235,7 +235,7 @@ function CategoryNestedList({
                 {activeCategory.name}
               </div>
               <p className="mt-0.5 font-sans text-xs text-yco-charcoal-muted">
-                Shop the category
+                Shfleto kategorinë
               </p>
             </div>
             <span className="rhode-round-btn rhode-round-btn--accent h-9 w-9 shrink-0">
@@ -267,14 +267,14 @@ function BrandsList({
     <div className="min-h-[24rem] animate-fade-in-top overflow-y-auto pr-2 motion-reduce:animate-none">
       <div className="mb-5 flex items-center justify-between">
         <div className="font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal-muted">
-          Brands
+          Brendet
         </div>
         <LocalizedClientLink
           href="/collections"
           onClick={onNavigate}
           className="font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:text-yco-coral transition-colors"
         >
-          View all
+          Shiko të gjitha
         </LocalizedClientLink>
       </div>
       <ul className="grid grid-cols-3 gap-3 lg:grid-cols-6">
@@ -363,7 +363,7 @@ function MobileCategoryPanel({
                     onClick={onNavigate}
                     className="mb-4 inline-block font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:text-yco-coral"
                   >
-                    View all {category.name}
+                    Shiko të gjitha {category.name}
                   </LocalizedClientLink>
 
                   {children.length > 0 ? (
@@ -382,7 +382,7 @@ function MobileCategoryPanel({
                     </ul>
                   ) : (
                     <div className="rounded-large bg-yco-panel p-4 font-sans text-sm text-yco-charcoal-muted">
-                      No subcategories found in this category yet.
+                      Nuk ka ende nënkategori në këtë kategori.
                     </div>
                   )}
                 </div>
@@ -507,21 +507,21 @@ export default function NavClient({
                 aria-expanded={shopOpen}
                 aria-controls="shop-megamenu"
               >
-                Shop
+                Dyqani
               </button>
               <LocalizedClientLink
                 className={navLink}
                 href="/collections"
                 onMouseEnter={closeShop}
               >
-                Brands
+                Brendet
               </LocalizedClientLink>
               <LocalizedClientLink
                 className={navLink}
                 href="/store"
                 onMouseEnter={closeShop}
               >
-                About
+                Rreth nesh
               </LocalizedClientLink>
             </div>
           </div>
@@ -547,7 +547,7 @@ export default function NavClient({
               className="text-yco-charcoal hover:text-yco-coral transition-colors small:hidden"
               href="/search"
               scroll={false}
-              aria-label="Search"
+              aria-label="Kërko"
             >
               <SearchIcon />
             </LocalizedClientLink>
@@ -557,14 +557,14 @@ export default function NavClient({
               scroll={false}
               data-testid="nav-search-link"
             >
-              Search
+              Kërko
             </LocalizedClientLink>
             <LocalizedClientLink
               className={`hidden small:inline-block ${navLink}`}
               href="/account"
               data-testid="nav-account-link"
             >
-              Account
+              Llogaria
             </LocalizedClientLink>
             {cartButton}
           </div>
@@ -604,7 +604,7 @@ export default function NavClient({
                         : "text-yco-charcoal-muted border-transparent hover:text-yco-charcoal"
                     )}
                   >
-                    Categories
+                    Kategoritë
                   </button>
                 )}
                 {collections.length > 0 && (
@@ -619,7 +619,7 @@ export default function NavClient({
                         : "text-yco-charcoal-muted border-transparent hover:text-yco-charcoal"
                     )}
                   >
-                    Brands
+                    Brendet
                   </button>
                 )}
               </div>
@@ -648,7 +648,7 @@ export default function NavClient({
         )}
         role="dialog"
         aria-modal="true"
-        aria-label="Mobile navigation"
+        aria-label="Navigimi mobil"
       >
         <div className="px-6 py-5 pb-12">
           <div className="mb-8 flex items-center justify-between border-b border-yco-cream-dark pb-5">
@@ -666,7 +666,7 @@ export default function NavClient({
             <button
               type="button"
               onClick={closeMobile}
-              aria-label="Close menu"
+              aria-label="Mbyll menunë"
               data-testid="close-mobile-menu-button"
               className="relative grid h-11 w-11 place-items-center rounded-circle border border-yco-charcoal/30 text-yco-charcoal transition-colors hover:bg-yco-charcoal hover:text-white"
             >
@@ -682,7 +682,7 @@ export default function NavClient({
             className="mb-5 flex min-h-[52px] items-center gap-3 rounded-large border border-yco-cream-dark bg-yco-panel px-4 font-sans text-sm text-yco-charcoal-muted"
           >
             <SearchIcon />
-            Search products, brands, and categories
+            Kërko produkte, brende dhe kategori
           </LocalizedClientLink>
 
           {categories.length > 0 && (
@@ -693,7 +693,7 @@ export default function NavClient({
                 className="flex w-full items-center justify-between border-b border-yco-cream-dark py-4 text-left font-sans text-2xl font-black lowercase tracking-[-0.02em] text-yco-charcoal"
                 aria-expanded={mobileSection === "categories"}
               >
-                <span>Categories</span>
+                <span>Kategoritë</span>
                 <span className="text-xl">
                   {mobileSection === "categories" ? "-" : "+"}
                 </span>
@@ -727,7 +727,7 @@ export default function NavClient({
                 className="flex w-full items-center justify-between border-b border-yco-cream-dark py-4 text-left font-sans text-2xl font-black lowercase tracking-[-0.02em] text-yco-charcoal"
                 aria-expanded={mobileSection === "brands"}
               >
-                <span>Brands</span>
+                <span>Brendet</span>
                 <span className="text-xl">
                   {mobileSection === "brands" ? "-" : "+"}
                 </span>
@@ -753,10 +753,10 @@ export default function NavClient({
 
           <ul className="border-t border-yco-cream-dark">
             {[
-              { label: "Shop", href: "/store" },
-              { label: "All brands", href: "/collections" },
+              { label: "Dyqani", href: "/store" },
+              { label: "Të gjitha brendet", href: "/collections" },
               ...secondaryLinks,
-              { label: "Account", href: "/account" },
+              { label: "Llogaria", href: "/account" },
             ].map((link) => (
               <li key={link.label} className="border-b border-yco-cream-dark">
                 <LocalizedClientLink

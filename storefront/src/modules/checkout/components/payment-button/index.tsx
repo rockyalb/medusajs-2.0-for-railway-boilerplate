@@ -61,7 +61,7 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
     default:
       return (
         <Button disabled className="yco-btn yco-btn--outline">
-          Select a payment method
+          Zgjidhni një metodë pagese
         </Button>
       )
   }
@@ -82,7 +82,7 @@ const GiftCardPaymentButton = () => {
       className="yco-btn yco-btn--coral"
       data-testid="submit-order-button"
     >
-      Place order
+      Vendos porosinë
     </Button>
   )
 }
@@ -185,7 +185,7 @@ const StripePaymentButton = ({
         className="yco-btn yco-btn--coral"
         data-testid={dataTestId}
       >
-        Place order
+        Vendos porosinë
       </Button>
       <ErrorMessage
         error={errorMessage}
@@ -229,13 +229,13 @@ const PayPalPaymentButton = ({
       ?.authorize()
       .then((authorization) => {
         if (authorization.status !== "COMPLETED") {
-          setErrorMessage(`An error occurred, status: ${authorization.status}`)
+          setErrorMessage(`Ndodhi një gabim, statusi: ${authorization.status}`)
           return
         }
         onPaymentCompleted()
       })
       .catch(() => {
-        setErrorMessage(`An unknown error occurred, please try again.`)
+        setErrorMessage(`Ndodhi një gabim i panjohur, ju lutemi provoni përsëri.`)
         setSubmitting(false)
       })
   }
@@ -295,7 +295,7 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
         className="yco-btn yco-btn--coral"
         data-testid="submit-order-button"
       >
-        Place order
+        Vendos porosinë
       </Button>
       <ErrorMessage
         error={errorMessage}

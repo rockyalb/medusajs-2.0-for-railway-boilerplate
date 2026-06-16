@@ -27,16 +27,17 @@ const ShowAll = ({ shown, total }: ShowAllProps) => {
         data-testid="no-search-results-container"
       >
         <p className="font-sans text-lg font-black lowercase text-yco-charcoal">
-          no results found
+          nuk u gjetën rezultate
         </p>
         <p className="mx-auto mt-2 max-w-md font-sans text-sm leading-6 text-yco-charcoal-muted">
-          Try a broader term, a brand name, or browse the full shop.
+          Provoni një term më të gjerë, një emër brendi, ose shfletoni të
+          gjithë dyqanin.
         </p>
         <LocalizedClientLink
           href="/store"
           className="yco-btn yco-btn--outline mt-5"
         >
-          Browse shop
+          Shfleto dyqanin
         </LocalizedClientLink>
       </div>
     )
@@ -45,15 +46,15 @@ const ShowAll = ({ shown, total }: ShowAllProps) => {
   return (
     <div className="mt-4 flex h-fit flex-col items-center justify-between gap-4 rounded-large border border-yco-cream-dark bg-white p-4 text-center small:flex-row small:text-left">
       <p className="font-sans text-sm font-semibold text-yco-charcoal-muted">
-        Showing {shown}
-        {typeof total === "number" ? ` of ${total}` : ""} results.
+        Duke shfaqur {shown}
+        {typeof total === "number" ? ` nga ${total}` : ""} rezultate.
       </p>
       {typeof total !== "number" || total > shown ? (
         <LocalizedClientLink
           href={`/results/${encodeURIComponent(query)}`}
           className="yco-btn yco-btn--coral min-h-[44px] px-6 text-[0.7rem]"
         >
-          View all
+          Shiko të gjitha
         </LocalizedClientLink>
       ) : null}
     </div>

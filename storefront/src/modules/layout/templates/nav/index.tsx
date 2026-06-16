@@ -76,7 +76,7 @@ export default async function Nav() {
               href="/cart"
               data-testid="nav-cart-link"
             >
-              Cart (0)
+              Shporta (0)
             </LocalizedClientLink>
           }
         >

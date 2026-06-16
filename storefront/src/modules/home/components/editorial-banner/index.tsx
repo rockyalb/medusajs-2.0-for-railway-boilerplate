@@ -45,20 +45,20 @@ export default function EditorialBanner() {
             transition={{ duration: 0.85, ease: EASE_OUT }}
             className="max-w-xl text-white"
           >
-            <p className="rhode-eyebrow !text-white/80">The YCO edit</p>
+            <p className="rhode-eyebrow !text-white/80">Përzgjedhja YCO</p>
             <h2 className="rhode-display mt-3 !text-white text-5xl md:text-6xl">
-              the everyday edit
+              përzgjedhja e përditshme
             </h2>
             <p className="mt-4 max-w-md font-sans text-sm leading-relaxed text-white/90 small:text-base">
-              Essentials for skin, body and home — chosen with care so you
-              don&apos;t have to.
+              Produktet bazë për lëkurën, trupin dhe shtëpinë, të zgjedhura
+              me kujdes për ju.
             </p>
             <div className="mt-7">
               <LocalizedClientLink
                 href="/store"
                 className="rhode-pill !border-white !text-white hover:!bg-white hover:!text-yco-coral"
               >
-                Shop the edit
+                Shfleto përzgjedhjen
               </LocalizedClientLink>
             </div>
           </motion.div>

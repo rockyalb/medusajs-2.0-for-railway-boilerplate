@@ -136,7 +136,7 @@ export default function MissionSection() {
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           >
             <Link href="/store" className="rhode-pill">
-              Shop YCO
+              Bli në YCO
             </Link>
           </motion.div>
         </div>

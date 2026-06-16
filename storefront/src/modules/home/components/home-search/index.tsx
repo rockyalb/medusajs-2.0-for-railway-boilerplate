@@ -12,7 +12,7 @@ export default function HomeSearch() {
           href="/search"
           scroll={false}
           className="group flex min-h-[64px] items-center justify-between rounded-large border border-yco-cream-dark bg-white px-5 transition-colors duration-300 hover:border-yco-charcoal"
-          aria-label="Search products"
+          aria-label="Kërko produkte"
         >
           <span className="flex items-center gap-3 font-sans text-sm text-yco-charcoal-muted">
             <svg
@@ -27,10 +27,10 @@ export default function HomeSearch() {
               <circle cx="9" cy="9" r="6" />
               <path d="M14 14l4 4" strokeLinecap="round" />
             </svg>
-            Search products, brands, and categories
+            Kërko produkte, brende dhe kategori
           </span>
           <span className="font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal transition-colors duration-300 group-hover:text-yco-coral">
-            Search
+            Kërko
           </span>
         </Link>
       </div>

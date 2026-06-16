@@ -16,8 +16,8 @@ import {
 import { convertToLocale } from "@lib/util/money"
 
 export const metadata: Metadata = {
-  title: "Profile",
-  description: "View and edit your Medusa Store profile.",
+  title: "Profili",
+  description: "Shikoni dhe ndryshoni profilin tuaj.",
 }
 
 export const dynamic = "force-dynamic"
@@ -44,11 +44,11 @@ export default async function Profile({
   return (
     <div className="w-full" data-testid="profile-page-wrapper">
       <div className="mb-8 flex flex-col gap-y-4">
-        <h1 className="text-2xl-semi">Profile</h1>
+        <h1 className="text-2xl-semi">Profili</h1>
         <p className="text-base-regular">
-          View and update your profile information, including your name, email,
-          and phone number. You can also update your billing address, or change
-          your password.
+          Shikoni dhe përditësoni të dhënat e profilit, përfshirë emrin,
+          email-in dhe telefonin. Mund të ndryshoni edhe adresën e faturimit
+          ose fjalëkalimin.
         </p>
       </div>
       <div className="flex flex-col gap-y-8 w-full">
@@ -87,11 +87,11 @@ const StoreCreditSection = ({
   return (
     <div className="flex flex-col gap-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-large-semi">Store Credit</h3>
+        <h3 className="text-large-semi">Kredit dyqani</h3>
       </div>
       <p className="text-base-regular text-ui-fg-subtle">
-        Earn {percentage}% store credit on every order. Credits are
-        automatically added to your account after each purchase.
+        Fitoni {percentage}% kredit dyqani për çdo porosi. Kreditet shtohen
+        automatikisht në llogarinë tuaj pas çdo blerjeje.
       </p>
       {creditAccounts.length > 0 ? (
         <div className="flex flex-col gap-y-2">
@@ -114,7 +114,7 @@ const StoreCreditSection = ({
         </div>
       ) : (
         <p className="text-base-regular text-ui-fg-subtle">
-          No store credit yet. Place an order to start earning.
+          Nuk keni ende kredit dyqani. Vendosni një porosi për të filluar.
         </p>
       )}
     </div>

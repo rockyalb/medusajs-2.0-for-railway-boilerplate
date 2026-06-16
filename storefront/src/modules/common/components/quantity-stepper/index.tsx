@@ -40,7 +40,7 @@ export default function QuantityStepper({
         className={buttonClasses}
         onClick={() => onChange(quantity - 1)}
         disabled={disabled || quantity <= min}
-        aria-label="Decrease quantity"
+        aria-label="Ul sasinë"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
           <path
@@ -57,7 +57,7 @@ export default function QuantityStepper({
           size === "compact" ? "text-xs" : "text-sm"
         )}
         aria-live="polite"
-        aria-label={`Quantity: ${quantity}`}
+        aria-label={`Sasia: ${quantity}`}
       >
         {quantity}
       </span>
@@ -66,7 +66,7 @@ export default function QuantityStepper({
         className={buttonClasses}
         onClick={() => onChange(quantity + 1)}
         disabled={disabled || quantity >= max}
-        aria-label="Increase quantity"
+        aria-label="Rrit sasinë"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden>
           <path

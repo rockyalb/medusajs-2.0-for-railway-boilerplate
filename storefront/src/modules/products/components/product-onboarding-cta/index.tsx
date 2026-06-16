@@ -19,7 +19,7 @@ const ProductOnboardingCta = async () => {
           You can now continue setting up your store in the admin.
         </Text>
         <a href="http://localhost:7001/a/orders?onboarding_step=create_order_nextjs">
-          <Button className="w-full">Continue setup in admin</Button>
+          <Button className="w-full">Vazhdo konfigurimin në admin</Button>
         </a>
       </div>
     </Container>

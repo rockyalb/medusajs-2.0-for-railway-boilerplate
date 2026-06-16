@@ -15,14 +15,14 @@ const PaymentDetails = ({ order }: PaymentDetailsProps) => {
   return (
     <div>
       <Heading level="h2" className="flex flex-row text-3xl-regular my-6">
-        Payment
+        Pagesa
       </Heading>
       <div>
         {payment && (
           <div className="flex items-start gap-x-1 w-full">
             <div className="flex flex-col w-1/3">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment method
+                Metoda e pagesës
               </Text>
               <Text
                 className="txt-medium text-ui-fg-subtle"
@@ -33,7 +33,7 @@ const PaymentDetails = ({ order }: PaymentDetailsProps) => {
             </div>
             <div className="flex flex-col w-2/3">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment details
+                Detajet e pagesës
               </Text>
               <div className="flex gap-2 txt-medium text-ui-fg-subtle items-center">
                 <Container className="flex items-center h-7 w-fit p-2 bg-ui-button-neutral-hover">
@@ -43,11 +43,11 @@ const PaymentDetails = ({ order }: PaymentDetailsProps) => {
                   {isStripe(payment.provider_id) && payment.data?.card_last4
                     ? `**** **** **** ${payment.data.card_last4}`
                     : isManual(payment.provider_id)
-                    ? "Payment due on delivery"
+                    ? "Pagesa kryhet në dorëzim"
                     : `${convertToLocale({
                         amount: payment.amount,
                         currency_code: order.currency_code,
-                      })} paid at ${new Date(
+                      })} paguar më ${new Date(
                         payment.created_at ?? ""
                       ).toLocaleString()}`}
                 </Text>

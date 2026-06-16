@@ -9,12 +9,12 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import CountrySelect from "../country-select"
 import { HttpTypes } from "@medusajs/types"
 
-const SideMenuItems = {
-  Shop: "/store",
-  Brands: "/collections",
-  Account: "/account",
-  Cart: "/cart",
-}
+const SideMenuItems = [
+  { label: "Dyqani", href: "/store", testId: "shop-link" },
+  { label: "Brendet", href: "/collections", testId: "brands-link" },
+  { label: "Llogaria", href: "/account", testId: "account-link" },
+  { label: "Shporta", href: "/cart", testId: "cart-link" },
+]
 
 const SideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
   const toggleState = useToggleState()
@@ -55,16 +55,16 @@ const SideMenu = ({ regions }: { regions: HttpTypes.StoreRegion[] | null }) => {
                       </button>
                     </div>
                     <ul className="flex flex-col gap-5 items-start justify-start">
-                      {Object.entries(SideMenuItems).map(([name, href]) => {
+                      {SideMenuItems.map(({ label, href, testId }) => {
                         return (
-                          <li key={name}>
+                          <li key={href}>
                             <LocalizedClientLink
                               href={href}
                               className="font-sans text-yco-charcoal text-4xl font-black lowercase tracking-[-0.02em] hover:text-yco-coral transition-colors"
                               onClick={close}
-                              data-testid={`${name.toLowerCase()}-link`}
+                              data-testid={testId}
                             >
-                              {name}
+                              {label}
                             </LocalizedClientLink>
                           </li>
                         )

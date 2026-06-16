@@ -36,14 +36,14 @@ const Hits = ({
         <div className="yco-search-empty rounded-large bg-yco-cream p-5 sm:p-7">
           <div className="mb-4 flex items-center gap-3">
             <span className="yco-accent-dot" aria-hidden />
-            <p className="rhode-eyebrow">Start typing</p>
+            <p className="rhode-eyebrow">Filloni të shkruani</p>
           </div>
           <h2 className="font-sans text-2xl font-black lowercase leading-none text-yco-charcoal sm:text-4xl">
-            find your next refill
+            gjeni produktin tuaj të radhës
           </h2>
           <p className="mt-3 max-w-xl font-sans text-sm leading-6 text-yco-charcoal-muted">
-            Search products, brands, categories, or ingredients. Results will
-            appear here as soon as you type.
+            Kërkoni produkte, brende, kategori ose përbërës. Rezultatet do të
+            shfaqen sapo të shkruani.
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
             {["skin", "hair", "body", "davines"].map((term) => (

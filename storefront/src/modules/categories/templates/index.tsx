@@ -87,7 +87,7 @@ export default async function CategoryTemplate({
           <div className="mb-6">
             <div className="mb-3 flex items-end justify-between gap-4">
               <h2 className="rhode-eyebrow text-yco-charcoal">
-                Shop by subcategory
+                Bli sipas nënkategorisë
               </h2>
             </div>
             <div className="grid grid-flow-col auto-cols-[9.5rem] gap-3 overflow-x-auto pb-2 small:auto-cols-[calc((100%-3.75rem)/6)]">
@@ -97,7 +97,7 @@ export default async function CategoryTemplate({
                     key={child.id}
                     href={`/categories/${child.handle}`}
                     className="group flex h-40 flex-col overflow-hidden rounded-rounded bg-yco-panel p-2 transition-all duration-300 hover:bg-yco-panel-dark small:h-44"
-                    aria-label={`Shop ${child.name}`}
+                    aria-label={`Bli ${child.name}`}
                   >
                     <div className="aspect-[4/3] shrink-0 overflow-hidden rounded-base bg-white">
                       {image ? (

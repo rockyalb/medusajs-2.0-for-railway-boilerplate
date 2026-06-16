@@ -73,13 +73,13 @@ export default function SearchModal() {
               <div className="border-b border-yco-cream-dark bg-yco-panel px-4 py-4 sm:px-5">
                 <div className="mb-3 flex items-center justify-between gap-4">
                   <div>
-                    <p className="rhode-eyebrow">Search YCO</p>
+                    <p className="rhode-eyebrow">Kërko në YCO</p>
                     <div className="yco-tricolor-rule mt-2" />
                   </div>
                   <button
                     type="button"
                     onClick={() => router.back()}
-                    aria-label="Close search"
+                    aria-label="Mbyll kërkimin"
                     className="grid h-11 w-11 shrink-0 place-items-center rounded-circle border border-yco-charcoal/25 bg-white text-yco-charcoal transition-colors duration-200 hover:bg-yco-charcoal hover:text-white"
                   >
                     <XMarkMini />

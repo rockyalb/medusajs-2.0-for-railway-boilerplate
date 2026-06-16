@@ -8,8 +8,8 @@ import { getCustomerStoreCreditAccounts } from "@lib/data/loyalty"
 import { getRegion } from "@lib/data/regions"
 
 export const metadata: Metadata = {
-  title: "Account",
-  description: "Overview of your account activity.",
+  title: "Llogaria",
+  description: "Përmbledhje e aktivitetit të llogarisë suaj.",
 }
 
 export const dynamic = "force-dynamic"

@@ -18,10 +18,10 @@ export default function CheckoutLayout({
           >
             <ChevronDown className="rotate-90" size={16} />
             <span className="rhode-eyebrow mt-px hidden hover:text-yco-coral small:block">
-              Back to shopping cart
+              Kthehu te shporta
             </span>
             <span className="rhode-eyebrow mt-px block hover:text-yco-coral small:hidden">
-              Back
+              Mbrapa
             </span>
           </LocalizedClientLink>
           <LocalizedClientLink

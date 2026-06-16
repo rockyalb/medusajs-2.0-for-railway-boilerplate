@@ -41,10 +41,10 @@ const StoreCreditApply = ({
     <div className="flex items-center justify-between py-3 border-t border-gray-200 mt-2">
       <div className="flex flex-col gap-y-0.5">
         <Text size="small" weight="plus">
-          Store Credit
+          Kredit dyqani
         </Text>
         <Text size="small" className="text-ui-fg-subtle">
-          {formattedBalance} available
+          {formattedBalance} në dispozicion
         </Text>
       </div>
       <Button
@@ -53,7 +53,7 @@ const StoreCreditApply = ({
         onClick={handleApply}
         isLoading={isPending}
       >
-        Apply {formattedApply}
+        Apliko {formattedApply}
       </Button>
     </div>
   )

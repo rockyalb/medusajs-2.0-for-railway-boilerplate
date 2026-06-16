@@ -14,21 +14,21 @@ const ItemsTemplate = ({ items }: ItemsTemplateProps) => {
     <div>
       <div className="flex items-end justify-between gap-4 pb-5">
         <div>
-          <p className="rhode-eyebrow">Shopping bag</p>
-          <Heading className="rhode-display mt-1 text-4xl">Cart</Heading>
+          <p className="rhode-eyebrow">Shporta e blerjeve</p>
+          <Heading className="rhode-display mt-1 text-4xl">Shporta</Heading>
         </div>
       </div>
       <Table className="overflow-hidden rounded-large border border-yco-cream-dark">
         <Table.Header className="border-t-0 bg-yco-panel">
           <Table.Row className="txt-medium-plus text-yco-charcoal-muted">
-            <Table.HeaderCell className="!pl-0">Item</Table.HeaderCell>
+            <Table.HeaderCell className="!pl-0">Produkti</Table.HeaderCell>
             <Table.HeaderCell></Table.HeaderCell>
-            <Table.HeaderCell>Quantity</Table.HeaderCell>
+            <Table.HeaderCell>Sasia</Table.HeaderCell>
             <Table.HeaderCell className="hidden small:table-cell">
-              Price
+              Çmimi
             </Table.HeaderCell>
             <Table.HeaderCell className="!pr-0 text-right">
-              Total
+              Totali
             </Table.HeaderCell>
           </Table.Row>
         </Table.Header>

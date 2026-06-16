@@ -27,7 +27,7 @@ const SearchResultsTemplate = ({
     <>
       <div className="flex justify-between border-b w-full py-6 px-8 small:px-14 items-center">
         <div className="flex flex-col items-start">
-          <Text className="text-ui-fg-muted">Search Results for:</Text>
+          <Text className="text-ui-fg-muted">Rezultatet e kërkimit për:</Text>
           <Heading>
             {decodeURI(query)} ({ids.length})
           </Heading>
@@ -36,7 +36,7 @@ const SearchResultsTemplate = ({
           href="/store"
           className="txt-medium text-ui-fg-subtle hover:text-ui-fg-base"
         >
-          Clear
+          Pastro
         </LocalizedClientLink>
       </div>
       <div className="flex flex-col small:flex-row small:items-start p-6">
@@ -53,7 +53,7 @@ const SearchResultsTemplate = ({
             </div>
           </>
         ) : (
-          <Text className="ml-8 small:ml-14 mt-3">No results.</Text>
+          <Text className="ml-8 small:ml-14 mt-3">Nuk u gjetën rezultate.</Text>
         )}
       </div>
     </>

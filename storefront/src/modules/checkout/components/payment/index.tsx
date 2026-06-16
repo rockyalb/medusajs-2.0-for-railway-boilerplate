@@ -130,7 +130,7 @@ const Payment = ({
             }
           )}
         >
-          Payment
+          Pagesa
           {!isOpen && paymentReady && <CheckCircleSolid />}
         </Heading>
         {!isOpen && paymentReady && (
@@ -140,7 +140,7 @@ const Payment = ({
               className="rhode-eyebrow text-yco-charcoal hover:text-yco-coral"
               data-testid="edit-payment-button"
             >
-              Edit
+              Ndrysho
             </button>
           </Text>
         )}
@@ -171,7 +171,7 @@ const Payment = ({
               {isStripe && stripeReady && (
                 <div className="mt-5 transition-all duration-150 ease-in-out">
                   <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                    Enter your card details:
+                    Vendosni të dhënat e kartës:
                   </Text>
 
                   <CardElement
@@ -193,13 +193,13 @@ const Payment = ({
           {paidByGiftcard && (
             <div className="flex flex-col w-1/3">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment method
+                Metoda e pagesës
               </Text>
               <Text
                 className="txt-medium text-ui-fg-subtle"
                 data-testid="payment-method-summary"
               >
-                Gift card
+                Kartë dhuratë
               </Text>
             </div>
           )}
@@ -221,8 +221,8 @@ const Payment = ({
             data-testid="submit-payment-button"
           >
             {!activeSession && isStripeFunc(selectedPaymentMethod)
-              ? " Enter card details"
-              : "Continue to review"}
+              ? " Vendos të dhënat e kartës"
+              : "Vazhdo te rishikimi"}
           </Button>
         </div>
 
@@ -231,7 +231,7 @@ const Payment = ({
             <div className="grid w-full grid-cols-1 gap-3 small:grid-cols-3">
               <div className="flex flex-col rounded-large bg-yco-panel p-4">
                 <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                  Payment method
+                  Metoda e pagesës
                 </Text>
                 <Text
                   className="txt-medium text-ui-fg-subtle"
@@ -243,7 +243,7 @@ const Payment = ({
               </div>
               <div className="flex flex-col rounded-large bg-yco-panel p-4">
                 <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                  Payment details
+                  Detajet e pagesës
                 </Text>
                 <div
                   className="flex gap-2 txt-medium text-ui-fg-subtle items-center"
@@ -256,10 +256,10 @@ const Payment = ({
                   </Container>
                   <Text>
                     {isManual(selectedPaymentMethod)
-                      ? "Pay when your order is delivered"
+                      ? "Paguani kur porosia dorëzohet"
                       : isStripeFunc(selectedPaymentMethod) && cardBrand
                         ? cardBrand
-                        : "Another step will appear"}
+                        : "Do të shfaqet një hap tjetër"}
                   </Text>
                 </div>
               </div>
@@ -267,13 +267,13 @@ const Payment = ({
           ) : paidByGiftcard ? (
             <div className="flex flex-col rounded-large bg-yco-panel p-4 small:w-1/3">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Payment method
+                Metoda e pagesës
               </Text>
               <Text
                 className="txt-medium text-ui-fg-subtle"
                 data-testid="payment-method-summary"
               >
-                Gift card
+                Kartë dhuratë
               </Text>
             </div>
           ) : null}
