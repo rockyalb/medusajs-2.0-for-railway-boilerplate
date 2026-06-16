@@ -20,6 +20,7 @@ type MobileActionsProps = {
   isAdding?: boolean
   show: boolean
   optionsDisabled: boolean
+  hasSelectableVariants: boolean
 }
 
 const MobileActions: React.FC<MobileActionsProps> = ({
@@ -32,6 +33,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
   isAdding,
   show,
   optionsDisabled,
+  hasSelectableVariants,
 }) => {
   const { state, open, close } = useToggleState()
 
@@ -95,22 +97,29 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                 <div></div>
               )}
             </div>
-            <div className="grid grid-cols-2 w-full gap-x-4">
-              <button
-                type="button"
-                onClick={open}
-                className="yco-btn yco-btn--outline yco-btn--block !px-4"
-                data-testid="mobile-actions-button"
-              >
-                <div className="flex w-full items-center justify-between normal-case tracking-normal">
-                  <span className="truncate">
-                    {variant
-                      ? Object.values(options).join(" / ")
-                      : "Select Options"}
-                  </span>
-                  <ChevronDown />
-                </div>
-              </button>
+            <div
+              className={clx("grid w-full gap-x-4", {
+                "grid-cols-2": hasSelectableVariants,
+                "grid-cols-1": !hasSelectableVariants,
+              })}
+            >
+              {hasSelectableVariants && (
+                <button
+                  type="button"
+                  onClick={open}
+                  className="yco-btn yco-btn--outline yco-btn--block !px-4"
+                  data-testid="mobile-actions-button"
+                >
+                  <div className="flex w-full items-center justify-between normal-case tracking-normal">
+                    <span className="truncate">
+                      {variant
+                        ? Object.values(options).join(" / ")
+                        : "Select Options"}
+                    </span>
+                    <ChevronDown />
+                  </div>
+                </button>
+              )}
               <button
                 type="button"
                 onClick={handleAddToCart}
@@ -132,7 +141,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
           </div>
         </Transition>
       </div>
-      <Transition appear show={state} as={Fragment}>
+      <Transition appear show={state && hasSelectableVariants} as={Fragment}>
         <Dialog as="div" className="relative z-[90]" onClose={close}>
           <Transition.Child
             as={Fragment}
@@ -171,7 +180,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                     </button>
                   </div>
                   <div className="bg-white px-6 py-12">
-                    {(product.variants?.length ?? 0) > 1 && (
+                    {hasSelectableVariants && (
                       <div className="flex flex-col gap-y-6">
                         {(product.options || []).map((option) => {
                           return (

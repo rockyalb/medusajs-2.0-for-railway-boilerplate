@@ -39,6 +39,7 @@ export default function ProductActions({
   const [isAdding, setIsAdding] = useState(false)
   const [quantity, setQuantity] = useState(1)
   const countryCode = useParams().countryCode as string
+  const hasSelectableVariants = (product.variants?.length ?? 0) > 1
 
   // If there is only 1 variant, preselect the options
   useEffect(() => {
@@ -150,7 +151,7 @@ export default function ProductActions({
     <>
       <div className="flex flex-col gap-y-2" ref={actionsRef}>
         <div>
-          {(product.variants?.length ?? 0) > 1 && (
+          {hasSelectableVariants && (
             <div className="flex flex-col gap-y-4">
               {(product.options || []).map((option) => {
                 return (
@@ -216,6 +217,7 @@ export default function ProductActions({
           isAdding={isAdding}
           show={!inView}
           optionsDisabled={!!disabled || isAdding}
+          hasSelectableVariants={hasSelectableVariants}
         />
       </div>
     </>
