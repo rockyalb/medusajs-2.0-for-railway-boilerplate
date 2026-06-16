@@ -67,7 +67,7 @@ export default function SearchModal() {
           >
             <SearchConfigure hitsPerPage={6} />
             <div
-              className="yco-search-sheet flex h-[calc(100vh-1.5rem)] w-full flex-col overflow-hidden rounded-large border border-yco-cream-dark bg-white shadow-[0_32px_80px_-34px_rgba(47,45,41,0.7)] sm:h-auto sm:max-h-[calc(100vh-3rem)] sm:w-[min(56rem,calc(100vw-3rem))]"
+              className="yco-search-sheet flex h-[calc(100dvh-1.5rem)] w-full flex-col overflow-hidden rounded-large border border-yco-cream-dark bg-white shadow-[0_32px_80px_-34px_rgba(47,45,41,0.7)] sm:h-auto sm:max-h-[calc(100dvh-3rem)] sm:w-[min(56rem,calc(100vw-3rem))]"
               data-testid="search-modal-container"
             >
               <div className="border-b border-yco-cream-dark bg-yco-panel px-4 py-4 sm:px-5">
@@ -90,7 +90,7 @@ export default function SearchModal() {
                   <SearchBox />
                 </div>
               </div>
-              <div className="flex-1 overflow-y-auto px-4 py-4 sm:px-5 sm:py-5">
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-[calc(5rem+env(safe-area-inset-bottom))] pt-4 sm:px-5 sm:py-5">
                 <Hits hitComponent={Hit} />
               </div>
             </div>

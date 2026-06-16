@@ -52,7 +52,7 @@ const ShowAll = ({ shown, total }: ShowAllProps) => {
       {typeof total !== "number" || total > shown ? (
         <LocalizedClientLink
           href={`/results/${encodeURIComponent(query)}`}
-          className="yco-btn yco-btn--coral min-h-[44px] px-6 text-[0.7rem]"
+          className="yco-btn yco-btn--coral min-h-[44px] w-full px-6 text-[0.7rem] small:w-auto"
         >
           Shiko të gjitha
         </LocalizedClientLink>
