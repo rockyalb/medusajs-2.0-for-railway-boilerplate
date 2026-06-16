@@ -28,10 +28,10 @@ export default function LatestBlogPosts({ posts }: LatestBlogPostsProps) {
           <div>
             <span className="rhode-eyebrow inline-flex items-center gap-2">
               <span className="yco-accent-dot" aria-hidden />
-              Journal
+              Ditari
             </span>
             <h2 className="rhode-display text-4xl md:text-5xl mt-3">
-              latest from the blog
+              më të fundit nga blogu
             </h2>
             <div className="yco-tricolor-rule mt-4" />
           </div>
@@ -39,7 +39,7 @@ export default function LatestBlogPosts({ posts }: LatestBlogPostsProps) {
             href="/blog"
             className="font-sans text-yco-charcoal text-xs tracking-[0.18em] uppercase font-medium border-b border-yco-charcoal pb-0.5 hover:text-pastel-coral-ink hover:border-pastel-coral-ink transition-colors duration-300 w-fit"
           >
-            View all
+            Shiko të gjitha
           </LocalizedClientLink>
         </div>
 
@@ -84,7 +84,7 @@ export default function LatestBlogPosts({ posts }: LatestBlogPostsProps) {
                     href={`/${post.slug}`}
                     className="font-sans text-yco-charcoal text-xs tracking-[0.18em] uppercase font-medium border-b border-yco-charcoal pb-0.5 hover:text-[color:var(--accent-ink)] hover:border-[color:var(--accent-ink)] transition-colors duration-300 inline-block mt-6 w-fit"
                   >
-                    Read more
+                    Lexo më shumë
                   </LocalizedClientLink>
                 </div>
               </article>

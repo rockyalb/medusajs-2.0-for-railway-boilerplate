@@ -16,21 +16,21 @@ import {
 const STORY_STEPS = [
   {
     index: "01",
-    eyebrow: "Formulas",
-    title: "good for you",
-    text: "What you put on your body matters as much as what you put in it. Every brand we carry is hand-selected for clean, high-performance formulas.",
+    eyebrow: "Formulat",
+    title: "mirë për ju",
+    text: "Ajo që vendosni në trup është po aq e rëndësishme sa ajo që konsumoni. Çdo brend që ofrojmë përzgjidhet për formula të pastra dhe me performancë të lartë.",
   },
   {
     index: "02",
-    eyebrow: "Planet",
-    title: "good for the planet",
-    text: "Packaging that respects the planet — sustainable, plastic-free wherever possible, and designed to leave nothing behind.",
+    eyebrow: "Planeti",
+    title: "mirë për planetin",
+    text: "Paketim që respekton planetin, i qëndrueshëm, pa plastikë kur është e mundur dhe i menduar për të lënë sa më pak gjurmë.",
   },
   {
     index: "03",
-    eyebrow: "Trust",
-    title: "good to know",
-    text: "Certified organic, cruelty-free and non-toxic. Every ingredient is approved before a product ever reaches our shelves.",
+    eyebrow: "Besimi",
+    title: "mirë ta dini",
+    text: "Organike të certifikuara, cruelty-free dhe jo toksike. Çdo përbërës miratohet para se produkti të arrijë në raftet tona.",
   },
 ]
 
@@ -58,22 +58,22 @@ export default function MissionSection() {
           <div className="small:sticky small:top-28">
             <span className="rhode-eyebrow inline-flex items-center gap-2">
               <span className="yco-accent-dot" aria-hidden />
-              Our philosophy
+              Filozofia jonë
             </span>
             <h2
               id="mission-heading"
               className="rhode-display mt-3 text-4xl md:text-5xl"
             >
-              good for you,
+              mirë për ju,
               <br />
-              good for the planet.
+              mirë për planetin.
             </h2>
             <div className="yco-tricolor-rule mt-4" />
 
             <div className="relative mt-8 overflow-hidden rounded-large bg-white">
               <motion.img
                 src="/placeholder-images/yco-real/mission.jpg"
-                alt="YCO clean beauty lifestyle photography"
+                alt="Fotografi lifestyle me produkte natyrale YCO"
                 className="aspect-[4/5] w-full scale-[1.1] object-cover small:aspect-[3/4]"
                 style={reducedMotion ? undefined : { y: imageY }}
                 loading="lazy"
@@ -84,12 +84,12 @@ export default function MissionSection() {
               >
                 <img
                   src="/placeholder-images/yco-real/category-skin.webp"
-                  alt="Natural skincare products"
+                  alt="Produkte natyrale për kujdesin e lëkurës"
                   className="aspect-square w-full object-cover"
                   loading="lazy"
                 />
                 <figcaption className="px-3 py-2 font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-yco-charcoal">
-                  Clean beauty edit
+                  Përzgjedhje clean beauty
                 </figcaption>
               </motion.figure>
             </div>

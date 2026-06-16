@@ -27,7 +27,7 @@ export default function EditorialBanner() {
       <div className="relative overflow-hidden rounded-rounded">
         <motion.img
           src="/placeholder-images/yco-real/featured-products.jpg"
-          alt="Natural beauty products arranged on a neutral background"
+          alt="Produkte natyrale bukurie të vendosura në një sfond neutral"
           className="absolute inset-0 h-full w-full scale-[1.22] object-cover"
           style={reducedMotion ? undefined : { y: imageY }}
           loading="lazy"

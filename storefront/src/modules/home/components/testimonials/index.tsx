@@ -5,22 +5,22 @@ const reviews = [
     name: "Amelia R.",
     location: "Tirana, AL",
     rating: 5,
-    text: "I can finally browse trusted organic products in one place and reorder my everyday essentials without guessing where they came from.",
-    product: "Daily essentials",
+    text: "Më në fund mund të shfletoj produkte organike të besuara në një vend dhe të porosis sërish produktet e përditshme pa dyshuar për origjinën e tyre.",
+    product: "Produktet e përditshme",
   },
   {
     name: "Sofia M.",
     location: "Durres, AL",
     rating: 5,
-    text: "The brand selection feels considered, the product pages are clear, and the delivery updates made the whole order easy to follow.",
-    product: "Clean beauty edit",
+    text: "Përzgjedhja e brendeve duket e menduar mirë, faqet e produkteve janë të qarta dhe përditësimet e dërgesës e bënë porosinë të lehtë për t’u ndjekur.",
+    product: "Përzgjedhje clean beauty",
   },
   {
     name: "Lea T.",
     location: "Prishtina, XK",
     rating: 5,
-    text: "YCO makes it simple to compare products by category and brand, then come back to the same collection when I need a refill.",
-    product: "Refill routine",
+    text: "YCO e bën të thjeshtë krahasimin e produkteve sipas kategorisë dhe brendit, pastaj rikthimin te i njëjti koleksion kur më duhet ta blej përsëri.",
+    product: "Rutina e riblerjes",
   },
 ]
 
@@ -64,7 +64,7 @@ export default function Testimonials() {
             <div className="mt-5 overflow-hidden rounded-large bg-yco-panel md:hidden">
               <img
                 src="/placeholder-images/yco-real/community.jpg"
-                alt="YCO community lifestyle photography"
+                alt="Fotografi lifestyle e komunitetit YCO"
                 className="h-36 w-full object-cover"
               />
             </div>
@@ -75,7 +75,7 @@ export default function Testimonials() {
             rel="noopener noreferrer"
             className="rhode-pill self-start sm:self-auto"
           >
-            Find us on social
+            Na gjeni në rrjete sociale
           </a>
         </Reveal>
 
@@ -93,7 +93,7 @@ export default function Testimonials() {
             >
               <img
                 src="/placeholder-images/yco-real/community.jpg"
-                alt={`${review.name} customer lifestyle photography`}
+                alt={`${review.name} fotografi lifestyle klienti`}
                 className="h-28 w-full rounded-rounded object-cover"
               />
               <Stars
@@ -114,7 +114,7 @@ export default function Testimonials() {
                 </div>
                 <div className="text-right">
                   <div className="font-sans text-yco-charcoal-muted text-[10px] uppercase tracking-[0.12em]">
-                    Purchased
+                    Blerë
                   </div>
                   <div className="font-sans text-yco-charcoal text-[11px] font-bold mt-0.5 leading-tight">
                     {review.product}
@@ -132,7 +132,7 @@ export default function Testimonials() {
             4.9/5
           </span>
           <span className="font-sans text-yco-charcoal-muted text-sm">
-            from over 2,000 verified customers
+            nga mbi 2,000 klientë të verifikuar
           </span>
         </div>
       </div>

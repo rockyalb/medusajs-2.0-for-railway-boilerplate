@@ -17,8 +17,8 @@ const badges = [
         <path d="M18 10c-1.5 1.5-2.5 3-4 4" />
       </svg>
     ),
-    label: "Certified Organic",
-    sub: "Internationally certified",
+    label: "Organike të certifikuara",
+    sub: "Të certifikuara ndërkombëtarisht",
   },
   {
     icon: (
@@ -26,8 +26,8 @@ const badges = [
         <path d="M20.84 5.61a5.5 5.5 0 0 0-7.78 0L12 6.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 22.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
       </svg>
     ),
-    label: "Cruelty-Free",
-    sub: "Never tested on animals",
+    label: "Cruelty-free",
+    sub: "Nuk testohen kurrë te kafshët",
   },
   {
     icon: (
@@ -39,8 +39,8 @@ const badges = [
         <line x1="4" y1="4" x2="24" y2="24" strokeWidth="1.2" />
       </svg>
     ),
-    label: "Plastic-Free",
-    sub: "Sustainable packaging only",
+    label: "Pa plastikë",
+    sub: "Vetëm paketim i qëndrueshëm",
   },
   {
     icon: (
@@ -49,14 +49,14 @@ const badges = [
         <path d="M9 12l2 2 4-4" />
       </svg>
     ),
-    label: "Non-Toxic",
-    sub: "Every ingredient approved",
+    label: "Jo toksike",
+    sub: "Çdo përbërës i miratuar",
   },
 ]
 
 export default function TrustBadges() {
   return (
-    <section className="bg-white px-6 py-12 small:py-14" aria-label="Our standards">
+    <section className="bg-white px-6 py-12 small:py-14" aria-label="Standardet tona">
       <Stagger
         stagger={0.08}
         role="list"

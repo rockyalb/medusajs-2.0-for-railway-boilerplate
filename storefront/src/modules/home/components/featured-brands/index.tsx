@@ -79,7 +79,7 @@ export default function FeaturedBrands({
                 {brand.title}
               </div>
               <div className="font-sans text-yco-charcoal-muted text-[10px] tracking-wide leading-snug text-center">
-                Shop brand
+                Shfleto brendin
               </div>
             </Link>
             </StaggerItem>
@@ -91,7 +91,7 @@ export default function FeaturedBrands({
             href="/collections"
             className="font-sans text-yco-charcoal text-xs tracking-[0.2em] uppercase font-medium border-b border-yco-charcoal pb-0.5 hover:text-pastel-coral-ink hover:border-pastel-coral-ink active:scale-95 transition-all duration-300 inline-block"
           >
-            View all brands
+            Shiko të gjitha brendet
           </Link>
         </div>
 

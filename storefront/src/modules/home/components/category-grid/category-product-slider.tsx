@@ -107,7 +107,7 @@ export default function CategoryProductSlider({
         ref={scrollRef}
         className="-mx-6 mt-8 overflow-x-auto px-6 pb-3 no-scrollbar md:-mx-8 md:px-8"
         role="region"
-        aria-label={`${categoryName} products`}
+        aria-label={`${categoryName} produkte`}
         onWheel={handleWheel}
       >
         <div className="flex snap-x snap-mandatory gap-3">
@@ -146,7 +146,7 @@ export default function CategoryProductSlider({
           type="button"
           onClick={() => scrollProducts("prev")}
           disabled={!canScrollPrev}
-          aria-label={`Previous ${categoryName} products`}
+          aria-label={`Produktet e mëparshme për ${categoryName}`}
           className="pointer-events-auto grid h-10 w-10 place-items-center rounded-circle border border-yco-charcoal/30 bg-white/85 text-yco-charcoal shadow-sm transition-all hover:bg-yco-charcoal hover:text-white disabled:pointer-events-none disabled:opacity-0"
         >
           <ArrowIcon direction="left" />
@@ -155,7 +155,7 @@ export default function CategoryProductSlider({
           type="button"
           onClick={() => scrollProducts("next")}
           disabled={!canScrollNext}
-          aria-label={`Next ${categoryName} products`}
+          aria-label={`Produktet e radhës për ${categoryName}`}
           className="pointer-events-auto grid h-10 w-10 place-items-center rounded-circle border border-yco-charcoal/30 bg-white/85 text-yco-charcoal shadow-sm transition-all hover:bg-yco-charcoal hover:text-white disabled:pointer-events-none disabled:opacity-0"
         >
           <ArrowIcon direction="right" />

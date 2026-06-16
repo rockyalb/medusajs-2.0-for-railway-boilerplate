@@ -134,10 +134,10 @@ export default function CategoryGrid({
           <div>
             <span className="rhode-eyebrow inline-flex items-center gap-2">
               <span className="yco-accent-dot" aria-hidden />
-              Shop by category
+              Bli sipas kategorisë
             </span>
             <h2 className="rhode-display mt-3 text-4xl md:text-5xl">
-              categories
+              kategoritë
             </h2>
             <div className="yco-tricolor-rule mt-4" />
           </div>
@@ -145,7 +145,7 @@ export default function CategoryGrid({
             href="/store"
             className="hidden font-sans text-xs font-bold uppercase tracking-[0.18em] text-yco-charcoal transition-colors hover:text-pastel-coral-ink small:block"
           >
-            View all
+            Shiko të gjitha
           </Link>
         </motion.div>
 
@@ -153,7 +153,7 @@ export default function CategoryGrid({
           ref={scrollerRef}
           className="-mx-6 cursor-grab overflow-x-auto px-6 pb-3 no-scrollbar active:cursor-grabbing small:mx-0 small:px-0"
           role="region"
-          aria-label="Product categories"
+          aria-label="Kategoritë e produkteve"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={endDrag}
@@ -181,7 +181,7 @@ export default function CategoryGrid({
                   <Link
                     href={`/categories/${category.handle}`}
                     className={`group ${accentClass} yco-accent-card relative flex h-full min-h-[360px] flex-col justify-between overflow-hidden rounded-large p-5 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2`}
-                    aria-label={`Shop ${category.name}`}
+                    aria-label={`Bli ${category.name}`}
                     draggable={false}
                     onClick={handleCategoryClick}
                   >
@@ -218,7 +218,7 @@ export default function CategoryGrid({
                           {category.name}
                         </div>
                         <p className="mt-1 font-sans text-xs text-yco-charcoal-muted">
-                          {productCount} products
+                          {productCount} produkte
                         </p>
                       </div>
                       <span className="rhode-round-btn rhode-round-btn--accent shrink-0">

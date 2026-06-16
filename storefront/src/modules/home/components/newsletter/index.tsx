@@ -36,16 +36,16 @@ export default function Newsletter() {
         >
           <span className="rhode-eyebrow inline-flex items-center gap-2 !text-white/70">
             <span className="yco-accent-dot" aria-hidden />
-            Community
+            Komuniteti
           </span>
 
           <h2 className="rhode-display mt-4 !text-white text-4xl md:text-5xl">
-            join the conscious community
+            bashkohuni me komunitetin e ndërgjegjshëm
           </h2>
 
           <p className="mx-auto mt-5 max-w-md font-sans text-sm leading-relaxed text-white/80">
-            Get early access to new arrivals, exclusive offers, and our monthly
-            guide to sustainable living — straight to your inbox.
+            Merrni të parët produktet e reja, ofertat ekskluzive dhe udhëzuesin
+            tonë mujor për një jetesë më të qëndrueshme, direkt në email.
           </p>
 
           {submitted ? (
@@ -69,7 +69,7 @@ export default function Newsletter() {
                 </svg>
               </span>
               <span className="font-sans text-sm font-medium">
-                You&apos;re in! Welcome to the YCO community.
+                Jeni regjistruar! Mirë se vini në komunitetin YCO.
               </span>
             </div>
           ) : (
@@ -78,7 +78,7 @@ export default function Newsletter() {
               className="mx-auto mt-9 flex max-w-md flex-col gap-3 sm:flex-row"
             >
               <label htmlFor="newsletter-email" className="sr-only">
-                Email address
+                Adresa e email-it
               </label>
               <input
                 id="newsletter-email"
@@ -91,18 +91,18 @@ export default function Newsletter() {
                 className="min-h-[48px] flex-1 rounded-circle border border-white/20 bg-white px-6 font-sans text-sm text-yco-charcoal placeholder:text-yco-charcoal-muted/70 outline-none transition focus:ring-2 focus:ring-white/60"
               />
               <button type="submit" className="yco-btn yco-btn--coral">
-                Subscribe
+                Abonohu
               </button>
             </form>
           )}
 
           <p className="mt-5 font-sans text-[11px] tracking-wide text-white/60">
-            No spam, ever. Unsubscribe at any time.
+            Pa spam. Mund të çregjistroheni në çdo kohë.
           </p>
 
           <div className="mt-12 flex items-center justify-center gap-6 border-t border-white/15 pt-9">
             <span className="font-sans text-xs uppercase tracking-widest text-white/60">
-              Follow us
+              Na ndiqni
             </span>
             <a
               href="https://instagram.com"
