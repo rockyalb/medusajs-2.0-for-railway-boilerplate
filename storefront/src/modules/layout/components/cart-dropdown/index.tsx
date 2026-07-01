@@ -136,7 +136,10 @@ const DropdownItem = ({
         </div>
 
         {error && (
-          <p className="mt-2 font-sans text-xs text-pastel-coral-ink" role="alert">
+          <p
+            className="mt-2 font-sans text-xs text-pastel-coral-ink"
+            role="alert"
+          >
             {error}
           </p>
         )}
@@ -211,7 +214,7 @@ const CartDropdown = ({
 
       {/* Drawer overlay */}
       <div
-        className={`fixed inset-0 z-[70] ${open ? "visible" : "invisible"}`}
+        className={`fixed inset-0 z-[120] ${open ? "visible" : "invisible"}`}
         aria-hidden={!open}
       >
         {/* Backdrop */}
