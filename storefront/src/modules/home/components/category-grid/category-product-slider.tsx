@@ -35,6 +35,7 @@ export default function CategoryProductSlider({
   cardIndex,
 }: CategoryProductSliderProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
+  const wheelLockRef = useRef(false)
   const [canScrollPrev, setCanScrollPrev] = useState(false)
   const [canScrollNext, setCanScrollNext] = useState(false)
 
@@ -76,11 +77,30 @@ export default function CategoryProductSlider({
       return
     }
 
-    element.scrollBy({
-      left:
-        direction === "prev"
-          ? -element.clientWidth * 0.78
-          : element.clientWidth * 0.78,
+    const items = Array.from(
+      element.children[0]?.children ?? []
+    ) as HTMLElement[]
+    const currentIndex = items.reduce(
+      (nearestIndex, item, index) =>
+        Math.abs(item.offsetLeft - element.scrollLeft) <
+        Math.abs(items[nearestIndex].offsetLeft - element.scrollLeft)
+          ? index
+          : nearestIndex,
+      0
+    )
+    const nextIndex = Math.max(
+      0,
+      Math.min(currentIndex + (direction === "prev" ? -1 : 1), items.length - 1)
+    )
+    const target = items[nextIndex]
+    const firstItem = items[0]
+
+    if (!target) {
+      return
+    }
+
+    element.scrollTo({
+      left: target.offsetLeft - (firstItem?.offsetLeft ?? 0),
       behavior: "smooth",
     })
   }
@@ -95,9 +115,16 @@ export default function CategoryProductSlider({
     const scrollingPrev = event.deltaY < 0
     const scrollingNext = event.deltaY > 0
 
-    if ((scrollingPrev && canScrollPrev) || (scrollingNext && canScrollNext)) {
+    if (
+      !wheelLockRef.current &&
+      ((scrollingPrev && canScrollPrev) || (scrollingNext && canScrollNext))
+    ) {
       event.preventDefault()
-      element.scrollLeft += event.deltaY
+      wheelLockRef.current = true
+      scrollProducts(scrollingPrev ? "prev" : "next")
+      window.setTimeout(() => {
+        wheelLockRef.current = false
+      }, 320)
     }
   }
 
@@ -115,7 +142,7 @@ export default function CategoryProductSlider({
             <Link
               key={product.id}
               href={`/products/${product.handle}`}
-              className="group/product w-[68%] min-w-[12rem] max-w-[15rem] shrink-0 snap-start rounded-rounded bg-white/70 p-3 transition-transform duration-300 hover:-translate-y-1 sm:w-[54%] lg:w-[72%]"
+              className="group/product w-[68%] min-w-[12rem] max-w-[15rem] shrink-0 snap-start snap-always rounded-rounded bg-white/70 p-3 transition-transform duration-300 hover:-translate-y-1 sm:w-[54%] lg:w-[72%]"
             >
               <div className="aspect-square overflow-hidden rounded-base bg-white">
                 {product.image ? (

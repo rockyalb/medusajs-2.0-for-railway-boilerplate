@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useRef } from "react"
 import { motion, useReducedMotion } from "motion/react"
 import type { HttpTypes } from "@medusajs/types"
-import type { MouseEvent, PointerEvent } from "react"
+import type { MouseEvent, PointerEvent, WheelEvent } from "react"
 import type { CategoryProduct } from "./category-product-slider"
 
 type CategoryCard = {
@@ -67,6 +67,7 @@ export default function CategoryGrid({
       return
     }
 
+    event.currentTarget.setPointerCapture(event.pointerId)
     dragState.current = {
       active: true,
       dragged: false,
@@ -115,6 +116,25 @@ export default function CategoryGrid({
     }
   }
 
+  const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
+    const element = scrollerRef.current
+
+    if (!element || Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+      return
+    }
+
+    const canScrollPrev = element.scrollLeft > 0
+    const canScrollNext =
+      element.scrollLeft + element.clientWidth < element.scrollWidth - 1
+    const scrollingPrev = event.deltaY < 0
+    const scrollingNext = event.deltaY > 0
+
+    if ((scrollingPrev && canScrollPrev) || (scrollingNext && canScrollNext)) {
+      event.preventDefault()
+      element.scrollLeft += event.deltaY
+    }
+  }
+
   const handleCategoryClick = (event: MouseEvent<HTMLAnchorElement>) => {
     if (dragState.current.suppressClick) {
       event.preventDefault()
@@ -123,14 +143,14 @@ export default function CategoryGrid({
 
   return (
     <section className="bg-white px-6 py-10 small:py-12">
-      <div className="max-w-6xl mx-auto">
-        <motion.div
-          initial={reducedMotion ? false : { opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.4 }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="mb-7 flex items-end justify-between gap-6"
-        >
+      <motion.div
+        initial={reducedMotion ? false : { opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.25 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        className="max-w-6xl mx-auto"
+      >
+        <div className="mb-7 flex items-end justify-between gap-6">
           <div>
             <span className="rhode-eyebrow inline-flex items-center gap-2">
               <span className="yco-accent-dot" aria-hidden />
@@ -147,11 +167,11 @@ export default function CategoryGrid({
           >
             Shiko të gjitha
           </Link>
-        </motion.div>
+        </div>
 
         <div
           ref={scrollerRef}
-          className="-mx-6 cursor-grab overflow-x-auto px-6 pb-3 no-scrollbar active:cursor-grabbing small:mx-0 small:px-0"
+          className="-mx-6 cursor-grab overflow-x-auto overscroll-x-contain px-6 pb-3 no-scrollbar active:cursor-grabbing small:mx-0 small:px-0"
           role="region"
           aria-label="Kategoritë e produkteve"
           onPointerDown={handlePointerDown}
@@ -159,24 +179,17 @@ export default function CategoryGrid({
           onPointerUp={endDrag}
           onPointerCancel={endDrag}
           onPointerLeave={endDrag}
+          onWheel={handleWheel}
         >
-          <div className="flex snap-x snap-mandatory gap-4">
+          <div className="flex gap-4">
             {categories.map(({ category, productCount, products }, index) => {
               const image = products[0]?.image
               const accentClass = accentForCategory(category, index)
 
               return (
-                <motion.div
+                <div
                   key={category.id}
-                  initial={reducedMotion ? false : { opacity: 0, y: 32 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, amount: 0.25 }}
-                  transition={{
-                    duration: 0.75,
-                    ease: [0.22, 1, 0.36, 1],
-                    delay: (index % 4) * 0.07,
-                  }}
-                  className="w-[78vw] max-w-[25rem] shrink-0 snap-start small:w-[38vw] medium:w-[30vw] large:w-[24rem]"
+                  className="w-[78vw] max-w-[25rem] shrink-0 small:w-[calc((100%_-_2rem)/3)]"
                 >
                   <Link
                     href={`/categories/${category.handle}`}
@@ -239,12 +252,12 @@ export default function CategoryGrid({
                       </span>
                     </div>
                   </Link>
-                </motion.div>
+                </div>
               )
             })}
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   )
 }

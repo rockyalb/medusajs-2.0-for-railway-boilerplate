@@ -3,7 +3,8 @@
 import { HttpTypes } from "@medusajs/types"
 import { Container } from "@medusajs/ui"
 import Image from "next/image"
-import { useState } from "react"
+import { useRef, useState } from "react"
+import type { TouchEvent } from "react"
 
 type ImageGalleryProps = {
   images: HttpTypes.StoreProductImage[]
@@ -11,20 +12,74 @@ type ImageGalleryProps = {
 
 const ImageGallery = ({ images }: ImageGalleryProps) => {
   const [activeIndex, setActiveIndex] = useState(0)
+  const [mobileIndex, setMobileIndex] = useState(0)
+  const mobileScrollRef = useRef<HTMLDivElement>(null)
+  const touchStartRef = useRef({
+    index: 0,
+    x: 0,
+    y: 0,
+  })
   const activeImage = images[activeIndex] ?? images[0]
 
   if (!images.length) {
     return null
   }
 
+  const scrollMobileImage = (index: number, behavior: ScrollBehavior) => {
+    const element = mobileScrollRef.current
+    const nextIndex = Math.max(0, Math.min(index, images.length - 1))
+    const target = element?.children[nextIndex] as HTMLElement | undefined
+    const firstItem = element?.children[0] as HTMLElement | undefined
+
+    setMobileIndex(nextIndex)
+
+    if (element && target) {
+      element.scrollTo({
+        left: target.offsetLeft - (firstItem?.offsetLeft ?? 0),
+        behavior,
+      })
+    }
+  }
+
+  const handleMobileTouchStart = (event: TouchEvent<HTMLDivElement>) => {
+    const touch = event.touches[0]
+
+    touchStartRef.current = {
+      index: mobileIndex,
+      x: touch.clientX,
+      y: touch.clientY,
+    }
+  }
+
+  const handleMobileTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
+    const touch = event.changedTouches[0]
+    const deltaX = touchStartRef.current.x - touch.clientX
+    const deltaY = touchStartRef.current.y - touch.clientY
+
+    if (Math.abs(deltaX) < 36 || Math.abs(deltaX) <= Math.abs(deltaY)) {
+      scrollMobileImage(touchStartRef.current.index, "smooth")
+      return
+    }
+
+    scrollMobileImage(
+      touchStartRef.current.index + (deltaX > 0 ? 1 : -1),
+      "smooth"
+    )
+  }
+
   return (
     <div className="relative h-full">
-      <div className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto small:hidden">
+      <div
+        ref={mobileScrollRef}
+        className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain small:hidden"
+        onTouchStart={handleMobileTouchStart}
+        onTouchEnd={handleMobileTouchEnd}
+      >
         {images.map((image, index) => {
           return (
             <Container
               key={image.id}
-              className="relative aspect-[4/5] w-[86vw] shrink-0 snap-center overflow-hidden rounded-rounded bg-yco-panel-dark shadow-none small:h-full small:w-full"
+              className="relative aspect-[4/5] w-[86vw] shrink-0 snap-center snap-always overflow-hidden rounded-rounded bg-yco-panel-dark shadow-none small:h-full small:w-full"
               id={image.id}
             >
               {!!image.url && (
