@@ -63,14 +63,14 @@ export type NormalizedWordPressEntry = {
 const ENTITY_MAP: Record<string, string> = {
   amp: "&",
   nbsp: " ",
-  quot: "\"",
+  quot: '"',
   apos: "'",
   "#039": "'",
   "#8211": "-",
   "#8212": "-",
   "#8217": "'",
-  "#8220": "\"",
-  "#8221": "\"",
+  "#8220": '"',
+  "#8221": '"',
   "#8230": "...",
 }
 
@@ -151,10 +151,7 @@ function isBulletLine(value: string) {
 
 function normalizeBulletLine(value: string) {
   return value
-    .replace(
-      /^(\d+[.)]|[-*•–—]|[✅✓✔●○■□▪▫◆◇]|[\u{1f300}-\u{1faff}])\s+/u,
-      ""
-    )
+    .replace(/^(\d+[.)]|[-*•–—]|[✅✓✔●○■□▪▫◆◇]|[\u{1f300}-\u{1faff}])\s+/u, "")
     .trim()
 }
 
@@ -341,21 +338,29 @@ async function fetchWordPressCollection(
   type: "pages" | "posts",
   query = ""
 ): Promise<WordPressEntry[]> {
-  const response = await fetch(
-    `${WORDPRESS_BASE_URL}/wp-json/wp/v2/${type}?${query}`,
-    {
-      next: {
-        revalidate: 3600,
-        tags: ["wordpress-content"],
-      },
-    }
-  )
+  try {
+    const response = await fetch(
+      `${WORDPRESS_BASE_URL}/wp-json/wp/v2/${type}?${query}`,
+      {
+        next: {
+          revalidate: 3600,
+          tags: ["wordpress-content"],
+        },
+      }
+    )
 
-  if (!response.ok) {
+    if (!response.ok) {
+      console.warn(
+        `WordPress ${type} request failed with status ${response.status}`
+      )
+      return []
+    }
+
+    return response.json()
+  } catch (error) {
+    console.warn(`WordPress ${type} request failed`, error)
     return []
   }
-
-  return response.json()
 }
 
 async function fetchAllWordPressEntries(type: "pages" | "posts") {
