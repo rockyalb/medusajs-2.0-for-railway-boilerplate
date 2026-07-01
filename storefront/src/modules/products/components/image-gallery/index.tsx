@@ -2,9 +2,9 @@
 
 import { HttpTypes } from "@medusajs/types"
 import { Container } from "@medusajs/ui"
+import useEmblaCarousel from "embla-carousel-react"
 import Image from "next/image"
-import { useRef, useState } from "react"
-import type { TouchEvent } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 type ImageGalleryProps = {
   images: HttpTypes.StoreProductImage[]
@@ -13,91 +13,82 @@ type ImageGalleryProps = {
 const ImageGallery = ({ images }: ImageGalleryProps) => {
   const [activeIndex, setActiveIndex] = useState(0)
   const [mobileIndex, setMobileIndex] = useState(0)
-  const mobileScrollRef = useRef<HTMLDivElement>(null)
-  const touchStartRef = useRef({
-    index: 0,
-    x: 0,
-    y: 0,
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "center",
+    containScroll: "trimSnaps",
+    skipSnaps: false,
   })
   const activeImage = images[activeIndex] ?? images[0]
+
+  const updateMobileIndex = useCallback(() => {
+    if (!emblaApi) {
+      return
+    }
+
+    setMobileIndex(emblaApi.selectedScrollSnap())
+  }, [emblaApi])
+
+  useEffect(() => {
+    if (!emblaApi) {
+      return
+    }
+
+    updateMobileIndex()
+
+    emblaApi.on("select", updateMobileIndex)
+    emblaApi.on("reInit", updateMobileIndex)
+
+    return () => {
+      emblaApi.off("select", updateMobileIndex)
+      emblaApi.off("reInit", updateMobileIndex)
+    }
+  }, [emblaApi, updateMobileIndex])
 
   if (!images.length) {
     return null
   }
 
-  const scrollMobileImage = (index: number, behavior: ScrollBehavior) => {
-    const element = mobileScrollRef.current
-    const nextIndex = Math.max(0, Math.min(index, images.length - 1))
-    const target = element?.children[nextIndex] as HTMLElement | undefined
-    const firstItem = element?.children[0] as HTMLElement | undefined
-
-    setMobileIndex(nextIndex)
-
-    if (element && target) {
-      element.scrollTo({
-        left: target.offsetLeft - (firstItem?.offsetLeft ?? 0),
-        behavior,
-      })
-    }
-  }
-
-  const handleMobileTouchStart = (event: TouchEvent<HTMLDivElement>) => {
-    const touch = event.touches[0]
-
-    touchStartRef.current = {
-      index: mobileIndex,
-      x: touch.clientX,
-      y: touch.clientY,
-    }
-  }
-
-  const handleMobileTouchEnd = (event: TouchEvent<HTMLDivElement>) => {
-    const touch = event.changedTouches[0]
-    const deltaX = touchStartRef.current.x - touch.clientX
-    const deltaY = touchStartRef.current.y - touch.clientY
-
-    if (Math.abs(deltaX) < 36 || Math.abs(deltaX) <= Math.abs(deltaY)) {
-      scrollMobileImage(touchStartRef.current.index, "smooth")
+  const scrollMobileImage = (index: number) => {
+    if (!emblaApi) {
       return
     }
 
-    scrollMobileImage(
-      touchStartRef.current.index + (deltaX > 0 ? 1 : -1),
-      "smooth"
-    )
+    emblaApi.scrollTo(index)
   }
 
   return (
     <div className="relative h-full">
       <div
-        ref={mobileScrollRef}
-        className="no-scrollbar flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain small:hidden"
-        onTouchStart={handleMobileTouchStart}
-        onTouchEnd={handleMobileTouchEnd}
+        ref={emblaRef}
+        className="overflow-hidden small:hidden"
+        role="region"
+        aria-label="Product images"
       >
-        {images.map((image, index) => {
-          return (
-            <Container
-              key={image.id}
-              className="relative aspect-[4/5] w-[86vw] shrink-0 snap-center snap-always overflow-hidden rounded-rounded bg-yco-panel-dark shadow-none small:h-full small:w-full"
-              id={image.id}
-            >
-              {!!image.url && (
-                <Image
-                  src={image.url}
-                  priority={index <= 2 ? true : false}
-                  className="absolute inset-0 rounded-rounded"
-                  alt={`Product image ${index + 1}`}
-                  fill
-                  sizes="(max-width: 1023px) 86vw, 58vw"
-                  style={{
-                    objectFit: "cover",
-                  }}
-                />
-              )}
-            </Container>
-          )
-        })}
+        <div className="flex gap-3">
+          {images.map((image, index) => {
+            return (
+              <Container
+                key={image.id}
+                className="relative aspect-[4/5] w-[86vw] shrink-0 overflow-hidden rounded-rounded bg-yco-panel-dark shadow-none small:h-full small:w-full"
+                id={image.id}
+              >
+                {!!image.url && (
+                  <Image
+                    src={image.url}
+                    priority={index <= 2 ? true : false}
+                    className="absolute inset-0 rounded-rounded"
+                    alt={`Product image ${index + 1}`}
+                    fill
+                    sizes="(max-width: 1023px) 86vw, 58vw"
+                    style={{
+                      objectFit: "cover",
+                    }}
+                  />
+                )}
+              </Container>
+            )
+          })}
+        </div>
       </div>
 
       <Container className="relative hidden h-full w-full overflow-hidden rounded-rounded bg-yco-panel-dark shadow-none small:block">
@@ -152,10 +143,17 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
       {images.length > 1 && (
         <div className="mt-3 flex justify-center gap-1.5 small:hidden">
           {images.map((image, index) => (
-            <span
+            <button
               key={image.id}
-              className="h-1.5 w-1.5 rounded-circle bg-yco-charcoal/35"
-              aria-label={`Product image ${index + 1}`}
+              type="button"
+              className={`h-1.5 rounded-circle transition-all ${
+                mobileIndex === index
+                  ? "w-5 bg-yco-charcoal"
+                  : "w-1.5 bg-yco-charcoal/35"
+              }`}
+              aria-label={`Show product image ${index + 1}`}
+              aria-current={mobileIndex === index}
+              onClick={() => scrollMobileImage(index)}
             />
           ))}
         </div>

@@ -1,4 +1,9 @@
-import { HttpTypes } from "@medusajs/types"
+"use client"
+
+import useEmblaCarousel from "embla-carousel-react"
+import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures"
+import { useMemo } from "react"
+import type { HttpTypes } from "@medusajs/types"
 
 import { getProductPrice } from "@lib/util/get-product-price"
 import { Stagger, StaggerItem } from "@modules/common/components/motion"
@@ -10,6 +15,22 @@ export default function ProductRail({
   products: HttpTypes.StoreProduct[]
   region: HttpTypes.StoreRegion
 }) {
+  const wheelGestures = useMemo(
+    () => [WheelGesturesPlugin({ forceWheelAxis: "x" })],
+    []
+  )
+  const [emblaRef] = useEmblaCarousel(
+    {
+      align: "start",
+      containScroll: "trimSnaps",
+      active: true,
+      breakpoints: {
+        "(min-width: 1024px)": { active: false },
+      },
+    },
+    wheelGestures
+  )
+
   if (!products.length) {
     return null
   }
@@ -38,21 +59,26 @@ export default function ProductRail({
 
   return (
     <div className="content-container py-7 small:py-8">
-      <Stagger
-        stagger={0.07}
-        role="list"
-        className="-mx-6 flex snap-x gap-4 overflow-x-auto px-6 pb-4 no-scrollbar small:mx-0 small:grid small:grid-cols-6 small:gap-5 small:overflow-visible small:px-0 small:pb-0"
+      <div
+        ref={emblaRef}
+        className="-mx-6 overflow-hidden px-6 small:mx-0 small:px-0"
       >
-        {showcaseProducts.map((product) => (
-          <StaggerItem
-            key={product.id}
-            role="listitem"
-            className="w-[68vw] max-w-[280px] shrink-0 snap-start xsmall:w-[42vw] small:w-auto small:max-w-none"
-          >
-            <ShowcaseCard product={product} />
-          </StaggerItem>
-        ))}
-      </Stagger>
+        <Stagger
+          stagger={0.07}
+          role="list"
+          className="flex gap-4 pb-4 small:grid small:grid-cols-6 small:gap-5 small:pb-0"
+        >
+          {showcaseProducts.map((product) => (
+            <StaggerItem
+              key={product.id}
+              role="listitem"
+              className="w-[68vw] max-w-[280px] shrink-0 xsmall:w-[42vw] small:w-auto small:max-w-none"
+            >
+              <ShowcaseCard product={product} />
+            </StaggerItem>
+          ))}
+        </Stagger>
+      </div>
     </div>
   )
 }

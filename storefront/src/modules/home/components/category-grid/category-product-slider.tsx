@@ -1,8 +1,9 @@
 "use client"
 
 import Link from "next/link"
-import { useCallback, useEffect, useRef, useState } from "react"
-import type { WheelEvent } from "react"
+import useEmblaCarousel from "embla-carousel-react"
+import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 export type CategoryProduct = {
   id: string
@@ -34,115 +35,67 @@ export default function CategoryProductSlider({
   categoryName,
   cardIndex,
 }: CategoryProductSliderProps) {
-  const scrollRef = useRef<HTMLDivElement>(null)
-  const wheelLockRef = useRef(false)
+  const wheelGestures = useMemo(
+    () => [WheelGesturesPlugin({ forceWheelAxis: "x" })],
+    []
+  )
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    {
+      align: "start",
+      containScroll: "trimSnaps",
+    },
+    wheelGestures
+  )
   const [canScrollPrev, setCanScrollPrev] = useState(false)
   const [canScrollNext, setCanScrollNext] = useState(false)
 
   const updateScrollState = useCallback(() => {
-    const element = scrollRef.current
-
-    if (!element) {
+    if (!emblaApi) {
       return
     }
 
-    setCanScrollPrev(element.scrollLeft > 4)
-    setCanScrollNext(
-      element.scrollLeft + element.clientWidth < element.scrollWidth - 4
-    )
-  }, [])
+    setCanScrollPrev(emblaApi.canScrollPrev())
+    setCanScrollNext(emblaApi.canScrollNext())
+  }, [emblaApi])
 
   useEffect(() => {
+    if (!emblaApi) {
+      return
+    }
+
     updateScrollState()
 
-    const element = scrollRef.current
-
-    if (!element) {
-      return
-    }
-
-    element.addEventListener("scroll", updateScrollState, { passive: true })
-    window.addEventListener("resize", updateScrollState)
+    emblaApi.on("select", updateScrollState)
+    emblaApi.on("reInit", updateScrollState)
 
     return () => {
-      element.removeEventListener("scroll", updateScrollState)
-      window.removeEventListener("resize", updateScrollState)
+      emblaApi.off("select", updateScrollState)
+      emblaApi.off("reInit", updateScrollState)
     }
-  }, [updateScrollState])
+  }, [emblaApi, updateScrollState])
 
   const scrollProducts = (direction: "prev" | "next") => {
-    const element = scrollRef.current
-
-    if (!element) {
+    if (!emblaApi) {
       return
     }
 
-    const items = Array.from(
-      element.children[0]?.children ?? []
-    ) as HTMLElement[]
-    const currentIndex = items.reduce(
-      (nearestIndex, item, index) =>
-        Math.abs(item.offsetLeft - element.scrollLeft) <
-        Math.abs(items[nearestIndex].offsetLeft - element.scrollLeft)
-          ? index
-          : nearestIndex,
-      0
-    )
-    const nextIndex = Math.max(
-      0,
-      Math.min(currentIndex + (direction === "prev" ? -1 : 1), items.length - 1)
-    )
-    const target = items[nextIndex]
-    const firstItem = items[0]
-
-    if (!target) {
-      return
-    }
-
-    element.scrollTo({
-      left: target.offsetLeft - (firstItem?.offsetLeft ?? 0),
-      behavior: "smooth",
-    })
-  }
-
-  const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
-    const element = scrollRef.current
-
-    if (!element || Math.abs(event.deltaY) <= Math.abs(event.deltaX)) {
-      return
-    }
-
-    const scrollingPrev = event.deltaY < 0
-    const scrollingNext = event.deltaY > 0
-
-    if (
-      !wheelLockRef.current &&
-      ((scrollingPrev && canScrollPrev) || (scrollingNext && canScrollNext))
-    ) {
-      event.preventDefault()
-      wheelLockRef.current = true
-      scrollProducts(scrollingPrev ? "prev" : "next")
-      window.setTimeout(() => {
-        wheelLockRef.current = false
-      }, 320)
-    }
+    direction === "prev" ? emblaApi.scrollPrev() : emblaApi.scrollNext()
   }
 
   return (
     <div className="relative">
       <div
-        ref={scrollRef}
-        className="-mx-6 mt-8 overflow-x-auto px-6 pb-3 no-scrollbar md:-mx-8 md:px-8"
+        ref={emblaRef}
+        className="-mx-6 mt-8 overflow-hidden px-6 pb-3 md:-mx-8 md:px-8"
         role="region"
         aria-label={`${categoryName} produkte`}
-        onWheel={handleWheel}
       >
-        <div className="flex snap-x snap-mandatory gap-3">
+        <div className="flex gap-3">
           {products.slice(0, 8).map((product, productIndex) => (
             <Link
               key={product.id}
               href={`/products/${product.handle}`}
-              className="group/product w-[68%] min-w-[12rem] max-w-[15rem] shrink-0 snap-start snap-always rounded-rounded bg-white/70 p-3 transition-transform duration-300 hover:-translate-y-1 sm:w-[54%] lg:w-[72%]"
+              className="group/product w-[68%] min-w-[12rem] max-w-[15rem] shrink-0 rounded-rounded bg-white/70 p-3 transition-transform duration-300 hover:-translate-y-1 sm:w-[54%] lg:w-[72%]"
             >
               <div className="aspect-square overflow-hidden rounded-base bg-white">
                 {product.image ? (

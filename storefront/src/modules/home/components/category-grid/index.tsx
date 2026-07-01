@@ -1,10 +1,12 @@
 "use client"
 
 import Link from "next/link"
-import { useRef } from "react"
+import useEmblaCarousel from "embla-carousel-react"
+import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures"
 import { motion, useReducedMotion } from "motion/react"
+import { useMemo, useRef } from "react"
 import type { HttpTypes } from "@medusajs/types"
-import type { MouseEvent, PointerEvent, WheelEvent } from "react"
+import type { MouseEvent, PointerEvent } from "react"
 import type { CategoryProduct } from "./category-product-slider"
 
 type CategoryCard = {
@@ -49,13 +51,23 @@ export default function CategoryGrid({
   categories: CategoryCard[]
 }) {
   const reducedMotion = useReducedMotion()
-  const scrollerRef = useRef<HTMLDivElement>(null)
+  const wheelGestures = useMemo(
+    () => [WheelGesturesPlugin({ forceWheelAxis: "x" })],
+    []
+  )
+  const [emblaRef] = useEmblaCarousel(
+    {
+      align: "start",
+      containScroll: "trimSnaps",
+      dragFree: true,
+    },
+    wheelGestures
+  )
   const dragState = useRef({
     active: false,
     dragged: false,
     suppressClick: false,
     startX: 0,
-    scrollLeft: 0,
   })
 
   if (!categories.length) {
@@ -63,24 +75,18 @@ export default function CategoryGrid({
   }
 
   const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType === "touch" || !scrollerRef.current) {
-      return
-    }
-
-    event.currentTarget.setPointerCapture(event.pointerId)
     dragState.current = {
       active: true,
       dragged: false,
       suppressClick: false,
       startX: event.clientX,
-      scrollLeft: scrollerRef.current.scrollLeft,
     }
   }
 
   const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
     const state = dragState.current
 
-    if (!state.active || !scrollerRef.current) {
+    if (!state.active) {
       return
     }
 
@@ -94,9 +100,6 @@ export default function CategoryGrid({
       state.dragged = true
       state.suppressClick = true
     }
-
-    scrollerRef.current.scrollLeft =
-      state.scrollLeft - (deltaX - Math.sign(deltaX) * DRAG_THRESHOLD)
   }
 
   const endDrag = () => {
@@ -113,25 +116,6 @@ export default function CategoryGrid({
         state.suppressClick = false
         state.dragged = false
       }, 120)
-    }
-  }
-
-  const handleWheel = (event: WheelEvent<HTMLDivElement>) => {
-    const element = scrollerRef.current
-
-    if (!element || Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
-      return
-    }
-
-    const canScrollPrev = element.scrollLeft > 0
-    const canScrollNext =
-      element.scrollLeft + element.clientWidth < element.scrollWidth - 1
-    const scrollingPrev = event.deltaY < 0
-    const scrollingNext = event.deltaY > 0
-
-    if ((scrollingPrev && canScrollPrev) || (scrollingNext && canScrollNext)) {
-      event.preventDefault()
-      element.scrollLeft += event.deltaY
     }
   }
 
@@ -170,8 +154,8 @@ export default function CategoryGrid({
         </div>
 
         <div
-          ref={scrollerRef}
-          className="-mx-6 cursor-grab overflow-x-auto overscroll-x-contain px-6 pb-3 no-scrollbar active:cursor-grabbing small:mx-0 small:px-0"
+          ref={emblaRef}
+          className="-mx-6 cursor-grab overflow-hidden px-6 pb-3 active:cursor-grabbing small:mx-0 small:px-0"
           role="region"
           aria-label="Kategoritë e produkteve"
           onPointerDown={handlePointerDown}
@@ -179,7 +163,6 @@ export default function CategoryGrid({
           onPointerUp={endDrag}
           onPointerCancel={endDrag}
           onPointerLeave={endDrag}
-          onWheel={handleWheel}
         >
           <div className="flex gap-4">
             {categories.map(({ category, productCount, products }, index) => {

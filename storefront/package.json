@@ -35,6 +35,8 @@
     "@stripe/stripe-js": "^9.8.0",
     "algoliasearch": "^4.20.0",
     "axios": "^1.15.0",
+    "embla-carousel-react": "^8.6.0",
+    "embla-carousel-wheel-gestures": "^8.1.0",
     "lodash": "^4.18.1",
     "medusajs-launch-utils": "0.0.18",
     "motion": "^12.40.0",
