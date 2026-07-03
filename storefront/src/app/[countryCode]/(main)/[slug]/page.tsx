@@ -9,7 +9,6 @@ import {
   getWordPressPost,
   getWordPressEntryImage,
   listWordPressPosts,
-  listWordPressSlugs,
 } from "@lib/data/wordpress"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
@@ -46,15 +45,7 @@ export async function generateMetadata({
 }
 
 export async function generateStaticParams() {
-  const slugs = await listWordPressSlugs()
-
-  return [
-    { countryCode: "al", slug: "blog" },
-    ...slugs.map((slug) => ({
-      countryCode: "al",
-      slug,
-    })),
-  ]
+  return [{ countryCode: "al", slug: "blog" }]
 }
 
 export default async function LegacyWordPressRoute({ params }: PageProps) {

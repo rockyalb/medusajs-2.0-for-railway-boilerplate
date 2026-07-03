@@ -1,4 +1,8 @@
 const WORDPRESS_BASE_URL = "https://ycorganics.com"
+const WORDPRESS_CONTENT_ENABLED =
+  process.env.WORDPRESS_CONTENT_ENABLED === "true" ||
+  process.env.NEXT_PUBLIC_WORDPRESS_CONTENT_ENABLED === "true"
+const WORDPRESS_FETCH_TIMEOUT_MS = 5000
 
 export type WordPressContentBlock =
   | {
@@ -338,10 +342,18 @@ async function fetchWordPressCollection(
   type: "pages" | "posts",
   query = ""
 ): Promise<WordPressEntry[]> {
+  if (!WORDPRESS_CONTENT_ENABLED) {
+    return []
+  }
+
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), WORDPRESS_FETCH_TIMEOUT_MS)
+
   try {
     const response = await fetch(
       `${WORDPRESS_BASE_URL}/wp-json/wp/v2/${type}?${query}`,
       {
+        signal: controller.signal,
         next: {
           revalidate: 3600,
           tags: ["wordpress-content"],
@@ -360,6 +372,8 @@ async function fetchWordPressCollection(
   } catch (error) {
     console.warn(`WordPress ${type} request failed`, error)
     return []
+  } finally {
+    clearTimeout(timeout)
   }
 }
 
