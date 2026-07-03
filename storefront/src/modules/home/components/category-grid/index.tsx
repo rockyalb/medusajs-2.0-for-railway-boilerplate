@@ -125,7 +125,7 @@ export default function CategoryGrid({
   }
 
   return (
-    <section className="font-hanken bg-white px-6">
+    <section className="font-hanken bg-white px-6 pb-8 small:pb-10">
       <motion.div
         initial={reducedMotion ? false : { opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -136,7 +136,7 @@ export default function CategoryGrid({
         <h2 className="rhode-display text-3xl md:text-4xl">
           Kategoritë
         </h2>
-        <div className="yco-tricolor-rule mb-7 mt-4" />
+        <div className="yco-tricolor-rule mb-6 mt-4" />
 
         <div
           ref={emblaRef}

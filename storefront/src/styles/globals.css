@@ -269,6 +269,20 @@
     --btn-text: #21304f;
   }
 
+  .yco-btn--hero-blue {
+    --btn-bg: #7fa6e8;
+    --btn-bg-hover: #7fa6e8;
+    --btn-base: #5b86d4;
+    --btn-text: #ffffff;
+  }
+
+  .yco-btn--header-pink {
+    --btn-bg: #f5cfce;
+    --btn-bg-hover: #f5cfce;
+    --btn-base: #ddb5b4;
+    --btn-text: #2f2d29;
+  }
+
   .yco-btn--ink {
     --btn-bg: #2f2d29;
     --btn-bg-hover: #403d38;
@@ -611,7 +625,7 @@
   }
 
   .bs-rhode-hero__copy {
-    @apply relative order-2 z-[2] mx-auto flex w-full min-w-0 max-w-[46rem] flex-col items-start justify-start px-6 pb-7 pt-6 font-hanken text-yco-charcoal small:order-1 small:max-w-none small:justify-center small:px-[clamp(36px,4vw,64px)] small:py-12;
+    @apply relative order-2 z-[2] mx-auto flex w-full min-w-0 max-w-[46rem] flex-col items-start justify-start px-6 pb-7 pt-6 font-sans text-yco-charcoal small:order-1 small:max-w-none small:justify-center small:px-[clamp(36px,4vw,64px)] small:py-12;
   }
 
   .bs-rhode-hero__eyebrow {

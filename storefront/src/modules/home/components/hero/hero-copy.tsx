@@ -54,7 +54,7 @@ export default function HeroCopy() {
         transition={{ duration: 0.7, ease: EASE_OUT, delay: 0.62 }}
         className="flex flex-wrap items-center gap-3"
       >
-        <LocalizedClientLink href="/store" className="yco-btn yco-btn--ink">
+        <LocalizedClientLink href="/store" className="yco-btn yco-btn--hero-blue">
           Shiko produktet
         </LocalizedClientLink>
       </motion.div>

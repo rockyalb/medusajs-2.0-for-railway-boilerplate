@@ -191,7 +191,7 @@ const CartDropdown = ({
         data-testid="nav-cart-link"
         className="h-full flex items-center"
       >
-        <span className="hidden small:inline-block font-sans text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300">
+        <span className="hidden small:inline-block font-hanken text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300">
           Shporta ({totalItems})
         </span>
         <span className="small:hidden relative text-yco-charcoal">

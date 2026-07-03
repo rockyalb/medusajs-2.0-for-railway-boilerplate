@@ -23,7 +23,7 @@ export default function EditorialBanner() {
   const imageY = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"])
 
   return (
-    <section ref={sectionRef} className="bg-white px-3 py-4 small:px-7 small:py-6">
+    <section ref={sectionRef} className="bg-white px-3 py-3 small:px-7 small:py-4">
       <div className="relative overflow-hidden rounded-rounded">
         <motion.img
           src="/placeholder-images/yco-real/featured-products.jpg"

@@ -191,7 +191,7 @@ export default function ProductActions({
           type="button"
           onClick={handleAddToCart}
           disabled={!inStock || !selectedVariant || !!disabled || isAdding}
-          className="yco-btn yco-btn--coral yco-btn--block"
+          className="yco-btn yco-btn--header-pink yco-btn--block"
           data-testid="add-product-button"
         >
           {isAdding ? (

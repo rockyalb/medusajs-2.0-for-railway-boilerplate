@@ -22,7 +22,7 @@ export default function LatestBlogPosts({ posts }: LatestBlogPostsProps) {
   }
 
   return (
-    <section className="bg-yco-panel px-6">
+    <section className="bg-yco-panel px-6 py-10 small:py-12">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col gap-5 small:flex-row small:items-end small:justify-between">
           <div className="font-hanken">
@@ -39,7 +39,7 @@ export default function LatestBlogPosts({ posts }: LatestBlogPostsProps) {
           </LocalizedClientLink>
         </div>
 
-        <div className="grid grid-cols-1 medium:grid-cols-3 gap-5 mt-8">
+        <div className="grid grid-cols-1 medium:grid-cols-3 gap-5 mt-6 small:mt-7">
           {posts.slice(0, 3).map((post, index) => {
             const image = getWordPressEntryImage(post)
             const accentClass = ACCENT_CLASSES[index % ACCENT_CLASSES.length]

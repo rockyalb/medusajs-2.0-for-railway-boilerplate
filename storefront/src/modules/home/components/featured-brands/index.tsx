@@ -26,10 +26,10 @@ export default function FeaturedBrands({
   ] as const
 
   return (
-    <section className="bg-yco-cream-dark px-6 py-14 small:py-16">
+    <section className="bg-yco-cream-dark px-6 py-10 small:py-12">
       <div className="max-w-6xl mx-auto">
 
-        <Reveal className="font-hanken text-center mb-9 small:mb-10">
+        <Reveal className="font-hanken text-center mb-7 small:mb-8">
           <h2 className="text-yco-charcoal text-2xl md:text-3xl">
             Brende që u besojmë
           </h2>

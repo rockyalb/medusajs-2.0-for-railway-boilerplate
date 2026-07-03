@@ -124,7 +124,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                 type="button"
                 onClick={handleAddToCart}
                 disabled={!inStock || !variant || isAdding}
-                className="yco-btn yco-btn--coral yco-btn--block"
+                className="yco-btn yco-btn--header-pink yco-btn--block"
                 data-testid="mobile-cart-button"
               >
                 {isAdding ? (

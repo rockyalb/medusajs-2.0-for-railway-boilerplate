@@ -41,7 +41,7 @@ export default async function Nav() {
         <Suspense
           fallback={
             <LocalizedClientLink
-              className="font-sans text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300"
+              className="font-hanken text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300"
               href="/cart"
               data-testid="nav-cart-link"
             >
