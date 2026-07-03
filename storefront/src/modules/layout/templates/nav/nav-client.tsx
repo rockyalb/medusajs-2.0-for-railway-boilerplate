@@ -11,16 +11,10 @@ type SimpleCategory = {
   id: string
   name: string
   handle: string
-  image?: string
   children?: SimpleCategory[]
 }
 
 // Full literal class names so Tailwind keeps these hand-written @layer rules.
-const ACCENT_CLASSES = [
-  "yco-accent--mint",
-  "yco-accent--coral",
-  "yco-accent--blue",
-] as const
 type SimpleCollection = {
   id: string
   title: string
@@ -38,13 +32,7 @@ const secondaryLinks = [
   { label: "Kontakt", href: "/store" },
 ]
 
-function Hamburger({
-  open,
-  onClick,
-}: {
-  open: boolean
-  onClick: () => void
-}) {
+function Hamburger({ open, onClick }: { open: boolean; onClick: () => void }) {
   return (
     <button
       type="button"
@@ -107,10 +95,9 @@ function CategoryNestedList({
   )
   const activeCategory = categories[activeIndex]
   const children = activeCategory?.children ?? []
-  const accentClass = ACCENT_CLASSES[activeIndex % ACCENT_CLASSES.length]
 
   return (
-    <div className="grid min-h-[24rem] grid-cols-[0.62fr_1fr_0.72fr] gap-10">
+    <div className="grid min-h-[24rem] grid-cols-[0.52fr_1fr] gap-10">
       <div className="overflow-y-auto pr-2">
         <div className="mb-4 font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal-muted">
           Kategoritë
@@ -168,14 +155,14 @@ function CategoryNestedList({
       >
         {activeCategory && (
           <>
-            <div className="mb-5 flex items-center justify-between gap-6">
+            <div className="mb-5">
               <h3 className="rhode-display text-4xl">
                 {activeCategory.name.toLowerCase()}
               </h3>
               <LocalizedClientLink
                 href={`/categories/${activeCategory.handle}`}
                 onClick={onNavigate}
-                className="font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:text-yco-coral transition-colors"
+                className="mt-2 inline-block font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:text-yco-coral transition-colors"
               >
                 Shiko të gjitha
               </LocalizedClientLink>
@@ -203,55 +190,6 @@ function CategoryNestedList({
           </>
         )}
       </div>
-
-      {activeCategory && (
-        <LocalizedClientLink
-          key={`${activeCategory.id}-card`}
-          href={`/categories/${activeCategory.handle}`}
-          onClick={onNavigate}
-          className={clx(
-            accentClass,
-            "yco-accent-card group flex animate-fade-in-top flex-col justify-between overflow-hidden rounded-large p-4 motion-reduce:animate-none"
-          )}
-          aria-label={`Bli ${activeCategory.name}`}
-        >
-          <div className="aspect-[4/3] overflow-hidden rounded-rounded bg-white">
-            {activeCategory.image ? (
-              <img
-                src={activeCategory.image}
-                alt=""
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.05]"
-                loading="lazy"
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center font-sans text-6xl font-black lowercase text-yco-charcoal/20">
-                {activeCategory.name.slice(0, 1)}
-              </div>
-            )}
-          </div>
-          <div className="mt-4 flex items-end justify-between gap-3">
-            <div>
-              <div className="font-sans text-sm font-bold text-yco-charcoal">
-                {activeCategory.name}
-              </div>
-              <p className="mt-0.5 font-sans text-xs text-yco-charcoal-muted">
-                Shfleto kategorinë
-              </p>
-            </div>
-            <span className="rhode-round-btn rhode-round-btn--accent h-9 w-9 shrink-0">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-                <path
-                  d="M9 8l4 4-4 4"
-                  stroke="currentColor"
-                  strokeWidth="1.3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-          </div>
-        </LocalizedClientLink>
-      )}
     </div>
   )
 }
@@ -338,9 +276,7 @@ function MobileCategoryPanel({
           <div key={category.id} className="border-b border-yco-cream-dark">
             <button
               type="button"
-              onClick={() =>
-                setActiveCategoryId(expanded ? "" : category.id)
-              }
+              onClick={() => setActiveCategoryId(expanded ? "" : category.id)}
               className="flex w-full items-center justify-between py-4 text-left font-sans text-lg font-bold text-yco-charcoal"
               aria-expanded={expanded}
             >
@@ -487,10 +423,10 @@ export default function NavClient({
       <AnnouncementBar />
 
       <header
-        className="relative bg-white border-b border-yco-cream-dark"
+        className="relative bg-yco-header-pink border-b border-yco-cream-dark"
         onMouseLeave={closeShop}
       >
-        <nav className="content-container flex items-center justify-between w-full h-16">
+        <nav className="content-container flex items-center justify-between w-full h-20">
           <div className="flex-1 basis-0 h-full flex items-center gap-x-7">
             <div className="h-full small:hidden flex items-center">
               <Hamburger
@@ -499,6 +435,18 @@ export default function NavClient({
               />
             </div>
             <div className="hidden small:flex items-center gap-x-7 h-full">
+              <LocalizedClientLink
+                href="/"
+                className="mr-3 hover:opacity-80 transition-opacity duration-300"
+                data-testid="nav-store-link"
+                onMouseEnter={closeShop}
+              >
+                <img
+                  src="/image2vector.svg"
+                  alt="yco"
+                  className="h-12 w-auto"
+                />
+              </LocalizedClientLink>
               <button
                 type="button"
                 className={navLink}
@@ -507,7 +455,7 @@ export default function NavClient({
                 aria-expanded={shopOpen}
                 aria-controls="shop-megamenu"
               >
-                Dyqani
+                Produktet
               </button>
               <LocalizedClientLink
                 className={navLink}
@@ -526,7 +474,7 @@ export default function NavClient({
             </div>
           </div>
 
-          <div className="flex items-center h-full">
+          <div className="flex items-center h-full small:hidden">
             <LocalizedClientLink
               href="/"
               className="hover:opacity-80 transition-opacity duration-300"
@@ -534,11 +482,7 @@ export default function NavClient({
               onClick={closeMobile}
               onMouseEnter={closeShop}
             >
-              <img
-                src="/image2vector.svg"
-                alt="yco"
-                className="h-8 w-auto"
-              />
+              <img src="/image2vector.svg" alt="yco" className="h-10 w-auto" />
             </LocalizedClientLink>
           </div>
 
@@ -657,11 +601,7 @@ export default function NavClient({
               className="hover:opacity-80 transition-opacity duration-300"
               onClick={closeMobile}
             >
-              <img
-                src="/image2vector.svg"
-                alt="yco"
-                className="h-8 w-auto"
-              />
+              <img src="/image2vector.svg" alt="yco" className="h-10 w-auto" />
             </LocalizedClientLink>
             <button
               type="button"
@@ -753,7 +693,7 @@ export default function NavClient({
 
           <ul className="border-t border-yco-cream-dark">
             {[
-              { label: "Dyqani", href: "/store" },
+              { label: "Produktet", href: "/store" },
               { label: "Të gjitha brendet", href: "/collections" },
               ...secondaryLinks,
               { label: "Llogaria", href: "/account" },

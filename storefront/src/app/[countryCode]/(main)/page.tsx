@@ -6,7 +6,6 @@ import EditorialBanner from "@modules/home/components/editorial-banner"
 import FeaturedBrands from "@modules/home/components/featured-brands"
 import FeaturedProducts from "@modules/home/components/featured-products"
 import LatestBlogPosts from "@modules/home/components/latest-blog-posts"
-import MissionSection from "@modules/home/components/mission-section"
 import Newsletter from "@modules/home/components/newsletter"
 import Testimonials from "@modules/home/components/testimonials"
 import TrustBadges from "@modules/home/components/trust-badges"
@@ -16,7 +15,6 @@ import { getCollectionsWithPreviewProducts } from "@lib/data/collections"
 import {
   getBestsellerProducts,
   getMenuProductsByCategoryIds,
-  getProductCountsByCategoryGroups,
 } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
 import { listWordPressPosts } from "@lib/data/wordpress"
@@ -87,10 +85,7 @@ export default async function Home({
     ...(category.category_children?.map((child) => child.id) ?? []),
   ])
   const categoryIds = categoryIdGroups.flat()
-  const [productsByCategoryId, productCountsByCategoryId] = await Promise.all([
-    getMenuProductsByCategoryIds(categoryIds),
-    getProductCountsByCategoryGroups(categoryIdGroups),
-  ])
+  const productsByCategoryId = await getMenuProductsByCategoryIds(categoryIds)
   const categoryCards = orderedTopCategories
     .map((category) => {
       const categoryProducts = [
@@ -107,7 +102,6 @@ export default async function Home({
 
       return {
         category,
-        productCount: productCountsByCategoryId[category.id] ?? 0,
         products: uniqueProducts.map((product) => ({
           id: product.id,
           title: product.title,
@@ -122,7 +116,6 @@ export default async function Home({
     <div>
       <Hero />
       <CategoryGrid categories={categoryCards} />
-      <MissionSection />
 
       {bestsellerProducts.length > 0 && region && (
         <section className="bg-white px-6 py-10 small:py-12">

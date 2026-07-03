@@ -54,6 +54,7 @@ module.exports = {
         yco: {
           cream: "#FFFFFF", // page / white surfaces
           "cream-dark": "#E7E5E0", // hairlines & borders
+          "header-pink": "#F5CFCE", // old ycorganics.com header accent
           panel: "#F1F0ED", // warm-gray section / card panels
           "panel-dark": "#E8E6E1",
           blue: "#67645E", // (legacy accent) folded into the taupe ink

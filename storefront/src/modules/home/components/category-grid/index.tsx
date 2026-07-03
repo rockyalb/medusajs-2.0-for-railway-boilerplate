@@ -11,7 +11,6 @@ import type { CategoryProduct } from "./category-product-slider"
 
 type CategoryCard = {
   category: HttpTypes.StoreProductCategory
-  productCount: number
   products: CategoryProduct[]
 }
 
@@ -165,7 +164,7 @@ export default function CategoryGrid({
           onPointerLeave={endDrag}
         >
           <div className="flex gap-4">
-            {categories.map(({ category, productCount, products }, index) => {
+            {categories.map(({ category, products }, index) => {
               const image = products[0]?.image
               const accentClass = accentForCategory(category, index)
 
@@ -214,7 +213,7 @@ export default function CategoryGrid({
                           {category.name}
                         </div>
                         <p className="mt-1 font-sans text-xs text-yco-charcoal-muted">
-                          {productCount} produkte
+                          Shfleto kategorinë
                         </p>
                       </div>
                       <span className="rhode-round-btn rhode-round-btn--accent shrink-0">
