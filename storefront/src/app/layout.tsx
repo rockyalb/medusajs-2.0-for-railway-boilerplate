@@ -1,5 +1,5 @@
 import { getBaseURL } from "@lib/util/env"
-import { hankenGrotesk } from "@lib/fonts"
+import { fredoka, hankenGrotesk } from "@lib/fonts"
 import { Metadata } from "next"
 import MetaPixel from "@modules/analytics/components/meta-pixel"
 import "styles/globals.css"
@@ -10,7 +10,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-mode="light" className={hankenGrotesk.variable}>
+    <html
+      lang="en"
+      data-mode="light"
+      className={`${hankenGrotesk.variable} ${fredoka.variable}`}
+    >
       <body>
         <MetaPixel />
         <main className="relative">{props.children}</main>

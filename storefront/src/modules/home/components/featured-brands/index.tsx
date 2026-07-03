@@ -26,12 +26,11 @@ export default function FeaturedBrands({
   ] as const
 
   return (
-    <section className="bg-yco-cream-dark px-6 py-12 small:py-14">
+    <section className="bg-yco-cream-dark px-6 py-14 small:py-16">
       <div className="max-w-6xl mx-auto">
 
-        <Reveal className="text-center mb-9 small:mb-10">
-          <span className="font-sans text-pastel-mint-ink text-xs tracking-[0.3em] uppercase font-semibold">Partnerë të përzgjedhur</span>
-          <h2 className="font-serif text-yco-charcoal text-3xl md:text-4xl mt-3">
+        <Reveal className="font-hanken text-center mb-9 small:mb-10">
+          <h2 className="text-yco-charcoal text-2xl md:text-3xl">
             Brende që u besojmë
           </h2>
           <div className="yco-tricolor-rule mt-4 mx-auto" />

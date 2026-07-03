@@ -34,13 +34,8 @@ export default function Newsletter() {
           transition={{ duration: 0.85, ease: EASE_OUT }}
           className="relative mx-auto max-w-2xl text-center"
         >
-          <span className="rhode-eyebrow inline-flex items-center gap-2 !text-white/70">
-            <span className="yco-accent-dot" aria-hidden />
-            Komuniteti
-          </span>
-
-          <h2 className="rhode-display mt-4 !text-white text-4xl md:text-5xl">
-            bashkohuni me komunitetin e ndërgjegjshëm
+          <h2 className="rhode-display font-hanken !text-white text-3xl md:text-4xl">
+            Bashkohuni me komunitetin e ndërgjegjshëm
           </h2>
 
           <p className="mx-auto mt-5 max-w-md font-sans text-sm leading-relaxed text-white/80">

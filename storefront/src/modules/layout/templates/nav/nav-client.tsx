@@ -24,7 +24,7 @@ type ShopPanel = "categories" | "brands"
 type MobileSection = "categories" | "brands" | null
 
 const navLink =
-  "font-sans text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300"
+  "font-hanken text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300"
 
 const secondaryLinks = [
   { label: "Rreth nesh", href: "/store" },
@@ -99,7 +99,7 @@ function CategoryNestedList({
   return (
     <div className="grid min-h-[24rem] grid-cols-[0.52fr_1fr] gap-10">
       <div className="overflow-y-auto pr-2">
-        <div className="mb-4 font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal-muted">
+        <div className="mb-4 font-hanken text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal-muted">
           Kategoritë
         </div>
         <ul className="space-y-1">
@@ -114,7 +114,7 @@ function CategoryNestedList({
                   onFocus={() => setActiveCategoryId(category.id)}
                   onClick={onNavigate}
                   className={clx(
-                    "group flex items-center justify-between rounded-base px-3 py-3 font-sans text-sm font-bold uppercase tracking-[0.08em] transition-colors",
+                    "group flex items-center justify-between rounded-base px-3 py-3 font-hanken text-sm font-bold uppercase tracking-[0.08em] transition-colors",
                     isActive
                       ? "bg-white text-yco-charcoal shadow-sm"
                       : "text-yco-charcoal-muted hover:bg-white hover:text-yco-charcoal"
@@ -157,25 +157,27 @@ function CategoryNestedList({
           <>
             <div className="mb-5">
               <h3 className="rhode-display text-4xl">
-                {activeCategory.name.toLowerCase()}
+                {activeCategory.name}
               </h3>
-              <LocalizedClientLink
-                href={`/categories/${activeCategory.handle}`}
-                onClick={onNavigate}
-                className="mt-2 inline-block font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:text-yco-coral transition-colors"
-              >
-                Shiko të gjitha
-              </LocalizedClientLink>
             </div>
 
             {children.length > 0 ? (
               <ul className="grid grid-cols-2 gap-x-8 gap-y-1">
+                <li>
+                  <LocalizedClientLink
+                    href={`/categories/${activeCategory.handle}`}
+                    onClick={onNavigate}
+                    className="block rounded-base px-3 py-2 font-hanken text-sm font-bold text-yco-charcoal transition-colors hover:bg-white hover:text-yco-coral"
+                  >
+                    Shiko të gjitha
+                  </LocalizedClientLink>
+                </li>
                 {children.map((child) => (
                   <li key={child.id}>
                     <LocalizedClientLink
                       href={`/categories/${child.handle}`}
                       onClick={onNavigate}
-                      className="block rounded-base px-3 py-2 font-sans text-sm text-yco-charcoal-muted transition-colors hover:bg-white hover:text-yco-charcoal"
+                      className="block rounded-base px-3 py-2 font-hanken text-sm text-yco-charcoal-muted transition-colors hover:bg-white hover:text-yco-charcoal"
                     >
                       {child.name}
                     </LocalizedClientLink>
@@ -183,9 +185,22 @@ function CategoryNestedList({
                 ))}
               </ul>
             ) : (
-              <div className="rounded-large bg-white p-6 font-sans text-sm text-yco-charcoal-muted">
-                Nuk ka ende nënkategori në këtë kategori.
-              </div>
+              <LocalizedClientLink
+                href={`/categories/${activeCategory.handle}`}
+                onClick={onNavigate}
+                className="group flex items-center justify-between gap-6 rounded-large bg-white p-6 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <p className="max-w-xs font-hanken text-sm text-yco-charcoal-muted">
+                  Zbulo krejt produktet e kategorisë{" "}
+                  <span className="font-bold text-yco-charcoal">
+                    {activeCategory.name}
+                  </span>
+                  .
+                </p>
+                <span className="yco-btn yco-btn--ink shrink-0">
+                  Shiko produktet
+                </span>
+              </LocalizedClientLink>
             )}
           </>
         )}
@@ -204,13 +219,13 @@ function BrandsList({
   return (
     <div className="min-h-[24rem] animate-fade-in-top overflow-y-auto pr-2 motion-reduce:animate-none">
       <div className="mb-5 flex items-center justify-between">
-        <div className="font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal-muted">
+        <div className="font-hanken text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal-muted">
           Brendet
         </div>
         <LocalizedClientLink
           href="/collections"
           onClick={onNavigate}
-          className="font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:text-yco-coral transition-colors"
+          className="font-hanken text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:text-yco-coral transition-colors"
         >
           Shiko të gjitha
         </LocalizedClientLink>
@@ -235,12 +250,12 @@ function BrandsList({
                       loading="lazy"
                     />
                   ) : (
-                    <span className="font-sans text-3xl font-black lowercase text-yco-charcoal/30">
+                    <span className="font-hanken text-3xl font-black lowercase text-yco-charcoal/30">
                       {collection.title.slice(0, 1)}
                     </span>
                   )}
                 </span>
-                <span className="text-center font-sans text-xs font-bold leading-tight text-yco-charcoal">
+                <span className="text-center font-hanken text-xs font-bold leading-tight text-yco-charcoal">
                   {collection.title}
                 </span>
               </LocalizedClientLink>
@@ -277,7 +292,7 @@ function MobileCategoryPanel({
             <button
               type="button"
               onClick={() => setActiveCategoryId(expanded ? "" : category.id)}
-              className="flex w-full items-center justify-between py-4 text-left font-sans text-lg font-bold text-yco-charcoal"
+              className="flex w-full items-center justify-between py-4 text-left font-hanken text-lg font-bold text-yco-charcoal"
               aria-expanded={expanded}
             >
               <span>{category.name}</span>
@@ -297,7 +312,7 @@ function MobileCategoryPanel({
                   <LocalizedClientLink
                     href={`/categories/${category.handle}`}
                     onClick={onNavigate}
-                    className="mb-4 inline-block font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:text-yco-coral"
+                    className="mb-4 inline-block font-hanken text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:text-yco-coral"
                   >
                     Shiko të gjitha {category.name}
                   </LocalizedClientLink>
@@ -309,18 +324,14 @@ function MobileCategoryPanel({
                           <LocalizedClientLink
                             href={`/categories/${child.handle}`}
                             onClick={onNavigate}
-                            className="block rounded-base px-3 py-3 font-sans text-sm text-yco-charcoal-muted transition-colors hover:bg-yco-panel hover:text-yco-charcoal"
+                            className="block rounded-base px-3 py-3 font-hanken text-sm text-yco-charcoal-muted transition-colors hover:bg-yco-panel hover:text-yco-charcoal"
                           >
                             {child.name}
                           </LocalizedClientLink>
                         </li>
                       ))}
                     </ul>
-                  ) : (
-                    <div className="rounded-large bg-yco-panel p-4 font-sans text-sm text-yco-charcoal-muted">
-                      Nuk ka ende nënkategori në këtë kategori.
-                    </div>
-                  )}
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -345,7 +356,7 @@ function MobileBrandPanel({
           <LocalizedClientLink
             href={`/collections/${collection.handle}`}
             onClick={onNavigate}
-            className="block rounded-base px-3 py-3 font-sans text-sm text-yco-charcoal-muted transition-colors hover:bg-yco-panel hover:text-yco-charcoal"
+            className="block rounded-base px-3 py-3 font-hanken text-sm text-yco-charcoal-muted transition-colors hover:bg-yco-panel hover:text-yco-charcoal"
           >
             {collection.title}
           </LocalizedClientLink>
@@ -419,7 +430,7 @@ export default function NavClient({
   }
 
   return (
-    <div className="sticky top-0 inset-x-0 z-50">
+    <div className="font-hanken sticky top-0 inset-x-0 z-50">
       <AnnouncementBar />
 
       <header
@@ -542,7 +553,7 @@ export default function NavClient({
                     onMouseEnter={() => setActivePanel("categories")}
                     onClick={() => setActivePanel("categories")}
                     className={clx(
-                      "font-sans text-xs font-bold uppercase tracking-[0.16em] pb-1 border-b transition-colors duration-200",
+                      "font-hanken text-xs font-bold uppercase tracking-[0.16em] pb-1 border-b transition-colors duration-200",
                       activePanel === "categories"
                         ? "text-yco-charcoal border-yco-charcoal"
                         : "text-yco-charcoal-muted border-transparent hover:text-yco-charcoal"
@@ -557,7 +568,7 @@ export default function NavClient({
                     onMouseEnter={() => setActivePanel("brands")}
                     onClick={() => setActivePanel("brands")}
                     className={clx(
-                      "font-sans text-xs font-bold uppercase tracking-[0.16em] pb-1 border-b transition-colors duration-200",
+                      "font-hanken text-xs font-bold uppercase tracking-[0.16em] pb-1 border-b transition-colors duration-200",
                       activePanel === "brands"
                         ? "text-yco-charcoal border-yco-charcoal"
                         : "text-yco-charcoal-muted border-transparent hover:text-yco-charcoal"
@@ -619,7 +630,7 @@ export default function NavClient({
             href="/search"
             scroll={false}
             onClick={closeMobile}
-            className="mb-5 flex min-h-[52px] items-center gap-3 rounded-large border border-yco-cream-dark bg-yco-panel px-4 font-sans text-sm text-yco-charcoal-muted"
+            className="mb-5 flex min-h-[52px] items-center gap-3 rounded-large border border-yco-cream-dark bg-yco-panel px-4 font-hanken text-sm text-yco-charcoal-muted"
           >
             <SearchIcon />
             Kërko produkte, brende dhe kategori
@@ -630,7 +641,7 @@ export default function NavClient({
               <button
                 type="button"
                 onClick={() => toggleMobileSection("categories")}
-                className="flex w-full items-center justify-between border-b border-yco-cream-dark py-4 text-left font-sans text-2xl font-black lowercase tracking-[-0.02em] text-yco-charcoal"
+                className="flex w-full items-center justify-between border-b border-yco-cream-dark py-4 text-left font-hanken text-2xl font-black tracking-[-0.02em] text-yco-charcoal"
                 aria-expanded={mobileSection === "categories"}
               >
                 <span>Kategoritë</span>
@@ -664,7 +675,7 @@ export default function NavClient({
               <button
                 type="button"
                 onClick={() => toggleMobileSection("brands")}
-                className="flex w-full items-center justify-between border-b border-yco-cream-dark py-4 text-left font-sans text-2xl font-black lowercase tracking-[-0.02em] text-yco-charcoal"
+                className="flex w-full items-center justify-between border-b border-yco-cream-dark py-4 text-left font-hanken text-2xl font-black tracking-[-0.02em] text-yco-charcoal"
                 aria-expanded={mobileSection === "brands"}
               >
                 <span>Brendet</span>
@@ -702,7 +713,7 @@ export default function NavClient({
                 <LocalizedClientLink
                   href={link.href}
                   onClick={closeMobile}
-                  className="block py-4 font-sans text-yco-charcoal text-2xl font-black lowercase tracking-[-0.02em] hover:text-yco-coral transition-colors"
+                  className="block py-4 font-hanken text-yco-charcoal text-2xl font-black tracking-[-0.02em] hover:text-yco-coral transition-colors"
                 >
                   {link.label}
                 </LocalizedClientLink>

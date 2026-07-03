@@ -58,7 +58,7 @@ export default function ProductRail({
     })
 
   return (
-    <div className="content-container py-7 small:py-8">
+    <div className="max-w-6xl mx-auto py-7 small:py-8">
       <div
         ref={emblaRef}
         className="-mx-6 overflow-hidden px-6 small:mx-0 small:px-0"

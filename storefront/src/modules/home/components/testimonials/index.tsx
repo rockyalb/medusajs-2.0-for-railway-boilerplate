@@ -55,11 +55,11 @@ const Stars = ({
 
 export default function Testimonials() {
   return (
-    <section className="bg-white px-6 py-14 small:py-16">
+    <section className="bg-white px-6">
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="rhode-display text-4xl md:text-5xl">yco + you</h2>
+            <h2 className="rhode-display font-hanken text-3xl md:text-4xl">Yco + you</h2>
             <div className="yco-tricolor-rule mt-4" />
             <div className="mt-5 overflow-hidden rounded-large bg-yco-panel md:hidden">
               <img

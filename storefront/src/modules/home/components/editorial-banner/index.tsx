@@ -45,9 +45,8 @@ export default function EditorialBanner() {
             transition={{ duration: 0.85, ease: EASE_OUT }}
             className="max-w-xl text-white"
           >
-            <p className="rhode-eyebrow !text-white/80">Përzgjedhja YCO</p>
-            <h2 className="rhode-display mt-3 !text-white text-5xl md:text-6xl">
-              përzgjedhja e përditshme
+            <h2 className="rhode-display font-hanken !text-white text-4xl md:text-5xl">
+              Përzgjedhja e përditshme
             </h2>
             <p className="mt-4 max-w-md font-sans text-sm leading-relaxed text-white/90 small:text-base">
               Produktet bazë për lëkurën, trupin dhe shtëpinë, të zgjedhura

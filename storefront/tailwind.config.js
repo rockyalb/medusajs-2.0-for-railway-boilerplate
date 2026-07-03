@@ -109,8 +109,11 @@ module.exports = {
         "3xl": "2rem",
       },
       fontFamily: {
+        // Site-wide default. Kept out of the header/nav and the homepage
+        // category cards, which intentionally stay on the grotesque (see
+        // the `hanken` family below).
         sans: [
-          "var(--font-hanken)",
+          "var(--font-fredoka)",
           "Helvetica Neue",
           "Helvetica",
           "Arial",
@@ -120,12 +123,23 @@ module.exports = {
           "Roboto",
           "sans-serif",
         ],
-        // Headings share the grotesque (Rhode uses no serifs); weight does the work.
         serif: [
+          "var(--font-fredoka)",
+          "Helvetica Neue",
+          "Helvetica",
+          "Arial",
+          "sans-serif",
+        ],
+        // Reserved for the header/nav and homepage category cards.
+        hanken: [
           "var(--font-hanken)",
           "Helvetica Neue",
           "Helvetica",
           "Arial",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Segoe UI",
+          "Roboto",
           "sans-serif",
         ],
       },

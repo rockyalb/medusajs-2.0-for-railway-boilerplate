@@ -118,14 +118,10 @@ export default async function Home({
       <CategoryGrid categories={categoryCards} />
 
       {bestsellerProducts.length > 0 && region && (
-        <section className="bg-white px-6 py-10 small:py-12">
-          <Reveal className="max-w-6xl mx-auto mb-7 small:mb-8">
-            <span className="rhode-eyebrow inline-flex items-center gap-2">
-              <span className="yco-accent-dot" aria-hidden />
-              Handpicked for you
-            </span>
-            <h2 className="rhode-display mt-3 text-4xl md:text-5xl">
-              bestsellers
+        <section className="bg-white px-6 pt-14 small:pt-16">
+          <Reveal className="font-hanken max-w-6xl mx-auto mb-7 small:mb-8">
+            <h2 className="rhode-display text-3xl md:text-4xl">
+              Bestsellers
             </h2>
             <div className="yco-tricolor-rule mt-4" />
           </Reveal>

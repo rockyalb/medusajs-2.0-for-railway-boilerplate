@@ -125,7 +125,7 @@ export default function CategoryGrid({
   }
 
   return (
-    <section className="bg-white px-6 py-10 small:py-12">
+    <section className="font-hanken bg-white px-6">
       <motion.div
         initial={reducedMotion ? false : { opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -133,24 +133,10 @@ export default function CategoryGrid({
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         className="max-w-6xl mx-auto"
       >
-        <div className="mb-7 flex items-end justify-between gap-6">
-          <div>
-            <span className="rhode-eyebrow inline-flex items-center gap-2">
-              <span className="yco-accent-dot" aria-hidden />
-              Bli sipas kategorisë
-            </span>
-            <h2 className="rhode-display mt-3 text-4xl md:text-5xl">
-              kategoritë
-            </h2>
-            <div className="yco-tricolor-rule mt-4" />
-          </div>
-          <Link
-            href="/store"
-            className="hidden font-sans text-xs font-bold uppercase tracking-[0.18em] text-yco-charcoal transition-colors hover:text-pastel-coral-ink small:block"
-          >
-            Shiko të gjitha
-          </Link>
-        </div>
+        <h2 className="rhode-display text-3xl md:text-4xl">
+          Kategoritë
+        </h2>
+        <div className="yco-tricolor-rule mb-7 mt-4" />
 
         <div
           ref={emblaRef}
@@ -180,16 +166,11 @@ export default function CategoryGrid({
                     draggable={false}
                     onClick={handleCategoryClick}
                   >
-                    <div>
-                      <h3 className="rhode-display text-5xl md:text-6xl">
-                        {category.name.toLowerCase()}
-                      </h3>
-                      {category.description && (
-                        <p className="mt-2 max-w-[17rem] font-sans text-xs leading-relaxed text-yco-charcoal-muted">
-                          {category.description}
-                        </p>
-                      )}
-                    </div>
+                    {category.description && (
+                      <p className="max-w-[17rem] font-hanken text-xs leading-relaxed text-yco-charcoal-muted">
+                        {category.description}
+                      </p>
+                    )}
 
                     <div className="my-6 aspect-[4/3] overflow-hidden rounded-rounded bg-white">
                       {image ? (
@@ -201,7 +182,7 @@ export default function CategoryGrid({
                           draggable={false}
                         />
                       ) : (
-                        <div className="flex h-full items-center justify-center font-sans text-6xl font-black lowercase text-yco-charcoal/20">
+                        <div className="flex h-full items-center justify-center font-hanken text-6xl font-black lowercase text-yco-charcoal/20">
                           {category.name.slice(0, 1)}
                         </div>
                       )}
@@ -209,10 +190,10 @@ export default function CategoryGrid({
 
                     <div className="flex items-end justify-between gap-4">
                       <div>
-                        <div className="font-sans text-yco-charcoal text-sm font-bold">
+                        <div className="font-hanken text-yco-charcoal text-sm font-bold">
                           {category.name}
                         </div>
-                        <p className="mt-1 font-sans text-xs text-yco-charcoal-muted">
+                        <p className="mt-1 font-hanken text-xs text-yco-charcoal-muted">
                           Shfleto kategorinë
                         </p>
                       </div>

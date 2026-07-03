@@ -7,8 +7,6 @@ const EASE_OUT = [0.22, 1, 0.36, 1] as const
 
 const EYEBROW = "MIRË PËR JU, MIRË PËR PLANETIN."
 const HEADLINE = "Shtëpia e produkteve zero-waste, organike dhe natyrale."
-const SUPPORT =
-  "Brende të besuara, përbërës natyralë dhe paketime që respektojnë planetin — të gjitha në një vend."
 
 export default function HeroCopy() {
   const reducedMotion = useReducedMotion()
@@ -50,29 +48,14 @@ export default function HeroCopy() {
         ))}
       </h1>
 
-      <motion.p
-        initial={reducedMotion ? false : { opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: EASE_OUT, delay: 0.62 }}
-        className="bs-rhode-hero__support"
-      >
-        {SUPPORT}
-      </motion.p>
-
       <motion.div
         initial={reducedMotion ? false : { opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: EASE_OUT, delay: 0.78 }}
+        transition={{ duration: 0.7, ease: EASE_OUT, delay: 0.62 }}
         className="flex flex-wrap items-center gap-3"
       >
         <LocalizedClientLink href="/store" className="yco-btn yco-btn--ink">
           Shiko produktet
-        </LocalizedClientLink>
-        <LocalizedClientLink
-          href="/collections"
-          className="yco-btn yco-btn--outline"
-        >
-          Zbulo brendet
         </LocalizedClientLink>
       </motion.div>
     </div>

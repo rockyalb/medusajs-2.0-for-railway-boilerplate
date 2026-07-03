@@ -67,9 +67,9 @@
     @apply text-[11px] font-bold uppercase tracking-[0.22em] text-yco-charcoal-muted;
   }
 
-  /* Heavy lowercase display word (spot / blush / wordmark) */
+  /* Heavy display word (spot / blush / wordmark) */
   .rhode-display {
-    @apply font-black lowercase leading-[0.92] tracking-[-0.02em] text-yco-charcoal;
+    @apply font-black leading-[0.92] tracking-[-0.02em] text-yco-charcoal;
   }
 
   /* Circular icon button used by carousels */
@@ -611,7 +611,7 @@
   }
 
   .bs-rhode-hero__copy {
-    @apply relative order-2 z-[2] mx-auto flex w-full min-w-0 max-w-[46rem] flex-col items-start justify-start px-6 pb-7 pt-6 text-yco-charcoal small:order-1 small:max-w-none small:justify-center small:px-[clamp(36px,4vw,64px)] small:py-12;
+    @apply relative order-2 z-[2] mx-auto flex w-full min-w-0 max-w-[46rem] flex-col items-start justify-start px-6 pb-7 pt-6 font-hanken text-yco-charcoal small:order-1 small:max-w-none small:justify-center small:px-[clamp(36px,4vw,64px)] small:py-12;
   }
 
   .bs-rhode-hero__eyebrow {
