@@ -16,6 +16,7 @@ module.exports = {
     "yco-accent--mint",
     "yco-accent--coral",
     "yco-accent--blue",
+    "yco-accent--rhode",
     "yco-accent-card",
     "yco-btn",
     "yco-btn--coral",

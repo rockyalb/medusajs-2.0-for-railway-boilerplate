@@ -16,33 +16,7 @@ type CategoryCard = {
 
 const DRAG_THRESHOLD = 14
 
-// Full literal class names so Tailwind keeps these hand-written @layer
-// component rules (it tree-shakes that layer by scanning source text).
-const ACCENT_CLASSES = [
-  "yco-accent--mint",
-  "yco-accent--coral",
-  "yco-accent--blue",
-] as const
-
-// Some categories read better in a specific colour.
-// Pinned categories win; everything else rotates through the palette.
-const accentForCategory = (
-  category: HttpTypes.StoreProductCategory,
-  index: number
-) => {
-  const normalized = `${category.name} ${category.handle}`.toLowerCase()
-  if (
-    normalized.includes("period") ||
-    normalized.includes("menstr") ||
-    normalized.includes("periudh")
-  ) {
-    return "yco-accent--coral"
-  }
-  if (normalized.includes("skin")) {
-    return "yco-accent--blue"
-  }
-  return ACCENT_CLASSES[index % ACCENT_CLASSES.length]
-}
+const CATEGORY_CARD_ACCENT_CLASS = "yco-accent--rhode"
 
 export default function CategoryGrid({
   categories,
@@ -152,7 +126,6 @@ export default function CategoryGrid({
           <div className="flex gap-4">
             {categories.map(({ category, products }, index) => {
               const image = products[0]?.image
-              const accentClass = accentForCategory(category, index)
 
               return (
                 <div
@@ -161,7 +134,7 @@ export default function CategoryGrid({
                 >
                   <Link
                     href={`/categories/${category.handle}`}
-                    className={`group ${accentClass} yco-accent-card relative flex h-full min-h-[360px] flex-col justify-between overflow-hidden rounded-large p-5 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2`}
+                    className={`group ${CATEGORY_CARD_ACCENT_CLASS} yco-accent-card relative flex h-full min-h-[360px] flex-col justify-between overflow-hidden rounded-large p-5 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2`}
                     aria-label={`Bli ${category.name}`}
                     draggable={false}
                     onClick={handleCategoryClick}

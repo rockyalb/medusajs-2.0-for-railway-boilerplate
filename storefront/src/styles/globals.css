@@ -113,6 +113,13 @@
     --accent-glow: rgba(124, 164, 235, 0.45);
   }
 
+  .yco-accent--rhode {
+    --accent: #e8e6e1;
+    --accent-soft: #f1f0ed;
+    --accent-ink: #67645e;
+    --accent-glow: rgba(47, 45, 41, 0.18);
+  }
+
   /* Soft-tinted surface with a defined coloured edge so it still reads as a
      card on white sections, then lifts into a coloured glow on hover. */
   .yco-accent-card {
