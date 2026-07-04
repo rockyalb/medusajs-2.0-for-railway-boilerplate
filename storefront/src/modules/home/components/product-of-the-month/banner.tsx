@@ -44,17 +44,14 @@ export default function PotmBanner({
   monthLabel,
 }: PotmBannerProps) {
   const reducedMotion = useReducedMotion()
-  const normalizedSubtitle = subtitle?.trim().toLowerCase()
-  const normalizedDescription = description?.trim().toLowerCase()
-  const shouldShowSubtitle =
-    subtitle && normalizedSubtitle !== normalizedDescription
+  const productCopy = description || subtitle
 
   return (
     <section className="px-3 py-3 small:px-7 small:py-4">
       <div className="yco-potm relative overflow-hidden rounded-rounded">
         <Sparkles sparks={BAND_SPARKS} />
 
-        <div className="relative grid min-h-[420px] grid-cols-1 items-center gap-2 small:min-h-[600px] small:grid-cols-[0.9fr_1.1fr]">
+        <div className="relative grid min-h-[420px] grid-cols-1 items-center gap-2 small:min-h-[600px] small:grid-cols-2">
           <motion.div
             initial={reducedMotion ? false : { opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -77,14 +74,9 @@ export default function PotmBanner({
             <h2 className="rhode-display font-hanken text-4xl md:text-5xl">
               {title}
             </h2>
-            {shouldShowSubtitle && (
-              <p className="mt-2 font-sans text-sm font-semibold text-yco-charcoal/70">
-                {subtitle}
-              </p>
-            )}
-            {description && (
+            {productCopy && (
               <p className="mt-4 max-w-md font-sans text-sm leading-relaxed text-yco-charcoal/80 line-clamp-4 small:text-base">
-                {description}
+                {productCopy}
               </p>
             )}
             {price && (
@@ -107,14 +99,14 @@ export default function PotmBanner({
             </div>
           </motion.div>
 
-          <div className="order-1 flex items-center justify-center p-7 pb-0 small:order-2 small:p-8">
+          <div className="order-1 flex h-full min-h-[320px] items-center justify-center overflow-hidden p-7 pb-0 small:order-2 small:min-h-[600px] small:p-8">
             <motion.div
               initial={
                 reducedMotion
                   ? false
-                  : { opacity: 0, x: 160, y: 90, rotate: 14, scale: 0.82 }
+                  : { opacity: 0, x: 80, y: 24, scale: 0.92 }
               }
-              whileInView={{ opacity: 1, x: 0, y: 0, rotate: -3, scale: 1 }}
+              whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
               viewport={{ once: true, amount: 0.4 }}
               transition={{
                 type: "spring",
@@ -122,30 +114,30 @@ export default function PotmBanner({
                 damping: 13,
                 mass: 1.1,
               }}
-              className="w-full max-w-[320px] small:max-w-[560px]"
+              className="relative flex h-full w-full max-w-[360px] items-center justify-center small:max-w-none"
             >
               <motion.div
-                animate={reducedMotion ? undefined : { y: [0, -12, 0] }}
+                animate={reducedMotion ? undefined : { y: [0, -10, 0] }}
                 transition={{
                   duration: 6,
                   repeat: Infinity,
                   ease: "easeInOut",
                   delay: 1.6,
                 }}
-                className="relative rounded-large border border-white/60 bg-white/80 p-6 shadow-2xl backdrop-blur-sm small:p-8"
+                className="relative flex h-full w-full items-center justify-center"
               >
-                <span className="absolute -top-3 left-6 rounded-circle bg-yco-charcoal px-4 py-1.5 font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-white">
+                <span className="absolute left-4 top-2 z-[2] rounded-circle bg-yco-charcoal px-4 py-1.5 font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-white small:left-8 small:top-8">
                   {monthLabel}
                 </span>
                 {image ? (
                   <img
                     src={image}
                     alt={title}
-                    className="h-[240px] w-full rounded-rounded object-contain small:h-[440px]"
+                    className="max-h-[280px] w-full object-contain small:max-h-[520px]"
                     loading="lazy"
                   />
                 ) : (
-                  <div className="h-[240px] w-full rounded-rounded bg-yco-cream small:h-[440px]" />
+                  <div className="h-[280px] w-full rounded-rounded bg-white/30 small:h-[520px]" />
                 )}
               </motion.div>
             </motion.div>
