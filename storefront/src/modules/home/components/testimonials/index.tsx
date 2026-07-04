@@ -55,7 +55,7 @@ const Stars = ({
 
 export default function Testimonials() {
   return (
-    <section className="bg-white px-6 py-10 small:py-12">
+    <section className="bg-white/40 px-6 py-10 small:py-12">
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-6 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>

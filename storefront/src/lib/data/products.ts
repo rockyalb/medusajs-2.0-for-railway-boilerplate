@@ -171,6 +171,47 @@ export const getBestsellerProducts = cache(async function (
   return [...curatedProducts, ...fallbackProducts].slice(0, limit)
 })
 
+export const getProductOfTheMonth = cache(async function (
+  countryCode: string
+) {
+  const region = await getRegion(countryCode)
+
+  if (!region) {
+    return null
+  }
+
+  const { products } = await sdk.store.product.list(
+    {
+      limit: 100,
+      region_id: region.id,
+      fields:
+        "id,title,handle,subtitle,description,thumbnail,*images,*variants.calculated_price",
+    },
+    { next: { tags: ["products"] } }
+  )
+
+  const candidates = products.filter(
+    (product) =>
+      product.description && (product.thumbnail || product.images?.length)
+  )
+  const pool = candidates.length > 0 ? candidates : products
+
+  if (pool.length === 0) {
+    return null
+  }
+
+  // Seed the pick with the current year-month: random-feeling, but the same
+  // product for everyone all month long.
+  const now = new Date()
+  const monthKey = `${now.getUTCFullYear()}-${now.getUTCMonth()}`
+  let seed = 0
+  for (const char of monthKey) {
+    seed = (seed * 31 + char.charCodeAt(0)) >>> 0
+  }
+
+  return pool[seed % pool.length]
+})
+
 export const getProductByHandle = cache(async function (
   handle: string,
   regionId: string

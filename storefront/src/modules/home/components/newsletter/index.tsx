@@ -17,7 +17,7 @@ export default function Newsletter() {
   }
 
   return (
-    <section className="bg-white px-3 pb-4 small:px-7 small:pb-6">
+    <section className="bg-white/40 px-3 pb-4 small:px-7 small:pb-6">
       <div className="relative overflow-hidden rounded-rounded bg-yco-coral px-6 py-16 text-white small:py-24">
         {/* Oversized watermark wordmark for depth, clipped by the panel. */}
         <span

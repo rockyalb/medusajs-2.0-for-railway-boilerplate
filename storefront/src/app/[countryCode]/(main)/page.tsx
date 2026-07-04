@@ -1,9 +1,10 @@
 import { Metadata } from "next"
 
 import Hero from "@modules/home/components/hero"
+import AmbientBackground from "@modules/home/components/ambient-background"
 import CategoryGrid from "@modules/home/components/category-grid"
-import EditorialBanner from "@modules/home/components/editorial-banner"
 import FeaturedBrands from "@modules/home/components/featured-brands"
+import ProductOfTheMonth from "@modules/home/components/product-of-the-month"
 import FeaturedProducts from "@modules/home/components/featured-products"
 import LatestBlogPosts from "@modules/home/components/latest-blog-posts"
 import Newsletter from "@modules/home/components/newsletter"
@@ -113,12 +114,13 @@ export default async function Home({
     .filter(({ products }) => products.length > 0)
 
   return (
-    <div>
+    <div className="relative">
+      <AmbientBackground />
       <Hero />
       <CategoryGrid categories={categoryCards} />
 
       {bestsellerProducts.length > 0 && region && (
-        <section className="bg-white px-6 pt-8 small:pt-10">
+        <section className="bg-white/40 px-6 pt-8 small:pt-10">
           <Reveal className="font-hanken max-w-6xl mx-auto mb-5 small:mb-6">
             <h2 className="rhode-display text-3xl md:text-4xl">
               Bestsellers
@@ -131,7 +133,7 @@ export default async function Home({
 
       <FeaturedBrands collections={collectionResponse ?? []} />
       <TrustBadges />
-      <EditorialBanner />
+      <ProductOfTheMonth countryCode={countryCode} />
       <Testimonials />
       <LatestBlogPosts posts={latestPosts} />
       <Newsletter />

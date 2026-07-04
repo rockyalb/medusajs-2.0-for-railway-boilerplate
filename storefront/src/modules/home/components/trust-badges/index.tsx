@@ -56,7 +56,7 @@ const badges = [
 
 export default function TrustBadges() {
   return (
-    <section className="bg-white px-6 py-8 small:py-10" aria-label="Standardet tona">
+    <section className="bg-white/40 px-6 py-8 small:py-10" aria-label="Standardet tona">
       <Stagger
         stagger={0.08}
         role="list"

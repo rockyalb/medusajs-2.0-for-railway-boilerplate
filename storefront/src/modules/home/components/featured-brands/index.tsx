@@ -26,7 +26,7 @@ export default function FeaturedBrands({
   ] as const
 
   return (
-    <section className="bg-yco-cream-dark px-6 py-10 small:py-12">
+    <section className="bg-yco-cream-dark/50 px-6 py-10 small:py-12">
       <div className="max-w-6xl mx-auto">
 
         <Reveal className="font-hanken text-center mb-7 small:mb-8">

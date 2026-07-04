@@ -430,13 +430,14 @@ export default function NavClient({
   }
 
   return (
-    <div className="font-hanken sticky top-0 inset-x-0 z-50">
-      <AnnouncementBar />
-
+    <div className="font-hanken sticky top-0 inset-x-0 z-50 px-3 pt-3 small:px-7">
       <header
-        className="relative bg-yco-header-pink border-b border-yco-cream-dark"
+        className="relative rounded-rounded border border-yco-cream-dark bg-yco-header-pink/90 shadow-[0_20px_48px_-32px_rgba(47,45,41,0.45)] backdrop-blur-md"
         onMouseLeave={closeShop}
       >
+        <div className="overflow-hidden rounded-t-rounded">
+          <AnnouncementBar />
+        </div>
         <nav className="content-container flex items-center justify-between w-full h-20">
           <div className="flex-1 basis-0 h-full flex items-center gap-x-7">
             <div className="h-full small:hidden flex items-center">
@@ -538,13 +539,16 @@ export default function NavClient({
           <div
             id="shop-megamenu"
             className={clx(
-              "absolute left-0 right-0 top-full hidden small:block bg-yco-panel border-b border-yco-cream-dark shadow-[0_32px_60px_-36px_rgba(47,45,41,0.45)] transition-all duration-300 ease-out",
+              // The pt-2 gap stays inside this element so hovering across it
+              // doesn't fire the header's mouseleave and close the menu.
+              "absolute left-0 right-0 top-full hidden small:block pt-2 transition-all duration-300 ease-out",
               shopOpen
                 ? "visible opacity-100 translate-y-0"
                 : "invisible opacity-0 -translate-y-2 pointer-events-none"
             )}
             onMouseEnter={() => setShopOpen(true)}
           >
+            <div className="overflow-hidden rounded-rounded border border-yco-cream-dark bg-yco-panel shadow-[0_32px_60px_-36px_rgba(47,45,41,0.45)]">
             <div className="content-container max-h-[calc(100vh-8rem)] overflow-y-auto py-8">
               <div className="mb-8 flex flex-wrap justify-center gap-x-8 gap-y-2">
                 {categories.length > 0 && (
@@ -589,6 +593,7 @@ export default function NavClient({
               ) : (
                 <BrandsList collections={collections} onNavigate={closeShop} />
               )}
+            </div>
             </div>
           </div>
         )}

@@ -557,7 +557,7 @@
     --hero-a: #e8f3ee;
     --hero-b: #f6dcd8;
     --hero-c: #dde7fa;
-    @apply mx-auto w-full max-w-6xl bg-yco-cream px-3 pb-4 pt-4 small:px-0 small:pb-6;
+    @apply mx-auto w-full max-w-6xl bg-transparent px-3 pb-4 pt-4 small:px-0 small:pb-6;
   }
 
   .bs-rhode-hero--sage {
@@ -721,5 +721,124 @@
   .bs-product-mock--jar .bs-product-mock__cap {
     @apply top-[-22%] h-[24%] w-[74%];
     border-radius: 999px 999px 8px 8px;
+  }
+
+  /* Ambient homepage backdrop: the logo pastels as a panning aurora wash
+     plus blurred drifting blobs and twinkling sparks. Sits behind
+     translucent sections so the whole page shares one moving background. */
+  .yco-ambient {
+    @apply pointer-events-none fixed inset-0 z-[-1] overflow-hidden bg-[#fbfaf7];
+  }
+
+  .yco-ambient__aurora {
+    @apply absolute inset-0;
+    background: linear-gradient(
+      115deg,
+      #daefe4,
+      #f8d8d1 26%,
+      #d6e3f9 52%,
+      #f6e6d9 76%,
+      #daefe4
+    );
+    background-size: 340% 340%;
+    animation: yco-gradient-pan 14s ease-in-out infinite alternate;
+  }
+
+  .yco-ambient__blob {
+    @apply absolute rounded-circle opacity-80 blur-[64px];
+    will-change: transform;
+  }
+
+  .yco-ambient__blob--mint {
+    @apply left-[-14%] top-[-12%] h-[58vw] w-[58vw] bg-[#bfe4d2];
+    animation: yco-drift-a 13s ease-in-out infinite alternate;
+  }
+
+  .yco-ambient__blob--rose {
+    @apply right-[-16%] top-[26%] h-[50vw] w-[50vw] bg-[#f7c3b9];
+    animation: yco-drift-b 17s ease-in-out infinite alternate;
+  }
+
+  .yco-ambient__blob--blue {
+    @apply bottom-[-20%] left-[16%] h-[54vw] w-[54vw] bg-[#bed5f6];
+    animation: yco-drift-c 21s ease-in-out infinite alternate;
+  }
+
+  .yco-spark {
+    @apply absolute opacity-0;
+    color: var(--spark-color, #ffffff);
+    animation: yco-twinkle var(--spark-dur, 5s) ease-in-out var(--spark-delay, 0s) infinite;
+    filter: drop-shadow(0 0 5px currentColor);
+    will-change: transform, opacity;
+  }
+
+  /* Product-of-the-month band: the hero wash, gently panning. */
+  .yco-potm {
+    background:
+      radial-gradient(circle at 76% 38%, rgba(255, 255, 255, 0.6), transparent 42%),
+      linear-gradient(118deg, #e8f3ee, #f6dcd8 38%, #dde7fa 72%, #eaf2ec);
+    background-size: 240% 240%;
+    animation: yco-gradient-pan 18s ease-in-out infinite alternate;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .yco-ambient__aurora,
+    .yco-ambient__blob,
+    .yco-potm {
+      animation: none;
+    }
+
+    .yco-spark {
+      animation: none;
+      opacity: 0.5;
+    }
+  }
+}
+
+@keyframes yco-drift-a {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(24vw, 16vh, 0) scale(1.22);
+  }
+}
+
+@keyframes yco-drift-b {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.12);
+  }
+  to {
+    transform: translate3d(-26vw, -18vh, 0) scale(0.88);
+  }
+}
+
+@keyframes yco-drift-c {
+  from {
+    transform: translate3d(0, 0, 0) scale(0.92);
+  }
+  to {
+    transform: translate3d(20vw, -22vh, 0) scale(1.18);
+  }
+}
+
+@keyframes yco-twinkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.35) rotate(0deg);
+  }
+  50% {
+    opacity: var(--spark-peak, 0.9);
+    transform: scale(1) rotate(24deg);
+  }
+}
+
+@keyframes yco-gradient-pan {
+  from {
+    background-position: 0% 30%;
+  }
+  to {
+    background-position: 100% 70%;
   }
 }

@@ -99,7 +99,7 @@ export default function CategoryGrid({
   }
 
   return (
-    <section className="font-hanken bg-white px-6 pb-8 small:pb-10">
+    <section className="font-hanken bg-white/40 px-6 pb-8 small:pb-10">
       <motion.div
         initial={reducedMotion ? false : { opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
