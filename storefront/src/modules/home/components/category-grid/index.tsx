@@ -99,7 +99,7 @@ export default function CategoryGrid({
   }
 
   return (
-    <section className="font-hanken bg-white/40 px-6 pb-8 small:pb-10">
+    <section className="yco-section font-hanken bg-white/40 px-6 pb-8 pt-12 small:pb-10 small:pt-16">
       <motion.div
         initial={reducedMotion ? false : { opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -107,10 +107,9 @@ export default function CategoryGrid({
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         className="max-w-6xl mx-auto"
       >
-        <h2 className="rhode-display text-3xl md:text-4xl">
+        <h2 className="yco-section-title rhode-display mb-6 text-3xl md:text-4xl">
           Kategoritë
         </h2>
-        <div className="yco-tricolor-rule mb-6 mt-4" />
 
         <div
           ref={emblaRef}
@@ -134,7 +133,7 @@ export default function CategoryGrid({
                 >
                   <Link
                     href={`/categories/${category.handle}`}
-                    className={`group ${CATEGORY_CARD_ACCENT_CLASS} yco-accent-card relative flex h-full min-h-[360px] flex-col justify-between overflow-hidden rounded-large p-5 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2`}
+                    className={`group ${CATEGORY_CARD_ACCENT_CLASS} yco-accent-card yco-home-category-card relative flex h-full min-h-[360px] flex-col justify-between overflow-hidden rounded-large p-5 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2`}
                     aria-label={`Bli ${category.name}`}
                     draggable={false}
                     onClick={handleCategoryClick}
@@ -145,7 +144,7 @@ export default function CategoryGrid({
                       </p>
                     )}
 
-                    <div className="my-6 aspect-[4/3] overflow-hidden rounded-rounded bg-white">
+                    <div className="my-6 aspect-[4/3] overflow-hidden rounded-rounded bg-white/55">
                       {image ? (
                         <img
                           src={image}

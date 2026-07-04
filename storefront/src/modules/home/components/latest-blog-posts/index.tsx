@@ -22,14 +22,13 @@ export default function LatestBlogPosts({ posts }: LatestBlogPostsProps) {
   }
 
   return (
-    <section className="bg-yco-panel/50 px-6 py-10 small:py-12">
+    <section className="yco-section bg-yco-panel/50 px-6 py-10 small:py-12">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col gap-5 small:flex-row small:items-end small:justify-between">
           <div className="font-hanken">
-            <h2 className="rhode-display text-3xl md:text-4xl">
+            <h2 className="yco-section-title rhode-display text-3xl md:text-4xl">
               Më të fundit nga blogu
             </h2>
-            <div className="yco-tricolor-rule mt-4" />
           </div>
           <LocalizedClientLink
             href="/blog"

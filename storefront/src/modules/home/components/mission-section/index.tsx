@@ -50,7 +50,7 @@ export default function MissionSection() {
   return (
     <section
       ref={sectionRef}
-      className="bg-yco-panel px-6 py-16 small:py-24"
+      className="yco-section bg-yco-panel px-6 py-16 small:py-24"
       aria-labelledby="mission-heading"
     >
       <div className="mx-auto grid max-w-6xl gap-10 small:grid-cols-[0.95fr_1.05fr] small:gap-16">
@@ -62,13 +62,12 @@ export default function MissionSection() {
             </span>
             <h2
               id="mission-heading"
-              className="rhode-display mt-3 text-4xl md:text-5xl"
+              className="yco-section-title rhode-display mt-3 text-4xl md:text-5xl"
             >
               mirë për ju,
               <br />
               mirë për planetin.
             </h2>
-            <div className="yco-tricolor-rule mt-4" />
 
             <div className="relative mt-8 overflow-hidden rounded-large bg-white">
               <motion.img

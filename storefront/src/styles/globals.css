@@ -148,6 +148,18 @@
     box-shadow: 0 24px 48px -20px var(--accent-glow);
   }
 
+  .yco-home-category-card {
+    background-color: color-mix(in srgb, var(--accent-soft) 58%, transparent);
+    border-color: rgba(255, 255, 255, 0.62);
+    box-shadow: 0 16px 34px -30px rgba(47, 45, 41, 0.65);
+    backdrop-filter: blur(6px);
+  }
+
+  .yco-home-category-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 44%, rgba(255, 255, 255, 0.5));
+    box-shadow: 0 24px 48px -24px var(--accent-glow);
+  }
+
   /* Circular icon button that fills with the active accent on card hover. */
   .rhode-round-btn--accent {
     border-color: color-mix(in srgb, var(--accent) 60%, transparent);
@@ -174,6 +186,45 @@
     background: linear-gradient(90deg, #84c3ac, #fc8c84, #7ca4eb);
   }
 
+  .yco-section-title {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 0.42em;
+  }
+
+  .yco-section-title::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, #84c3ac, #fc8c84, #7ca4eb);
+    transform: scaleX(0.28);
+    transform-origin: left center;
+    transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .yco-section-title--center::after {
+    transform-origin: center;
+  }
+
+  .yco-section:hover .yco-section-title::after,
+  .yco-section:focus-within .yco-section-title::after {
+    transform: scaleX(1);
+  }
+
+  @media (max-width: 1023px) {
+    .yco-section-title {
+      padding-bottom: 0.36em;
+    }
+
+    .yco-section-title::after {
+      height: 2px;
+    }
+  }
+
   /* Small pulsing dot — pairs with eyebrow labels. */
   .yco-accent-dot {
     display: inline-block;
@@ -190,6 +241,9 @@
     }
     .yco-accent-card:hover {
       transform: none;
+    }
+    .yco-section-title::after {
+      transition: none;
     }
   }
 }
@@ -287,10 +341,35 @@
   }
 
   .yco-btn--hero-blue {
-    --btn-bg: #7fa6e8;
-    --btn-bg-hover: #7fa6e8;
-    --btn-base: #5b86d4;
-    --btn-text: #ffffff;
+    --btn-bg: transparent;
+    --btn-bg-hover: #67645e;
+    --btn-base: transparent;
+    --btn-text: #67645e;
+    min-height: 46px;
+    border: 1.5px solid #67645e;
+    border-radius: 8px;
+    background-color: transparent;
+    box-shadow: none;
+    color: #67645e;
+    transition:
+      background-color 200ms ease,
+      border-color 200ms ease,
+      color 200ms ease;
+  }
+
+  .yco-btn--hero-blue:hover {
+    border-color: #67645e;
+    background-color: #67645e;
+    color: #ffffff;
+  }
+
+  .yco-btn--hero-blue:focus-visible {
+    box-shadow: 0 0 0 4px rgba(103, 100, 94, 0.18);
+  }
+
+  .yco-btn.yco-btn--hero-blue:active {
+    transform: none;
+    box-shadow: none;
   }
 
   .yco-btn--header-pink {
@@ -567,7 +646,7 @@
     --hero-a: #e8f3ee;
     --hero-b: #f6dcd8;
     --hero-c: #dde7fa;
-    @apply mx-auto w-full max-w-6xl bg-transparent px-3 pb-4 pt-4 small:px-0 small:pb-6;
+    @apply w-full bg-transparent px-0 pb-0 pt-0;
   }
 
   .bs-rhode-hero--sage {
@@ -592,22 +671,22 @@
   }
 
   .bs-rhode-hero__stage {
-    background:
-      radial-gradient(circle at 74% 44%, rgba(255, 255, 255, 0.76), transparent 0 18%, transparent 39%),
-      linear-gradient(118deg, var(--hero-a), var(--hero-b) 54%, var(--hero-c));
-    @apply relative grid overflow-hidden rounded-rounded small:h-[calc(100svh-88px)] small:min-h-[560px] small:max-h-[760px] small:grid-cols-[minmax(0,0.44fr)_minmax(0,0.56fr)];
+    background: transparent;
+    @apply relative grid overflow-hidden small:h-[calc(100svh-88px)] small:min-h-[560px] small:max-h-[760px] small:grid-cols-[minmax(0,0.44fr)_minmax(0,0.56fr)];
   }
 
   .bs-rhode-hero__stage::after {
     content: "";
     background:
-      linear-gradient(90deg, rgba(250, 249, 248, 0.46), transparent 38%),
       linear-gradient(0deg, rgba(80, 73, 65, 0.32), transparent 46%);
-    @apply pointer-events-none absolute inset-0 hidden small:block;
+    @apply pointer-events-none absolute bottom-0 right-0 top-0 hidden small:left-[44%] small:block;
   }
 
   .bs-rhode-hero__image-wrap {
-    @apply relative order-1 min-w-0 aspect-[16/9] min-h-[190px] overflow-hidden bg-white/35 small:order-2 small:aspect-auto small:min-h-0;
+    background:
+      radial-gradient(circle at 54% 44%, rgba(255, 255, 255, 0.58), transparent 0 20%, transparent 42%),
+      linear-gradient(118deg, var(--hero-a), var(--hero-b) 54%, var(--hero-c));
+    @apply relative order-1 min-w-0 aspect-[16/9] min-h-[190px] overflow-hidden small:order-2 small:aspect-auto small:min-h-0;
   }
 
   .bs-rhode-hero__image {

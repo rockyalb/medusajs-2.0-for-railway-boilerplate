@@ -44,13 +44,17 @@ export default function PotmBanner({
   monthLabel,
 }: PotmBannerProps) {
   const reducedMotion = useReducedMotion()
+  const normalizedSubtitle = subtitle?.trim().toLowerCase()
+  const normalizedDescription = description?.trim().toLowerCase()
+  const shouldShowSubtitle =
+    subtitle && normalizedSubtitle !== normalizedDescription
 
   return (
     <section className="px-3 py-3 small:px-7 small:py-4">
       <div className="yco-potm relative overflow-hidden rounded-rounded">
         <Sparkles sparks={BAND_SPARKS} />
 
-        <div className="relative grid min-h-[420px] grid-cols-1 items-center gap-2 small:min-h-[520px] small:grid-cols-2">
+        <div className="relative grid min-h-[420px] grid-cols-1 items-center gap-2 small:min-h-[600px] small:grid-cols-[0.9fr_1.1fr]">
           <motion.div
             initial={reducedMotion ? false : { opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -73,7 +77,7 @@ export default function PotmBanner({
             <h2 className="rhode-display font-hanken text-4xl md:text-5xl">
               {title}
             </h2>
-            {subtitle && (
+            {shouldShowSubtitle && (
               <p className="mt-2 font-sans text-sm font-semibold text-yco-charcoal/70">
                 {subtitle}
               </p>
@@ -103,7 +107,7 @@ export default function PotmBanner({
             </div>
           </motion.div>
 
-          <div className="order-1 flex items-center justify-center p-7 pb-0 small:order-2 small:p-12">
+          <div className="order-1 flex items-center justify-center p-7 pb-0 small:order-2 small:p-8">
             <motion.div
               initial={
                 reducedMotion
@@ -118,7 +122,7 @@ export default function PotmBanner({
                 damping: 13,
                 mass: 1.1,
               }}
-              className="w-full max-w-[320px] small:max-w-[380px]"
+              className="w-full max-w-[320px] small:max-w-[560px]"
             >
               <motion.div
                 animate={reducedMotion ? undefined : { y: [0, -12, 0] }}
@@ -137,11 +141,11 @@ export default function PotmBanner({
                   <img
                     src={image}
                     alt={title}
-                    className="h-[240px] w-full rounded-rounded object-contain small:h-[320px]"
+                    className="h-[240px] w-full rounded-rounded object-contain small:h-[440px]"
                     loading="lazy"
                   />
                 ) : (
-                  <div className="h-[240px] w-full rounded-rounded bg-yco-cream small:h-[320px]" />
+                  <div className="h-[240px] w-full rounded-rounded bg-yco-cream small:h-[440px]" />
                 )}
               </motion.div>
             </motion.div>

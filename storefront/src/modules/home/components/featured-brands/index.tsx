@@ -26,14 +26,13 @@ export default function FeaturedBrands({
   ] as const
 
   return (
-    <section className="bg-yco-cream-dark/50 px-6 py-10 small:py-12">
+    <section className="yco-section bg-yco-cream-dark/50 px-6 py-10 small:py-12">
       <div className="max-w-6xl mx-auto">
 
         <Reveal className="font-hanken text-center mb-7 small:mb-8">
-          <h2 className="text-yco-charcoal text-2xl md:text-3xl">
+          <h2 className="yco-section-title yco-section-title--center text-yco-charcoal text-2xl md:text-3xl">
             Brende që u besojmë
           </h2>
-          <div className="yco-tricolor-rule mt-4 mx-auto" />
           <p className="font-sans text-yco-charcoal-muted text-sm mt-4 max-w-md mx-auto leading-relaxed">
             Çdo brend përzgjidhet me kujdes për cilësinë, etikën dhe përkushtimin ndaj qëndrueshmërisë.
           </p>
