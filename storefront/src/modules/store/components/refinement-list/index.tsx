@@ -8,10 +8,15 @@ import SortProducts, { SortOptions } from "./sort-products"
 type RefinementListProps = {
   sortBy: SortOptions
   search?: boolean
+  variant?: "sidebar" | "inline"
   'data-testid'?: string
 }
 
-const RefinementList = ({ sortBy, 'data-testid': dataTestId }: RefinementListProps) => {
+const RefinementList = ({
+  sortBy,
+  variant = "sidebar",
+  'data-testid': dataTestId,
+}: RefinementListProps) => {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -29,6 +34,17 @@ const RefinementList = ({ sortBy, 'data-testid': dataTestId }: RefinementListPro
   const setQueryParams = (name: string, value: string) => {
     const query = createQueryString(name, value)
     router.push(`${pathname}?${query}`)
+  }
+
+  if (variant === "inline") {
+    return (
+      <SortProducts
+        sortBy={sortBy}
+        setQueryParams={setQueryParams}
+        variant={variant}
+        data-testid={dataTestId}
+      />
+    )
   }
 
   return (
