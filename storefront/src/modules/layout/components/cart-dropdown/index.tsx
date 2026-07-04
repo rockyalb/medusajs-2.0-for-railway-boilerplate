@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
+import { createPortal } from "react-dom"
 
 import { deleteLineItem, updateLineItem } from "@lib/data/cart"
 import { convertToLocale } from "@lib/util/money"
@@ -126,7 +127,7 @@ const DropdownItem = ({
             {updating && (
               <span
                 className="h-3.5 w-3.5 animate-spin rounded-full border-[1.5px] border-yco-charcoal-muted border-t-transparent"
-                aria-label="Duke përditësuar sasinë"
+                aria-label={"Duke p\u00ebrdit\u00ebsuar sasin\u00eb"}
               />
             )}
           </div>
@@ -154,12 +155,17 @@ const CartDropdown = ({
   cart?: HttpTypes.StoreCart | null
 }) => {
   const [open, setOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   const totalItems =
     cartState?.items?.reduce((acc, item) => acc + item.quantity, 0) || 0
   const subtotal = cartState?.subtotal ?? 0
   const itemRef = useRef<number>(totalItems || 0)
   const pathname = usePathname()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Auto-open the drawer when an item is added (unless we're on the cart page).
   useEffect(() => {
@@ -181,165 +187,165 @@ const CartDropdown = ({
     }
   }, [open])
 
-  return (
-    <div className="h-full flex items-center">
-      {/* Trigger */}
-      <button
-        type="button"
-        onClick={() => setOpen(true)}
-        aria-label="Hap shportën"
-        data-testid="nav-cart-link"
-        className="h-full flex items-center"
-      >
-        <span className="hidden small:inline-block font-hanken text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300">
-          Shporta ({totalItems})
-        </span>
-        <span className="small:hidden relative text-yco-charcoal">
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.5"
-          >
-            <path d="M6 8h12l-1 12H7L6 8Z" strokeLinejoin="round" />
-            <path d="M9 8V6a3 3 0 0 1 6 0v2" strokeLinecap="round" />
-          </svg>
-          <span className="absolute -right-2 -top-1 grid h-4 min-w-4 place-items-center rounded-circle bg-yco-charcoal px-1 text-[10px] font-bold text-white">
-            {totalItems}
-          </span>
-        </span>
-      </button>
-
-      {/* Drawer overlay */}
+  const drawer = (
+    <div
+      className={`fixed inset-0 z-[120] overflow-hidden ${
+        open ? "visible" : "invisible pointer-events-none"
+      }`}
+      aria-hidden={!open}
+    >
       <div
-        className={`fixed inset-0 z-[120] overflow-hidden ${
-          open ? "visible" : "invisible pointer-events-none"
+        onClick={() => setOpen(false)}
+        className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${
+          open ? "opacity-100" : "opacity-0"
         }`}
-        aria-hidden={!open}
+      />
+
+      <div
+        data-testid="nav-cart-dropdown"
+        className={`absolute right-0 top-0 flex h-full w-full max-w-[440px] flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${
+          open ? "translate-x-0" : "translate-x-full"
+        }`}
       >
-        {/* Backdrop */}
-        <div
-          onClick={() => setOpen(false)}
-          className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${
-            open ? "opacity-100" : "opacity-0"
-          }`}
-        />
-
-        {/* Panel */}
-        <div
-          data-testid="nav-cart-dropdown"
-          className={`absolute right-0 top-0 flex h-full w-full max-w-[440px] flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${
-            open ? "translate-x-0" : "translate-x-full"
-          }`}
-        >
-          {/* Header */}
-          <div className="flex items-center justify-between border-b border-yco-cream-dark px-6 py-5">
-            <h3 className="font-sans text-yco-charcoal text-sm font-bold uppercase tracking-[0.18em]">
-              Shporta ({totalItems})
-            </h3>
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              aria-label="Mbyll shportën"
-              className="text-yco-charcoal-muted hover:text-yco-charcoal transition-colors"
+        <div className="flex items-center justify-between border-b border-yco-cream-dark px-6 py-5">
+          <h3 className="font-sans text-yco-charcoal text-sm font-bold uppercase tracking-[0.18em]">
+            Shporta ({totalItems})
+          </h3>
+          <button
+            type="button"
+            onClick={() => setOpen(false)}
+            aria-label={"Mbyll shport\u00ebn"}
+            className="text-yco-charcoal-muted hover:text-yco-charcoal transition-colors"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
             >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
+        </div>
+
+        {cartState && cartState.items?.length ? (
+          <>
+            <div className="border-b border-yco-cream-dark px-6 py-5">
+              <FreeShippingProgress
+                subtotal={subtotal}
+                currency_code={cartState.currency_code}
+                compact
+              />
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-6 py-6 flex flex-col content-start gap-y-5 no-scrollbar">
+              {cartState.items
+                .sort((a, b) =>
+                  (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
+                )
+                .map((item) => (
+                  <DropdownItem
+                    key={item.id}
+                    item={item}
+                    onNavigate={() => setOpen(false)}
+                  />
+                ))}
+            </div>
+
+            <div className="border-t border-yco-cream-dark px-6 py-6 flex flex-col gap-y-4">
+              <div className="flex items-center justify-between">
+                <span className="font-sans text-yco-charcoal text-sm font-bold uppercase tracking-[0.12em]">
+                  {"N\u00ebntotali"}
+                </span>
+                <span
+                  className="font-sans text-yco-charcoal text-base font-bold"
+                  data-testid="cart-subtotal"
+                  data-value={subtotal}
+                >
+                  {convertToLocale({
+                    amount: subtotal,
+                    currency_code: cartState.currency_code,
+                  })}
+                </span>
+              </div>
+              <LocalizedClientLink
+                href="/cart"
+                passHref
+                onClick={() => setOpen(false)}
               >
-                <path d="M6 6l12 12M18 6L6 18" />
-              </svg>
-            </button>
-          </div>
-
-          {cartState && cartState.items?.length ? (
-            <>
-              <div className="border-b border-yco-cream-dark px-6 py-5">
-                <FreeShippingProgress
-                  subtotal={subtotal}
-                  currency_code={cartState.currency_code}
-                  compact
-                />
-              </div>
-
-              <div className="flex-1 overflow-y-auto px-6 py-6 flex flex-col content-start gap-y-5 no-scrollbar">
-                {cartState.items
-                  .sort((a, b) =>
-                    (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
-                  )
-                  .map((item) => (
-                    <DropdownItem
-                      key={item.id}
-                      item={item}
-                      onNavigate={() => setOpen(false)}
-                    />
-                  ))}
-              </div>
-
-              <div className="border-t border-yco-cream-dark px-6 py-6 flex flex-col gap-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="font-sans text-yco-charcoal text-sm font-bold uppercase tracking-[0.12em]">
-                    Nëntotali
-                  </span>
-                  <span
-                    className="font-sans text-yco-charcoal text-base font-bold"
-                    data-testid="cart-subtotal"
-                    data-value={subtotal}
-                  >
-                    {convertToLocale({
-                      amount: subtotal,
-                      currency_code: cartState.currency_code,
-                    })}
-                  </span>
-                </div>
-                <LocalizedClientLink
-                  href="/cart"
-                  passHref
-                  onClick={() => setOpen(false)}
+                <span
+                  className="yco-btn yco-btn--outline yco-btn--block"
+                  data-testid="go-to-cart-button"
                 >
-                  <span
-                    className="yco-btn yco-btn--outline yco-btn--block"
-                    data-testid="go-to-cart-button"
-                  >
-                    Shiko shportën
-                  </span>
-                </LocalizedClientLink>
-                <LocalizedClientLink
-                  href="/checkout?step=address"
-                  passHref
-                  onClick={() => setOpen(false)}
-                >
-                  <span className="yco-btn yco-btn--coral yco-btn--block">
-                    Përfundo blerjen
-                  </span>
-                </LocalizedClientLink>
-              </div>
-            </>
-          ) : (
-            <div className="flex flex-1 flex-col gap-y-5 items-center justify-center px-6 text-center">
-              <div className="grid h-12 w-12 place-items-center rounded-circle bg-yco-panel text-yco-charcoal text-sm font-bold">
-                0
-              </div>
-              <span className="font-sans text-yco-charcoal text-sm">
-                Shporta juaj është bosh.
-              </span>
-              <LocalizedClientLink href="/store" onClick={() => setOpen(false)}>
-                <span className="yco-btn yco-btn--outline">
-                  Shfleto produktet
+                  {"Shiko shport\u00ebn"}
+                </span>
+              </LocalizedClientLink>
+              <LocalizedClientLink
+                href="/checkout?step=address"
+                passHref
+                onClick={() => setOpen(false)}
+              >
+                <span className="yco-btn yco-btn--coral yco-btn--block">
+                  {"P\u00ebrfundo blerjen"}
                 </span>
               </LocalizedClientLink>
             </div>
-          )}
-        </div>
+          </>
+        ) : (
+          <div className="flex flex-1 flex-col gap-y-5 items-center justify-center px-6 text-center">
+            <div className="grid h-12 w-12 place-items-center rounded-circle bg-yco-panel text-yco-charcoal text-sm font-bold">
+              0
+            </div>
+            <span className="font-sans text-yco-charcoal text-sm">
+              {"Shporta juaj \u00ebsht\u00eb bosh."}
+            </span>
+            <LocalizedClientLink href="/store" onClick={() => setOpen(false)}>
+              <span className="yco-btn yco-btn--outline">
+                Shfleto produktet
+              </span>
+            </LocalizedClientLink>
+          </div>
+        )}
       </div>
     </div>
+  )
+
+  return (
+    <>
+      <div className="h-full flex items-center">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-label={"Hap shport\u00ebn"}
+          data-testid="nav-cart-link"
+          className="h-full flex items-center"
+        >
+          <span className="hidden small:inline-block font-hanken text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300">
+            Shporta ({totalItems})
+          </span>
+          <span className="small:hidden relative text-yco-charcoal">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+            >
+              <path d="M6 8h12l-1 12H7L6 8Z" strokeLinejoin="round" />
+              <path d="M9 8V6a3 3 0 0 1 6 0v2" strokeLinecap="round" />
+            </svg>
+            <span className="absolute -right-2 -top-1 grid h-4 min-w-4 place-items-center rounded-circle bg-yco-charcoal px-1 text-[10px] font-bold text-white">
+              {totalItems}
+            </span>
+          </span>
+        </button>
+      </div>
+      {mounted ? createPortal(drawer, document.body) : null}
+    </>
   )
 }
 
