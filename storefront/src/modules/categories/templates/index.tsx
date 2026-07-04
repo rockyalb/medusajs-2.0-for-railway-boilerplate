@@ -6,14 +6,7 @@ import RefinementList from "@modules/store/components/refinement-list"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import PaginatedProducts from "@modules/store/templates/paginated-products"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { getMenuProductsByCategoryIds } from "@lib/data/products"
 import { HttpTypes } from "@medusajs/types"
-
-type SubcategoryCard = {
-  category: HttpTypes.StoreProductCategory
-  image: string
-  imageAlt: string
-}
 
 export default async function CategoryTemplate({
   categories,
@@ -35,23 +28,6 @@ export default async function CategoryTemplate({
   if (!category || !countryCode) notFound()
 
   const childCategories = category.category_children ?? []
-  const productsByCategoryId = childCategories.length
-    ? await getMenuProductsByCategoryIds(
-        childCategories.map((child) => child.id),
-        1
-      )
-    : {}
-
-  const subcategoryCards: SubcategoryCard[] = childCategories.map((child) => {
-    const previewProduct = productsByCategoryId[child.id]?.[0]
-
-    return {
-      category: child,
-      image:
-        previewProduct?.thumbnail || previewProduct?.images?.[0]?.url || "",
-      imageAlt: previewProduct?.title || child.name,
-    }
-  })
 
   return (
     <div
@@ -83,65 +59,24 @@ export default async function CategoryTemplate({
             <p>{category.description}</p>
           </div>
         )}
-        {subcategoryCards.length > 0 && (
+        {childCategories.length > 0 && (
           <div className="mb-6">
             <div className="mb-3 flex items-end justify-between gap-4">
               <h2 className="rhode-eyebrow text-yco-charcoal">
-                Bli sipas nënkategorisë
+                Bli sipas nenkategorise
               </h2>
             </div>
-            <div className="grid grid-flow-col auto-cols-[9.5rem] gap-3 overflow-x-auto pb-2 small:auto-cols-[calc((100%-3.75rem)/6)]">
-              {subcategoryCards.map(
-                ({ category: child, image, imageAlt }, index) => (
-                  <LocalizedClientLink
-                    key={child.id}
-                    href={`/categories/${child.handle}`}
-                    className="group flex h-40 flex-col overflow-hidden rounded-rounded bg-yco-panel p-2 transition-all duration-300 hover:bg-yco-panel-dark small:h-44"
-                    aria-label={`Bli ${child.name}`}
-                  >
-                    <div className="aspect-[4/3] shrink-0 overflow-hidden rounded-base bg-white">
-                      {image ? (
-                        <img
-                          src={image}
-                          alt={imageAlt}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                          loading={index > 3 ? "lazy" : undefined}
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center font-sans text-5xl font-black lowercase text-yco-charcoal/20">
-                          {child.name.slice(0, 1)}
-                        </div>
-                      )}
-                    </div>
-                    <div className="mt-2 flex min-h-0 flex-1 items-end justify-between gap-2">
-                      <div className="min-w-0">
-                        <h3 className="line-clamp-2 font-sans text-xs font-bold uppercase leading-tight tracking-[0.06em] text-yco-charcoal">
-                          {child.name}
-                        </h3>
-                      </div>
-                      <span
-                        className="grid h-7 w-7 shrink-0 place-items-center rounded-circle border border-yco-charcoal/25 bg-white/80 text-yco-charcoal transition-colors group-hover:bg-yco-charcoal group-hover:text-white"
-                        aria-hidden="true"
-                      >
-                        <svg
-                          width="15"
-                          height="15"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                        >
-                          <path
-                            d="M9 8l4 4-4 4"
-                            stroke="currentColor"
-                            strokeWidth="1.4"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </span>
-                    </div>
-                  </LocalizedClientLink>
-                )
-              )}
+            <div className="flex gap-2 overflow-x-auto pb-2">
+              {childCategories.map((child) => (
+                <LocalizedClientLink
+                  key={child.id}
+                  href={`/categories/${child.handle}`}
+                  className="flex min-h-[64px] items-center justify-center rounded-rounded border border-white/60 bg-white/40 px-4 py-3 text-center font-hanken text-xs font-bold uppercase tracking-[0.08em] text-yco-charcoal shadow-[0_16px_34px_-30px_rgba(47,45,41,0.65)] backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-yco-charcoal/30 hover:bg-white/70 small:min-w-[11rem] small:shrink-0"
+                  aria-label={`Bli ${child.name}`}
+                >
+                  {child.name}
+                </LocalizedClientLink>
+              ))}
             </div>
           </div>
         )}

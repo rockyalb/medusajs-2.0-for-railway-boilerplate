@@ -601,7 +601,7 @@ export default function NavClient({
 
       <div
         className={clx(
-          "small:hidden fixed inset-0 z-[60] bg-white overflow-y-auto transition-opacity duration-300",
+          "small:hidden fixed inset-0 z-[999] bg-yco-panel/95 overflow-y-auto transition-opacity duration-300 backdrop-blur-md",
           mobileOpen
             ? "visible opacity-100"
             : "invisible opacity-0 pointer-events-none"
@@ -624,7 +624,7 @@ export default function NavClient({
               onClick={closeMobile}
               aria-label="Mbyll menunë"
               data-testid="close-mobile-menu-button"
-              className="relative grid h-11 w-11 place-items-center rounded-circle border border-yco-charcoal/30 text-yco-charcoal transition-colors hover:bg-yco-charcoal hover:text-white"
+              className="relative grid h-11 w-11 shrink-0 place-items-center rounded-circle border border-yco-charcoal bg-yco-charcoal text-white shadow-[0_12px_28px_-18px_rgba(47,45,41,0.75)] transition-colors hover:bg-yco-coral hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-yco-panel"
             >
               <span className="absolute h-[1.5px] w-5 rotate-45 bg-current" />
               <span className="absolute h-[1.5px] w-5 -rotate-45 bg-current" />

@@ -1,7 +1,6 @@
 import { Metadata } from "next"
 
 import Hero from "@modules/home/components/hero"
-import AmbientBackground from "@modules/home/components/ambient-background"
 import CategoryGrid from "@modules/home/components/category-grid"
 import FeaturedBrands from "@modules/home/components/featured-brands"
 import ProductOfTheMonth from "@modules/home/components/product-of-the-month"
@@ -115,7 +114,6 @@ export default async function Home({
 
   return (
     <div className="relative">
-      <AmbientBackground />
       <Hero />
       <CategoryGrid categories={categoryCards} />
 

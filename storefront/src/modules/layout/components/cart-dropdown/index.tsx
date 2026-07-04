@@ -214,7 +214,9 @@ const CartDropdown = ({
 
       {/* Drawer overlay */}
       <div
-        className={`fixed inset-0 z-[120] ${open ? "visible" : "invisible"}`}
+        className={`fixed inset-0 z-[120] overflow-hidden ${
+          open ? "visible" : "invisible pointer-events-none"
+        }`}
         aria-hidden={!open}
       >
         {/* Backdrop */}

@@ -17,7 +17,7 @@ export default function AnnouncementBar() {
 
   return (
     <div className="relative flex items-center bg-yco-panel">
-      <div className="flex-1 overflow-hidden">
+      <div className="min-w-0 flex-1 overflow-hidden">
         <div
           className="rhode-marquee__track flex w-max items-center"
           data-paused={paused}
