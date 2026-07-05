@@ -56,11 +56,11 @@ const badges = [
 
 export default function TrustBadges() {
   return (
-    <section className="bg-white/40 px-6 py-8 small:py-10" aria-label="Standardet tona">
+    <section className="bg-white/40 px-6 py-2 small:py-3" aria-label="Standardet tona">
       <Stagger
         stagger={0.08}
         role="list"
-        className="mx-auto grid max-w-6xl grid-cols-4 gap-x-2 gap-y-10 border-y border-yco-cream-dark py-10 md:gap-x-4"
+        className="mx-auto grid max-w-6xl grid-cols-4 gap-x-2 gap-y-10 border-y border-yco-cream-dark py-4 md:gap-x-4"
       >
         {badges.map((badge, index) => {
           const accentClass = ACCENT_CLASSES[index % ACCENT_CLASSES.length]

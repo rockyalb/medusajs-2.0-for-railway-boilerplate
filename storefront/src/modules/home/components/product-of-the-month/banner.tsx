@@ -51,6 +51,19 @@ export default function PotmBanner({
       <div className="yco-potm relative overflow-hidden rounded-rounded">
         <Sparkles sparks={BAND_SPARKS} />
 
+        <p className="relative flex items-center gap-2 px-7 pt-7 font-sans text-xs font-bold uppercase tracking-[0.14em] text-yco-charcoal small:hidden">
+          <svg
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden
+          >
+            <path d="M12 0c.9 6.6 4.5 10.2 12 12-7.5 1.8-11.1 5.4-12 12-.9-6.6-4.5-10.2-12-12 7.5-1.8 11.1-5.4 12-12Z" />
+          </svg>
+          Produkti i muajit — {monthLabel}
+        </p>
+
         <div className="relative grid min-h-[420px] grid-cols-1 items-center gap-2 small:min-h-[600px] small:grid-cols-2">
           <motion.div
             initial={reducedMotion ? false : { opacity: 0, y: 28 }}
@@ -59,7 +72,7 @@ export default function PotmBanner({
             transition={{ duration: 0.85, ease: EASE_OUT }}
             className="order-2 max-w-xl p-7 pt-2 text-yco-charcoal small:order-1 small:p-14"
           >
-            <p className="mb-3 flex items-center gap-2 font-sans text-xs font-bold uppercase tracking-[0.14em]">
+            <p className="mb-3 hidden items-center gap-2 font-sans text-xs font-bold uppercase tracking-[0.14em] small:flex">
               <svg
                 width="12"
                 height="12"
