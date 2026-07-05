@@ -10,6 +10,31 @@ const ProductScrollStage = ({ children }: ProductScrollStageProps) => {
   const stageRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    const stage = stageRef.current
+    const header = document.getElementById("site-header")
+
+    if (!stage || !header) {
+      return
+    }
+
+    const syncHeaderHeight = () => {
+      stage.style.setProperty(
+        "--site-header-height",
+        `${header.offsetHeight}px`
+      )
+    }
+
+    syncHeaderHeight()
+
+    const observer = new ResizeObserver(syncHeaderHeight)
+    observer.observe(header)
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [])
+
+  useEffect(() => {
     const handleWheel = (event: WheelEvent) => {
       if (!window.matchMedia("(min-width: 1024px)").matches) {
         return
@@ -67,7 +92,7 @@ const ProductScrollStage = ({ children }: ProductScrollStageProps) => {
   return (
     <div
       ref={stageRef}
-      className="content-container grid grid-cols-1 gap-6 py-4 small:h-[calc(100vh-6rem)] small:grid-cols-[minmax(0,1.18fr)_minmax(390px,0.82fr)] small:items-stretch small:gap-8 small:overflow-hidden small:py-3"
+      className="content-container grid grid-cols-1 gap-6 py-4 small:h-[calc(100dvh_-_var(--site-header-height,7.5rem))] small:grid-cols-[minmax(0,1.18fr)_minmax(390px,0.82fr)] small:items-stretch small:gap-8 small:overflow-hidden small:py-3"
       data-testid="product-container"
     >
       {children}

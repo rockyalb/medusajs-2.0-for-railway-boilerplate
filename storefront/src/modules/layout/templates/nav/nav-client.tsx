@@ -430,7 +430,7 @@ export default function NavClient({
   }
 
   return (
-    <div className="font-hanken sticky top-0 inset-x-0 z-50">
+    <div id="site-header" className="font-hanken sticky top-0 inset-x-0 z-50">
       <header
         className="relative border-b border-yco-cream-dark bg-yco-header-pink/90 shadow-[0_20px_48px_-32px_rgba(47,45,41,0.45)] backdrop-blur-md"
         onMouseLeave={closeShop}
