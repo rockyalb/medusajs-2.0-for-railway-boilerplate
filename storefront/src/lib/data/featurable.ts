@@ -30,8 +30,8 @@ type FeaturableWidgetResponse = {
     }[]
     isExampleReviews: boolean
     gbpLocationSummary: {
-      averageRating?: number
-      totalReviewCount?: number
+      rating?: number
+      reviewsCount?: number
     } | null
   }
 }
@@ -90,14 +90,14 @@ export const getGoogleReviews = cache(
 
       const summary = data.widget.gbpLocationSummary
       const averageRating =
-        summary?.averageRating ??
+        summary?.rating ??
         reviews.reduce((sum, review) => sum + review.rating, 0) /
           reviews.length
 
       return {
         reviews,
         averageRating: Math.round(averageRating * 10) / 10,
-        totalReviews: summary?.totalReviewCount ?? reviews.length,
+        totalReviews: summary?.reviewsCount ?? reviews.length,
       }
     } catch {
       return null
