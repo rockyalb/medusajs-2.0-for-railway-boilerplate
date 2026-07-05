@@ -72,13 +72,17 @@ export const getGoogleReviews = cache(
 
       // Prefer originalText: `text` may be auto-translated to the widget
       // language, while originalText is what the reviewer actually wrote.
+      // originalText is an empty string (not null) when no translation exists.
+      const reviewBody = (review: { originalText: string | null; text: string | null }) =>
+        review.originalText?.trim() || review.text?.trim() || ""
+
       const reviews = data.widget.reviews
-        .filter((review) => (review.originalText ?? review.text)?.trim())
+        .filter((review) => reviewBody(review))
         .map((review) => ({
           id: review.id,
           authorName: review.author.name,
           avatarUrl: review.author.avatarUrl,
-          text: (review.originalText ?? review.text)!.trim(),
+          text: reviewBody(review),
           rating: review.rating.value,
           publishedAt: review.publishedAt,
           url: review.url,
