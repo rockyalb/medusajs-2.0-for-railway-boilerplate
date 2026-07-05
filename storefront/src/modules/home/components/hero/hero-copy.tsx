@@ -5,12 +5,24 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const
 
-const EYEBROW = "MIRË PËR JU, MIRË PËR PLANETIN."
-const HEADLINE = "Shtëpia e produkteve zero-waste, organike dhe natyrale."
+const DEFAULT_EYEBROW = "MIRË PËR JU, MIRË PËR PLANETIN."
+const DEFAULT_HEADLINE = "Shtëpia e produkteve zero-waste, organike dhe natyrale."
+const DEFAULT_CTA_LABEL = "Shiko produktet"
+const DEFAULT_CTA_HREF = "/store"
 
-export default function HeroCopy() {
+export default function HeroCopy({
+  eyebrow = DEFAULT_EYEBROW,
+  headline = DEFAULT_HEADLINE,
+  ctaLabel = DEFAULT_CTA_LABEL,
+  ctaHref = DEFAULT_CTA_HREF,
+}: {
+  eyebrow?: string
+  headline?: string
+  ctaLabel?: string
+  ctaHref?: string
+}) {
   const reducedMotion = useReducedMotion()
-  const words = HEADLINE.split(" ")
+  const words = headline.split(" ")
 
   return (
     <div className="bs-rhode-hero__copy">
@@ -21,10 +33,10 @@ export default function HeroCopy() {
         className="bs-rhode-hero__eyebrow"
       >
         <span className="yco-accent-dot" aria-hidden />
-        {EYEBROW}
+        {eyebrow}
       </motion.p>
 
-      <h1 aria-label={HEADLINE}>
+      <h1 aria-label={headline}>
         {words.map((word, index) => (
           <span
             key={`${word}-${index}`}
@@ -42,7 +54,7 @@ export default function HeroCopy() {
               }}
             >
               {word}
-              {index < words.length - 1 ? " " : ""}
+              {index < words.length - 1 ? " " : ""}
             </motion.span>
           </span>
         ))}
@@ -54,8 +66,8 @@ export default function HeroCopy() {
         transition={{ duration: 0.7, ease: EASE_OUT, delay: 0.62 }}
         className="flex flex-wrap items-center gap-3"
       >
-        <LocalizedClientLink href="/store" className="yco-btn yco-btn--hero-blue">
-          Shiko produktet
+        <LocalizedClientLink href={ctaHref} className="yco-btn yco-btn--hero-blue">
+          {ctaLabel}
         </LocalizedClientLink>
       </motion.div>
     </div>

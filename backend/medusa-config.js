@@ -53,6 +53,9 @@ const medusaConfig = {
       resolve: './src/modules/loyalty-settings',
     },
     {
+      resolve: './src/modules/homepage-settings',
+    },
+    {
       key: Modules.FILE,
       resolve: '@medusajs/file',
       options: {

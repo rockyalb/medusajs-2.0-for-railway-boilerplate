@@ -12,6 +12,7 @@ import type { CategoryProduct } from "./category-product-slider"
 type CategoryCard = {
   category: HttpTypes.StoreProductCategory
   products: CategoryProduct[]
+  image?: string | null
 }
 
 const DRAG_THRESHOLD = 14
@@ -123,8 +124,8 @@ export default function CategoryGrid({
           onPointerLeave={endDrag}
         >
           <div className="flex gap-4">
-            {categories.map(({ category, products }, index) => {
-              const image = products[0]?.image
+            {categories.map(({ category, products, image: imageOverride }, index) => {
+              const image = imageOverride || products[0]?.image
 
               return (
                 <div

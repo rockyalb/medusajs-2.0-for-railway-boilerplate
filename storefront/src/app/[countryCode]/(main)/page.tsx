@@ -12,8 +12,10 @@ import TrustBadges from "@modules/home/components/trust-badges"
 import { Reveal } from "@modules/common/components/motion"
 import { getCategoriesList } from "@lib/data/categories"
 import { getCollectionsWithPreviewProducts } from "@lib/data/collections"
+import { getHomepageSettings } from "@lib/data/homepage"
 import {
   getBestsellerProducts,
+  getCuratedBestsellerProducts,
   getMenuProductsByCategoryIds,
 } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
@@ -62,18 +64,27 @@ export default async function Home({
 }) {
   const { countryCode } = await params
   const [
-    bestsellerProducts,
+    homepageSettings,
     region,
     categoryResponse,
     collectionResponse,
     latestPosts,
   ] = await Promise.all([
-    getBestsellerProducts(countryCode),
+    getHomepageSettings(),
     getRegion(countryCode),
     getCategoriesList(0, 100),
     getCollectionsWithPreviewProducts(countryCode, 12),
     listWordPressPosts(3),
   ])
+
+  const curatedBestsellerIds = homepageSettings.bestsellers.product_ids
+  const curatedBestsellers = await getCuratedBestsellerProducts(
+    countryCode,
+    curatedBestsellerIds
+  )
+  const bestsellerProducts = curatedBestsellers.length
+    ? curatedBestsellers
+    : await getBestsellerProducts(countryCode)
 
   const topCategories = (
     (categoryResponse.product_categories ??
@@ -102,6 +113,7 @@ export default async function Home({
 
       return {
         category,
+        image: homepageSettings.category_cards.images[category.id] || null,
         products: uniqueProducts.map((product) => ({
           id: product.id,
           title: product.title,
@@ -110,11 +122,11 @@ export default async function Home({
         })),
       }
     })
-    .filter(({ products }) => products.length > 0)
+    .filter(({ products, image }) => products.length > 0 || !!image)
 
   return (
     <div className="relative">
-      <Hero />
+      <Hero settings={homepageSettings.hero} />
       <CategoryGrid categories={categoryCards} />
 
       {bestsellerProducts.length > 0 && region && (

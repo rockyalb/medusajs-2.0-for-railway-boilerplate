@@ -1,0 +1,47 @@
+import { sdk } from "@lib/config"
+import { cache } from "react"
+
+export type HomepageHeroSettings = {
+  image_url: string | null
+  image_alt: string | null
+  eyebrow: string | null
+  headline: string | null
+  cta_label: string | null
+  cta_href: string | null
+}
+
+export type HomepageSettings = {
+  hero: HomepageHeroSettings
+  category_cards: { images: Record<string, string> }
+  bestsellers: { product_ids: string[] }
+}
+
+export const EMPTY_HOMEPAGE_SETTINGS: HomepageSettings = {
+  hero: {
+    image_url: null,
+    image_alt: null,
+    eyebrow: null,
+    headline: null,
+    cta_label: null,
+    cta_href: null,
+  },
+  category_cards: { images: {} },
+  bestsellers: { product_ids: [] },
+}
+
+export const getHomepageSettings = cache(async function () {
+  return sdk.client
+    .fetch<{ homepage: HomepageSettings }>("/store/homepage", {
+      next: { tags: ["homepage"] },
+    })
+    .then(({ homepage }) => ({
+      hero: { ...EMPTY_HOMEPAGE_SETTINGS.hero, ...(homepage?.hero ?? {}) },
+      category_cards: {
+        images: homepage?.category_cards?.images ?? {},
+      },
+      bestsellers: {
+        product_ids: homepage?.bestsellers?.product_ids ?? [],
+      },
+    }))
+    .catch(() => EMPTY_HOMEPAGE_SETTINGS)
+})

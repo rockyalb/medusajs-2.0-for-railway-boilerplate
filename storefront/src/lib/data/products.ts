@@ -116,6 +116,43 @@ const bestsellerTerms = [
   { phrase: "flo", weight: 35 },
 ]
 
+/**
+ * Fetches the admin-curated bestseller products in the order they were
+ * curated. Returns [] when nothing is curated so callers can fall back to
+ * the heuristic in getBestsellerProducts.
+ */
+export const getCuratedBestsellerProducts = cache(async function (
+  countryCode: string,
+  productIds: string[]
+) {
+  if (!productIds.length) {
+    return []
+  }
+
+  const region = await getRegion(countryCode)
+
+  if (!region) {
+    return []
+  }
+
+  const { products } = await sdk.store.product.list(
+    {
+      id: productIds,
+      limit: productIds.length,
+      region_id: region.id,
+      fields:
+        "id,title,handle,subtitle,description,thumbnail,*images,*tags,*variants.calculated_price",
+    },
+    { next: { tags: ["homepage", "products"] } }
+  )
+
+  const productsById = new Map(products.map((product) => [product.id, product]))
+
+  return productIds
+    .map((id) => productsById.get(id))
+    .filter((product): product is HttpTypes.StoreProduct => !!product)
+})
+
 export const getBestsellerProducts = cache(async function (
   countryCode: string,
   limit: number = 6
