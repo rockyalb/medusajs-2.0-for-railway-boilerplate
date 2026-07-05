@@ -20,15 +20,21 @@ const StoreTemplate = ({
 
   return (
     <div
-      className="flex flex-col small:flex-row small:items-start py-6 content-container"
+      className="flex flex-col py-6 content-container"
       data-testid="category-container"
     >
-      <Suspense fallback={null}>
-        <RefinementList sortBy={sort} />
-      </Suspense>
       <div className="w-full">
-        <div className="mb-8 text-2xl-semi">
-          <h1 data-testid="store-page-title">Të gjitha produktet</h1>
+        <div className="mb-8 flex items-center gap-4">
+          <div className="min-w-0 flex-1 text-2xl-semi">
+            <h1 data-testid="store-page-title">Të gjitha produktet</h1>
+          </div>
+          <Suspense fallback={null}>
+            <RefinementList
+              sortBy={sort}
+              variant="inline"
+              data-testid="sort-by-container"
+            />
+          </Suspense>
         </div>
         <Suspense fallback={<SkeletonProductGrid />}>
           <PaginatedProducts
