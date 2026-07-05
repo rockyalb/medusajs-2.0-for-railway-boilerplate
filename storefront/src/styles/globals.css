@@ -729,7 +729,7 @@
   }
 
   .bs-rhode-hero__copy h1 {
-    @apply mb-5 max-w-full text-[clamp(24px,6.4vw,34px)] font-semibold leading-[1.04] tracking-normal small:text-[clamp(40px,3vw,54px)];
+    @apply mb-5 flex max-w-full flex-wrap gap-x-[0.24em] text-[clamp(24px,6.4vw,34px)] font-semibold leading-[1.04] tracking-normal small:text-[clamp(40px,3vw,54px)];
   }
 
   .bs-rhode-hero__support {

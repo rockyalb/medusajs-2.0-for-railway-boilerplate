@@ -54,7 +54,6 @@ export default function HeroCopy({
               }}
             >
               {word}
-              {index < words.length - 1 ? " " : ""}
             </motion.span>
           </span>
         ))}
