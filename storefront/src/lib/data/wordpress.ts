@@ -1,8 +1,9 @@
-const WORDPRESS_BASE_URL = "https://ycorganics.com"
-const WORDPRESS_CONTENT_ENABLED =
-  process.env.WORDPRESS_CONTENT_ENABLED === "true" ||
-  process.env.NEXT_PUBLIC_WORDPRESS_CONTENT_ENABLED === "true"
-const WORDPRESS_FETCH_TIMEOUT_MS = 5000
+// Legacy WordPress content, ported into the repo from ycorganics.com before the
+// old site shut down. Pages/posts live in ./cms-content/*.json and their images
+// under storefront/public/cms/. The functions keep their original async
+// signatures so callers didn't have to change when fetching was removed.
+import pagesData from "./cms-content/pages.json"
+import postsData from "./cms-content/posts.json"
 
 export type WordPressContentBlock =
   | {
@@ -63,6 +64,9 @@ export type NormalizedWordPressEntry = {
   modified?: string
   blocks: WordPressContentBlock[]
 }
+
+const PAGES = pagesData as WordPressEntry[]
+const POSTS = postsData as WordPressEntry[]
 
 const ENTITY_MAP: Record<string, string> = {
   amp: "&",
@@ -338,114 +342,40 @@ function normalizeEntry(entry: WordPressEntry): NormalizedWordPressEntry {
   }
 }
 
-async function fetchWordPressCollection(
-  type: "pages" | "posts",
-  query = ""
-): Promise<WordPressEntry[]> {
-  if (!WORDPRESS_CONTENT_ENABLED) {
-    return []
+// Some legacy slugs contain percent-encoded emoji; URL params may arrive either
+// encoded or decoded depending on how the link was entered.
+function slugMatches(entrySlug: string, requested: string) {
+  if (entrySlug === requested) {
+    return true
   }
-
-  const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), WORDPRESS_FETCH_TIMEOUT_MS)
 
   try {
-    const response = await fetch(
-      `${WORDPRESS_BASE_URL}/wp-json/wp/v2/${type}?${query}`,
-      {
-        signal: controller.signal,
-        next: {
-          revalidate: 3600,
-          tags: ["wordpress-content"],
-        },
-      }
-    )
-
-    if (!response.ok) {
-      console.warn(
-        `WordPress ${type} request failed with status ${response.status}`
-      )
-      return []
-    }
-
-    return response.json()
-  } catch (error) {
-    console.warn(`WordPress ${type} request failed`, error)
-    return []
-  } finally {
-    clearTimeout(timeout)
+    return decodeURIComponent(entrySlug) === decodeURIComponent(requested)
+  } catch {
+    return false
   }
-}
-
-async function fetchAllWordPressEntries(type: "pages" | "posts") {
-  const entries: WordPressEntry[] = []
-  let page = 1
-
-  while (true) {
-    const batch = await fetchWordPressCollection(
-      type,
-      new URLSearchParams({
-        per_page: "100",
-        page: String(page),
-        status: "publish",
-        _fields: "id,slug,link,title,content,excerpt,date,modified",
-      }).toString()
-    )
-
-    entries.push(...batch)
-
-    if (batch.length < 100) {
-      break
-    }
-
-    page += 1
-  }
-
-  return entries
 }
 
 export async function getWordPressPage(slug: string) {
-  const pages = await fetchWordPressCollection(
-    "pages",
-    new URLSearchParams({
-      slug,
-      status: "publish",
-      _fields: "id,slug,link,title,content,excerpt,date,modified",
-    }).toString()
-  )
+  const page = PAGES.find((entry) => slugMatches(entry.slug, slug))
 
-  return pages[0] ? normalizeEntry(pages[0]) : null
+  return page ? normalizeEntry(page) : null
 }
 
 export async function getWordPressPost(slug: string) {
-  const posts = await fetchWordPressCollection(
-    "posts",
-    new URLSearchParams({
-      slug,
-      status: "publish",
-      _fields: "id,slug,link,title,content,excerpt,date,modified",
-    }).toString()
-  )
+  const post = POSTS.find((entry) => slugMatches(entry.slug, slug))
 
-  return posts[0] ? normalizeEntry(posts[0]) : null
+  return post ? normalizeEntry(post) : null
+}
+
+function postsByDateDesc() {
+  return [...POSTS].sort((a, b) =>
+    (b.date ?? "").localeCompare(a.date ?? "")
+  )
 }
 
 export async function listWordPressPosts(limit = 12) {
-  const posts =
-    limit > 100
-      ? (await fetchAllWordPressEntries("posts")).slice(0, limit)
-      : await fetchWordPressCollection(
-          "posts",
-          new URLSearchParams({
-            per_page: String(limit),
-            status: "publish",
-            order: "desc",
-            orderby: "date",
-            _fields: "id,slug,link,title,content,excerpt,date,modified",
-          }).toString()
-        )
-
-  return posts.map(normalizeEntry)
+  return postsByDateDesc().slice(0, limit).map(normalizeEntry)
 }
 
 export function getWordPressEntryImage(entry: NormalizedWordPressEntry) {
@@ -465,16 +395,9 @@ export function formatWordPressDate(date?: string) {
 }
 
 export async function listWordPressPages() {
-  const pages = await fetchAllWordPressEntries("pages")
-
-  return pages.map(normalizeEntry)
+  return PAGES.map(normalizeEntry)
 }
 
 export async function listWordPressSlugs() {
-  const [pages, posts] = await Promise.all([
-    fetchAllWordPressEntries("pages"),
-    fetchAllWordPressEntries("posts"),
-  ])
-
-  return [...pages, ...posts].map((entry) => entry.slug)
+  return [...PAGES, ...POSTS].map((entry) => entry.slug)
 }
