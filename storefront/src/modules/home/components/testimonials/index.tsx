@@ -1,26 +1,48 @@
 import { Reveal, Stagger, StaggerItem } from "@modules/common/components/motion"
+import { getGoogleReviews } from "@lib/data/featurable"
 
-const reviews = [
+type DisplayReview = {
+  id: string
+  name: string
+  detail: string
+  rating: number
+  text: string
+  footnoteLabel: string
+  footnoteValue: string
+  url: string | null
+}
+
+// Curated quotes shown until the Google Business Profile is connected in Featurable.
+const fallbackReviews: DisplayReview[] = [
   {
+    id: "fallback-1",
     name: "Amelia R.",
-    location: "Tirana, AL",
+    detail: "Tirana, AL",
     rating: 5,
     text: "Më në fund mund të shfletoj produkte organike të besuara në një vend dhe të porosis sërish produktet e përditshme pa dyshuar për origjinën e tyre.",
-    product: "Produktet e përditshme",
+    footnoteLabel: "Blerë",
+    footnoteValue: "Produktet e përditshme",
+    url: null,
   },
   {
+    id: "fallback-2",
     name: "Sofia M.",
-    location: "Durres, AL",
+    detail: "Durres, AL",
     rating: 5,
     text: "Përzgjedhja e brendeve duket e menduar mirë, faqet e produkteve janë të qarta dhe përditësimet e dërgesës e bënë porosinë të lehtë për t’u ndjekur.",
-    product: "Përzgjedhje clean beauty",
+    footnoteLabel: "Blerë",
+    footnoteValue: "Përzgjedhje clean beauty",
+    url: null,
   },
   {
+    id: "fallback-3",
     name: "Lea T.",
-    location: "Prishtina, XK",
+    detail: "Prishtina, XK",
     rating: 5,
     text: "YCO e bën të thjeshtë krahasimin e produkteve sipas kategorisë dhe brendit, pastaj rikthimin te i njëjti koleksion kur më duhet ta blej përsëri.",
-    product: "Rutina e riblerjes",
+    footnoteLabel: "Blerë",
+    footnoteValue: "Rutina e riblerjes",
+    url: null,
   },
 ]
 
@@ -30,6 +52,23 @@ const ACCENT_CLASSES = [
   "yco-accent--coral",
   "yco-accent--blue",
 ] as const
+
+const MAX_REVIEW_CHARS = 240
+
+const truncate = (text: string) =>
+  text.length > MAX_REVIEW_CHARS
+    ? `${text.slice(0, MAX_REVIEW_CHARS).trimEnd()}…`
+    : text
+
+const relativeDate = (isoDate: string) => {
+  const rtf = new Intl.RelativeTimeFormat("sq", { numeric: "auto" })
+  const elapsedMs = Date.now() - new Date(isoDate).getTime()
+  const days = Math.max(1, Math.floor(elapsedMs / 86_400_000))
+
+  if (days < 30) return rtf.format(-days, "day")
+  if (days < 365) return rtf.format(-Math.floor(days / 30), "month")
+  return rtf.format(-Math.floor(days / 365), "year")
+}
 
 const Stars = ({
   count,
@@ -53,7 +92,29 @@ const Stars = ({
   </div>
 )
 
-export default function Testimonials() {
+export default async function Testimonials() {
+  const googleReviews = await getGoogleReviews()
+
+  const reviews: DisplayReview[] = googleReviews
+    ? googleReviews.reviews.slice(0, 3).map((review) => ({
+        id: review.id,
+        name: review.authorName,
+        detail: relativeDate(review.publishedAt),
+        rating: Math.round(review.rating),
+        text: truncate(review.text),
+        footnoteLabel: "Vlerësim",
+        footnoteValue: "Google",
+        url: review.url,
+      }))
+    : fallbackReviews
+
+  const summaryRating = googleReviews
+    ? `${googleReviews.averageRating.toLocaleString("sq")}/5`
+    : "4.9/5"
+  const summaryLabel = googleReviews
+    ? `nga ${googleReviews.totalReviews} vlerësime në Google`
+    : "nga mbi 2,000 klientë të verifikuar"
+
   return (
     <section className="yco-section bg-white/40 px-6 py-10 small:py-12">
       <div className="mx-auto max-w-6xl">
@@ -87,7 +148,7 @@ export default function Testimonials() {
 
             return (
             <StaggerItem
-              key={review.name}
+              key={review.id}
               className={`${accentClass} yco-accent-card flex flex-col gap-5 rounded-large p-8`}
             >
               <img
@@ -108,16 +169,27 @@ export default function Testimonials() {
                     {review.name}
                   </div>
                   <div className="font-sans text-yco-charcoal-muted text-xs mt-0.5">
-                    {review.location}
+                    {review.detail}
                   </div>
                 </div>
                 <div className="text-right">
                   <div className="font-sans text-yco-charcoal-muted text-[10px] uppercase tracking-[0.12em]">
-                    Blerë
+                    {review.footnoteLabel}
                   </div>
-                  <div className="font-sans text-yco-charcoal text-[11px] font-bold mt-0.5 leading-tight">
-                    {review.product}
-                  </div>
+                  {review.url ? (
+                    <a
+                      href={review.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-sans text-yco-charcoal text-[11px] font-bold mt-0.5 leading-tight underline-offset-2 hover:underline"
+                    >
+                      {review.footnoteValue}
+                    </a>
+                  ) : (
+                    <div className="font-sans text-yco-charcoal text-[11px] font-bold mt-0.5 leading-tight">
+                      {review.footnoteValue}
+                    </div>
+                  )}
                 </div>
               </div>
             </StaggerItem>
@@ -128,10 +200,10 @@ export default function Testimonials() {
         <div className="mt-8 flex flex-col items-center justify-center gap-2 text-center sm:flex-row">
           <Stars count={5} />
           <span className="font-sans text-yco-charcoal text-sm font-bold">
-            4.9/5
+            {summaryRating}
           </span>
           <span className="font-sans text-yco-charcoal-muted text-sm">
-            nga mbi 2,000 klientë të verifikuar
+            {summaryLabel}
           </span>
         </div>
       </div>
