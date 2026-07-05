@@ -27,9 +27,9 @@ const navLink =
   "font-hanken text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300"
 
 const secondaryLinks = [
-  { label: "Rreth nesh", href: "/store" },
-  { label: "FAQ", href: "/store" },
-  { label: "Kontakt", href: "/store" },
+  { label: "Rreth nesh", href: "/historia-jone" },
+  { label: "FAQ", href: "/faq" },
+  { label: "Blog", href: "/blog" },
 ]
 
 function Hamburger({ open, onClick }: { open: boolean; onClick: () => void }) {
@@ -430,12 +430,12 @@ export default function NavClient({
   }
 
   return (
-    <div className="font-hanken sticky top-0 inset-x-0 z-50 px-3 pt-3 small:px-7">
+    <div className="font-hanken sticky top-0 inset-x-0 z-50">
       <header
-        className="relative rounded-rounded border border-yco-cream-dark bg-yco-header-pink/90 shadow-[0_20px_48px_-32px_rgba(47,45,41,0.45)] backdrop-blur-md"
+        className="relative border-b border-yco-cream-dark bg-yco-header-pink/90 shadow-[0_20px_48px_-32px_rgba(47,45,41,0.45)] backdrop-blur-md"
         onMouseLeave={closeShop}
       >
-        <div className="overflow-hidden rounded-t-rounded">
+        <div className="overflow-hidden">
           <AnnouncementBar />
         </div>
         <nav className="content-container flex items-center justify-between w-full h-20">
@@ -478,7 +478,7 @@ export default function NavClient({
               </LocalizedClientLink>
               <LocalizedClientLink
                 className={navLink}
-                href="/store"
+                href="/historia-jone"
                 onMouseEnter={closeShop}
               >
                 Rreth nesh
@@ -539,16 +539,14 @@ export default function NavClient({
           <div
             id="shop-megamenu"
             className={clx(
-              // The pt-2 gap stays inside this element so hovering across it
-              // doesn't fire the header's mouseleave and close the menu.
-              "absolute left-0 right-0 top-full hidden small:block pt-2 transition-all duration-300 ease-out",
+              "absolute left-0 right-0 top-full hidden small:block transition-all duration-300 ease-out",
               shopOpen
                 ? "visible opacity-100 translate-y-0"
                 : "invisible opacity-0 -translate-y-2 pointer-events-none"
             )}
             onMouseEnter={() => setShopOpen(true)}
           >
-            <div className="overflow-hidden rounded-rounded border border-yco-cream-dark bg-yco-panel shadow-[0_32px_60px_-36px_rgba(47,45,41,0.45)]">
+            <div className="overflow-hidden border-b border-yco-cream-dark bg-yco-panel shadow-[0_32px_60px_-36px_rgba(47,45,41,0.45)]">
             <div className="content-container max-h-[calc(100vh-8rem)] overflow-y-auto py-8">
               <div className="mb-8 flex flex-wrap justify-center gap-x-8 gap-y-2">
                 {categories.length > 0 && (
