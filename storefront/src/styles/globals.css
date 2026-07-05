@@ -686,7 +686,7 @@
     background:
       radial-gradient(circle at 54% 44%, rgba(255, 255, 255, 0.58), transparent 0 20%, transparent 42%),
       linear-gradient(118deg, var(--hero-a), var(--hero-b) 54%, var(--hero-c));
-    @apply relative order-1 min-w-0 aspect-[16/9] min-h-[190px] overflow-hidden small:order-2 small:aspect-auto small:min-h-0;
+    @apply relative order-1 min-w-0 aspect-[3/4] min-h-[190px] overflow-hidden small:order-2 small:aspect-auto small:min-h-0;
   }
 
   .bs-rhode-hero__image {

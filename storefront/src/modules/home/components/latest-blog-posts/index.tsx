@@ -38,7 +38,7 @@ export default function LatestBlogPosts({ posts }: LatestBlogPostsProps) {
           </LocalizedClientLink>
         </div>
 
-        <div className="grid grid-cols-1 medium:grid-cols-3 gap-5 mt-6 small:mt-7">
+        <div className="-mx-6 mt-6 flex snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-2 small:mt-7 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden medium:mx-0 medium:grid medium:grid-cols-3 medium:overflow-visible medium:px-0 medium:pb-0">
           {posts.slice(0, 3).map((post, index) => {
             const image = getWordPressEntryImage(post)
             const accentClass = ACCENT_CLASSES[index % ACCENT_CLASSES.length]
@@ -46,7 +46,7 @@ export default function LatestBlogPosts({ posts }: LatestBlogPostsProps) {
             return (
               <article
                 key={post.id}
-                className={`${accentClass} group bg-white border border-yco-cream-dark border-t-[3px] border-t-[color:var(--accent)] rounded-base overflow-hidden flex flex-col min-h-full transition-shadow duration-300 hover:shadow-[0_22px_46px_-24px_var(--accent-glow)]`}
+                className={`${accentClass} group flex w-[82%] shrink-0 snap-start flex-col overflow-hidden rounded-base border border-yco-cream-dark border-t-[3px] border-t-[color:var(--accent)] bg-white transition-shadow duration-300 hover:shadow-[0_22px_46px_-24px_var(--accent-glow)] medium:w-auto medium:min-h-full medium:shrink`}
               >
                 {image && (
                   <LocalizedClientLink href={`/${post.slug}`}>

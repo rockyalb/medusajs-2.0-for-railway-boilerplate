@@ -60,7 +60,7 @@ export default function TrustBadges() {
       <Stagger
         stagger={0.08}
         role="list"
-        className="mx-auto grid max-w-6xl grid-cols-2 gap-x-4 gap-y-10 border-y border-yco-cream-dark py-10 md:grid-cols-4"
+        className="mx-auto grid max-w-6xl grid-cols-4 gap-x-2 gap-y-10 border-y border-yco-cream-dark py-10 md:gap-x-4"
       >
         {badges.map((badge, index) => {
           const accentClass = ACCENT_CLASSES[index % ACCENT_CLASSES.length]
@@ -69,16 +69,18 @@ export default function TrustBadges() {
             <StaggerItem
               key={badge.label}
               role="listitem"
-              className={`${accentClass} group flex flex-col items-center gap-4 text-center`}
+              className={`${accentClass} group flex flex-col items-center gap-3 text-center md:gap-4`}
             >
-              <div className="grid h-14 w-14 place-items-center rounded-circle bg-[color:var(--accent-soft)] text-[color:var(--accent-ink)] transition-transform duration-300 group-hover:-translate-y-1">
-                {badge.icon}
+              <div className="grid h-11 w-11 place-items-center rounded-circle bg-[color:var(--accent-soft)] text-[color:var(--accent-ink)] transition-transform duration-300 group-hover:-translate-y-1 md:h-14 md:w-14">
+                <span className="[&>svg]:h-5 [&>svg]:w-5 md:[&>svg]:h-[26px] md:[&>svg]:w-[26px]">
+                  {badge.icon}
+                </span>
               </div>
               <div>
-                <div className="font-sans text-sm font-bold tracking-wide text-yco-charcoal">
+                <div className="font-sans text-xs font-bold leading-tight tracking-wide text-yco-charcoal md:text-sm">
                   {badge.label}
                 </div>
-                <div className="mt-1 font-sans text-xs tracking-wide text-yco-charcoal-muted">
+                <div className="mt-1 font-sans text-[10px] leading-tight tracking-wide text-yco-charcoal-muted md:text-xs">
                   {badge.sub}
                 </div>
               </div>

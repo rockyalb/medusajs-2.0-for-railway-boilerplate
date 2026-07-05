@@ -19,6 +19,166 @@ type PageProps = {
   }>
 }
 
+/* ------------------------------------------------------------------ *
+ * Legacy Elementor cleanup
+ *
+ * The imported WordPress pages were built in Elementor, which splits a
+ * page title across several <h1> blocks, echoes the title again lower
+ * down, wraps body copy in <h4>, and scatters decorative "~" glyphs and
+ * placeholder images through the markup. These helpers normalise that
+ * mess into a clean hero subtitle + a tidy list of content blocks so
+ * every page renders as a polished, sectioned document.
+ * ------------------------------------------------------------------ */
+
+// Short connective words ignored when comparing a heading against the title.
+const STOP = new Set([
+  "dhe", "and", "of", "the", "e", "te", "të", "a", "per", "për", "në", "ne",
+])
+
+const wordsOf = (value: string): string[] =>
+  value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9\s]+/g, " ")
+    .split(/\s+/)
+    .filter((word) => word && !STOP.has(word))
+
+// Two words count as the same if they're equal or share a 5-letter stem,
+// so plural/typo variants ("cancelation" vs "cancellations") still match.
+const wordMatches = (a: string, b: string) =>
+  a === b || (a.length >= 5 && b.length >= 5 && a.slice(0, 5) === b.slice(0, 5))
+
+// Is `fragment` essentially a restatement of the page `title`?
+const echoesTitle = (fragment: string, title: string) => {
+  const words = wordsOf(fragment)
+  const titleWords = wordsOf(title)
+
+  if (!words.length || !titleWords.length) {
+    return false
+  }
+
+  const hits = words.filter((w) => titleWords.some((t) => wordMatches(w, t)))
+  return hits.length / words.length >= 0.6
+}
+
+// Strip decorative "~" separators and normalise stray whitespace/commas.
+const tidy = (value = "") =>
+  value
+    .replace(/\s*~\s*/g, " ")
+    .replace(/\s*,\s*/g, ", ")
+    .replace(/\s+/g, " ")
+    .trim()
+
+const isShoutyHeading = (block: WordPressContentBlock) =>
+  block.type === "heading" &&
+  block.text.length >= 3 &&
+  block.text.length <= 28 &&
+  /[a-z]/i.test(block.text) &&
+  block.text === block.text.toUpperCase()
+
+type BadgeBlock = { type: "badges"; items: string[] }
+type RenderBlock = WordPressContentBlock | BadgeBlock
+
+type RefinedEntry = {
+  subtitle: string
+  blocks: RenderBlock[]
+}
+
+function refineEntry(
+  title: string,
+  blocks: WordPressContentBlock[]
+): RefinedEntry {
+  // 1. Peel off the leading <h1> run — that's Elementor's title area. Reuse it
+  //    as a hero subtitle only when it says something new (not the title again).
+  let cursor = 0
+  const lead: WordPressContentBlock[] = []
+  while (
+    cursor < blocks.length &&
+    blocks[cursor].type === "heading" &&
+    (blocks[cursor] as { level: number }).level === 1
+  ) {
+    lead.push(blocks[cursor])
+    cursor++
+  }
+
+  const leadText = tidy(
+    lead.map((b) => ("text" in b ? b.text : "")).join(" ")
+  )
+  const subtitle = leadText && !echoesTitle(leadText, title) ? leadText : ""
+
+  let body = blocks.slice(cursor)
+
+  // 2. Drop any remaining heading that just repeats the title.
+  body = body.filter(
+    (b) => !(b.type === "heading" && echoesTitle(b.text, title))
+  )
+
+  // 3. Tidy every text-bearing block; demote long "headings" (body copy that
+  //    Elementor wrapped in <h3>/<h4>) back to paragraphs.
+  const cleaned: WordPressContentBlock[] = []
+  for (const block of body) {
+    if (block.type === "heading") {
+      const text = tidy(block.text)
+      if (!text) continue
+      if (block.level >= 3 && text.length > 70) {
+        cleaned.push({ type: "paragraph", text })
+      } else {
+        cleaned.push({ ...block, text })
+      }
+      continue
+    }
+
+    if (block.type === "paragraph") {
+      const text = tidy(block.text)
+      if (!text) continue
+      cleaned.push({
+        ...block,
+        text,
+        lines: block.lines?.map(tidy).filter(Boolean),
+      })
+      continue
+    }
+
+    if (block.type === "list") {
+      const items = block.items.map(tidy).filter(Boolean)
+      if (items.length) cleaned.push({ ...block, items })
+      continue
+    }
+
+    if (block.type === "image") {
+      // Skip Elementor's decorative oval spacers, and collapse a repeated image.
+      if (/oval\.svg$/i.test(block.src)) continue
+      const prev = cleaned[cleaned.length - 1]
+      if (prev && prev.type === "image" && prev.src === block.src) continue
+      cleaned.push(block)
+      continue
+    }
+
+    cleaned.push(block)
+  }
+
+  // 4. Group consecutive all-caps mini-headings into a single badge row.
+  const grouped: RenderBlock[] = []
+  for (let i = 0; i < cleaned.length; i++) {
+    if (isShoutyHeading(cleaned[i])) {
+      const run: string[] = []
+      while (i < cleaned.length && isShoutyHeading(cleaned[i])) {
+        run.push((cleaned[i] as { text: string }).text)
+        i++
+      }
+      i--
+      if (run.length >= 2) {
+        grouped.push({ type: "badges", items: run })
+        continue
+      }
+    }
+    grouped.push(cleaned[i])
+  }
+
+  return { subtitle, blocks: grouped }
+}
+
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
@@ -64,27 +224,39 @@ export default async function LegacyWordPressRoute({ params }: PageProps) {
     notFound()
   }
 
+  const { subtitle, blocks } = refineEntry(entry.title, entry.blocks)
+
   return (
     <main className="bg-yco-cream min-h-screen">
-      <article className="content-container py-14 small:py-20">
-        <div className="max-w-3xl">
-          <span className="font-sans text-yco-green text-xs tracking-[0.24em] uppercase font-medium">
-            {post ? "Blog" : "YCO"}
-          </span>
-          <h1 className="font-serif text-yco-charcoal text-4xl small:text-6xl leading-tight mt-4">
-            {entry.title}
-          </h1>
-          {entry.excerpt && (
-            <p className="font-sans text-yco-charcoal-muted text-base leading-7 mt-5 max-w-2xl">
-              {entry.excerpt}
-            </p>
-          )}
+      <header className="border-b border-yco-cream-dark bg-yco-panel">
+        <div className="content-container py-16 small:py-24">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="rhode-eyebrow inline-flex items-center gap-2">
+              <span className="yco-accent-dot" aria-hidden />
+              {post ? "Journal" : "YCO"}
+            </span>
+            <h1 className="rhode-display mt-5 text-4xl leading-[1.05] small:text-6xl">
+              {tidy(entry.title)}
+            </h1>
+            {subtitle && (
+              <p className="mx-auto mt-6 max-w-2xl font-sans text-lg leading-relaxed text-yco-charcoal-muted small:text-xl">
+                {subtitle}
+              </p>
+            )}
+            {post && entry.date && (
+              <p className="rhode-eyebrow mt-6">
+                {formatWordPressDate(entry.date)}
+              </p>
+            )}
+          </div>
         </div>
+      </header>
 
-        <div className="max-w-3xl mt-12">
-          <ContentBlocks blocks={entry.blocks} />
-        </div>
-      </article>
+      <section className="content-container py-14 small:py-20">
+        <article className="mx-auto max-w-3xl rounded-large border border-yco-cream-dark bg-white/80 p-7 shadow-sm backdrop-blur small:p-12">
+          <ContentBlocks blocks={blocks} />
+        </article>
+      </section>
     </main>
   )
 }
@@ -92,24 +264,27 @@ export default async function LegacyWordPressRoute({ params }: PageProps) {
 function BlogIndex({ posts }: { posts: NormalizedWordPressEntry[] }) {
   return (
     <main className="bg-yco-cream min-h-screen">
-      <section className="content-container py-14 small:py-20">
-        <div className="max-w-3xl">
-          <span className="font-sans text-yco-green text-xs tracking-[0.24em] uppercase font-medium">
-            Journal
-          </span>
-          <h1 className="font-serif text-yco-charcoal text-4xl small:text-6xl leading-tight mt-4">
-            Blog
-          </h1>
+      <header className="border-b border-yco-cream-dark bg-yco-panel">
+        <div className="content-container py-16 small:py-24">
+          <div className="mx-auto max-w-3xl text-center">
+            <span className="rhode-eyebrow inline-flex items-center gap-2">
+              <span className="yco-accent-dot" aria-hidden />
+              Journal
+            </span>
+            <h1 className="rhode-display mt-5 text-4xl small:text-6xl">Blog</h1>
+          </div>
         </div>
+      </header>
 
-        <div className="grid grid-cols-1 medium:grid-cols-2 gap-5 mt-12">
+      <section className="content-container py-14 small:py-20">
+        <div className="grid grid-cols-1 gap-5 medium:grid-cols-2">
           {posts.map((post) => {
             const image = getWordPressEntryImage(post)
 
             return (
               <article
                 key={post.id}
-                className="bg-white border border-yco-cream-dark rounded-base overflow-hidden flex flex-col"
+                className="flex flex-col overflow-hidden rounded-large border border-yco-cream-dark bg-white/40 backdrop-blur transition-shadow duration-300 hover:shadow-md"
               >
                 {image && (
                   <LocalizedClientLink href={`/${post.slug}`}>
@@ -121,26 +296,26 @@ function BlogIndex({ posts }: { posts: NormalizedWordPressEntry[] }) {
                     />
                   </LocalizedClientLink>
                 )}
-                <div className="p-6 flex flex-col flex-1">
-                  <p className="font-sans text-yco-green text-xs mb-3">
+                <div className="flex flex-1 flex-col p-6">
+                  <p className="mb-3 font-sans text-xs text-yco-green">
                     {formatWordPressDate(post.date)}
                   </p>
-                  <h2 className="font-serif text-yco-charcoal text-2xl leading-tight">
+                  <h2 className="font-serif text-2xl leading-tight text-yco-charcoal">
                     <LocalizedClientLink
                       href={`/${post.slug}`}
-                      className="hover:text-yco-coral transition-colors duration-300"
+                      className="transition-colors duration-300 hover:text-yco-coral"
                     >
                       {post.title}
                     </LocalizedClientLink>
                   </h2>
                   {post.excerpt && (
-                    <p className="font-sans text-yco-charcoal-muted text-sm leading-6 mt-4 line-clamp-3">
+                    <p className="mt-4 line-clamp-3 font-sans text-sm leading-6 text-yco-charcoal-muted">
                       {post.excerpt}
                     </p>
                   )}
                   <LocalizedClientLink
                     href={`/${post.slug}`}
-                    className="font-sans text-yco-charcoal text-xs tracking-[0.18em] uppercase font-medium border-b border-yco-charcoal pb-0.5 hover:text-yco-coral hover:border-yco-coral transition-colors duration-300 inline-block mt-6 w-fit"
+                    className="mt-6 inline-block w-fit border-b border-yco-charcoal pb-0.5 font-sans text-xs font-medium uppercase tracking-[0.18em] text-yco-charcoal transition-colors duration-300 hover:border-yco-coral hover:text-yco-coral"
                   >
                     Lexo me shume
                   </LocalizedClientLink>
@@ -154,19 +329,51 @@ function BlogIndex({ posts }: { posts: NormalizedWordPressEntry[] }) {
   )
 }
 
-function ContentBlocks({ blocks }: { blocks: WordPressContentBlock[] }) {
+function ContentBlocks({ blocks }: { blocks: RenderBlock[] }) {
   return (
     <div className="space-y-6">
       {blocks.map((block, index) => {
-        if (block.type === "heading") {
-          const Heading = block.level <= 2 ? "h2" : "h3"
+        if (block.type === "badges") {
           return (
-            <Heading
+            <ul
+              key={`badges-${index}`}
+              className="flex flex-wrap gap-2.5 py-1"
+            >
+              {block.items.map((item, itemIndex) => (
+                <li
+                  key={`${item}-${itemIndex}`}
+                  className="inline-flex items-center rounded-circle border border-yco-cream-dark bg-yco-panel px-4 py-2 font-sans text-[11px] font-bold uppercase tracking-[0.16em] text-yco-charcoal"
+                >
+                  {item}
+                </li>
+              ))}
+            </ul>
+          )
+        }
+
+        if (block.type === "heading") {
+          if (block.level <= 2) {
+            return (
+              <h2
+                key={`${block.type}-${index}`}
+                className="flex items-baseline gap-3 pt-6 font-serif text-2xl leading-tight text-yco-charcoal small:text-3xl"
+              >
+                <span
+                  className="mt-2 h-2 w-2 shrink-0 rounded-circle bg-yco-green"
+                  aria-hidden
+                />
+                {block.text}
+              </h2>
+            )
+          }
+
+          return (
+            <h3
               key={`${block.type}-${index}`}
-              className="font-serif text-yco-charcoal text-2xl small:text-3xl leading-tight pt-4"
+              className="pt-4 font-serif text-xl leading-tight text-yco-charcoal"
             >
               {block.text}
-            </Heading>
+            </h3>
           )
         }
 
@@ -176,12 +383,23 @@ function ContentBlocks({ blocks }: { blocks: WordPressContentBlock[] }) {
           return (
             <List
               key={`${block.type}-${index}`}
-              className={`pl-5 space-y-2 font-sans text-yco-charcoal-muted text-base leading-7 ${
-                block.ordered ? "list-decimal" : "list-disc"
+              className={`space-y-2.5 pl-1 font-sans text-base leading-7 text-yco-charcoal-muted ${
+                block.ordered ? "list-inside list-decimal" : "list-none"
               }`}
             >
               {block.items.map((item, itemIndex) => (
-                <li key={`${item}-${itemIndex}`}>{item}</li>
+                <li
+                  key={`${item}-${itemIndex}`}
+                  className={block.ordered ? "" : "flex gap-3"}
+                >
+                  {!block.ordered && (
+                    <span
+                      className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-circle bg-yco-coral"
+                      aria-hidden
+                    />
+                  )}
+                  <span>{item}</span>
+                </li>
               ))}
             </List>
           )
@@ -193,7 +411,7 @@ function ContentBlocks({ blocks }: { blocks: WordPressContentBlock[] }) {
               key={`${block.type}-${index}`}
               src={block.src}
               alt={block.alt}
-              className="w-full h-auto rounded-md border border-yco-cream-dark"
+              className="w-full rounded-large border border-yco-cream-dark shadow-sm"
               loading="lazy"
             />
           )
@@ -203,14 +421,14 @@ function ContentBlocks({ blocks }: { blocks: WordPressContentBlock[] }) {
           return (
             <div
               key={`${block.type}-${index}`}
-              className="grid grid-cols-1 small:grid-cols-2 gap-4"
+              className="grid grid-cols-1 gap-4 small:grid-cols-2"
             >
               {block.images.map((image, imageIndex) => (
                 <img
                   key={`${image.src}-${imageIndex}`}
                   src={image.src}
                   alt={image.alt}
-                  className="w-full h-auto rounded-base border border-yco-cream-dark"
+                  className="w-full rounded-large border border-yco-cream-dark shadow-sm"
                   loading="lazy"
                 />
               ))}
@@ -222,7 +440,7 @@ function ContentBlocks({ blocks }: { blocks: WordPressContentBlock[] }) {
           return (
             <hr
               key={`${block.type}-${index}`}
-              className="border-yco-cream-dark my-10"
+              className="my-10 border-yco-cream-dark"
             />
           )
         }
@@ -230,7 +448,7 @@ function ContentBlocks({ blocks }: { blocks: WordPressContentBlock[] }) {
         return (
           <p
             key={`${block.type}-${index}`}
-            className="font-sans text-yco-charcoal-muted text-base leading-7"
+            className="font-sans text-base leading-7 text-yco-charcoal-muted"
           >
             {block.lines?.length
               ? block.lines.map((line, lineIndex) => (

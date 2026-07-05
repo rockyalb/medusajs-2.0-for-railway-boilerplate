@@ -100,7 +100,7 @@ export default function Newsletter() {
               Na ndiqni
             </span>
             <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/ycorganics/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
@@ -113,7 +113,7 @@ export default function Newsletter() {
               </svg>
             </a>
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/ycorganic/"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
@@ -124,7 +124,7 @@ export default function Newsletter() {
               </svg>
             </a>
             <a
-              href="https://tiktok.com"
+              href="https://www.tiktok.com/@ycorganics"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="TikTok"
