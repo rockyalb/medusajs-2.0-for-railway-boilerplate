@@ -235,8 +235,18 @@
     animation: accent-pulse 2.6s ease-in-out infinite;
   }
 
+  /* Product-card titles too long even for two rows loop like an LED ticker:
+     the title is rendered twice and rhode-marquee slides by one copy's width
+     (-50%) per cycle, so the loop is seamless and always reads rightward. */
+  .yco-card-title-marquee {
+    animation: rhode-marquee 8s linear 1.5s infinite;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .yco-accent-dot {
+      animation: none;
+    }
+    .yco-card-title-marquee {
       animation: none;
     }
     .yco-accent-card:hover {

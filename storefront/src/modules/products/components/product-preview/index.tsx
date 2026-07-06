@@ -1,11 +1,8 @@
-import { Text } from "@medusajs/ui"
-
 import { getProductPrice } from "@lib/util/get-product-price"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import Thumbnail from "../thumbnail"
-import PreviewPrice from "./price"
 import { getProductsById } from "@lib/data/products"
 import { HttpTypes } from "@medusajs/types"
+
+import ProductCard from "../product-card"
 
 export default async function ProductPreview({
   product,
@@ -29,24 +26,38 @@ export default async function ProductPreview({
     product: pricedProduct,
   })
 
+  const gallery = (pricedProduct.images ?? []).map((image) => image.url)
+  const thumbnail = pricedProduct.thumbnail || gallery[0] || null
+  const hoverImage = gallery.find((url) => url && url !== thumbnail) ?? null
+
+  // Quick add only works without option selection, so it targets the sole
+  // variant; multi-variant products link to the product page instead.
+  const variants = pricedProduct.variants ?? []
+  const quickAddVariant = variants.length === 1 ? variants[0] : null
+  const inStock = quickAddVariant
+    ? !quickAddVariant.manage_inventory ||
+      !!quickAddVariant.allow_backorder ||
+      quickAddVariant.inventory_quantity == null ||
+      quickAddVariant.inventory_quantity > 0
+    : true
+
   return (
-    <LocalizedClientLink href={`/products/${product.handle}`} className="group">
-      <div data-testid="product-wrapper">
-        <Thumbnail
-          thumbnail={product.thumbnail}
-          images={product.images}
-          size="full"
-          isFeatured={isFeatured}
-        />
-        <div className="flex txt-compact-medium mt-4 justify-between">
-          <Text className="text-ui-fg-subtle" data-testid="product-title">
-            {product.title}
-          </Text>
-          <div className="flex items-center gap-x-2">
-            {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
-          </div>
-        </div>
-      </div>
-    </LocalizedClientLink>
+    <ProductCard
+      product={{
+        id: pricedProduct.id!,
+        handle: product.handle!,
+        title: product.title,
+        thumbnail,
+        hoverImage,
+        price: cheapestPrice?.calculated_price ?? null,
+        originalPrice: cheapestPrice?.original_price ?? null,
+        isSale: cheapestPrice?.price_type === "sale",
+        variantId: quickAddVariant?.id ?? null,
+        inStock,
+        priceAmount: cheapestPrice?.calculated_price_number ?? null,
+        currencyCode: cheapestPrice?.currency_code ?? null,
+      }}
+      featured={isFeatured}
+    />
   )
 }

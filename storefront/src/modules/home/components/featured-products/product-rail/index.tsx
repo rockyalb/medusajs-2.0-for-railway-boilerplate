@@ -6,7 +6,9 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import type { HttpTypes } from "@medusajs/types"
 
 import { getProductPrice } from "@lib/util/get-product-price"
-import ShowcaseCard, { type ShowcaseProduct } from "../showcase-card"
+import ProductCard, {
+  type ProductCardData,
+} from "@modules/products/components/product-card"
 
 const ArrowIcon = ({ direction }: { direction: "left" | "right" }) => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -80,13 +82,25 @@ export default function ProductRail({
 
   // Prices are already on the products (fetched with *variants.calculated_price),
   // so the cards receive plain serializable data — no per-card refetch.
-  const showcaseProducts: ShowcaseProduct[] = products
+  const showcaseProducts: ProductCardData[] = products
     .slice(0, 8)
     .map((product) => {
       const { cheapestPrice } = getProductPrice({ product })
       const gallery = (product.images ?? []).map((image) => image.url)
       const hoverImage =
         gallery.find((url) => url && url !== product.thumbnail) ?? null
+
+      // Quick add only works without option selection, so it targets the sole
+      // variant; the homepage fetch omits inventory, so treat missing
+      // quantities as in stock and let the cart API be the backstop.
+      const variants = product.variants ?? []
+      const quickAddVariant = variants.length === 1 ? variants[0] : null
+      const inStock = quickAddVariant
+        ? !quickAddVariant.manage_inventory ||
+          !!quickAddVariant.allow_backorder ||
+          quickAddVariant.inventory_quantity == null ||
+          quickAddVariant.inventory_quantity > 0
+        : true
 
       return {
         id: product.id!,
@@ -97,6 +111,10 @@ export default function ProductRail({
         price: cheapestPrice?.calculated_price ?? null,
         originalPrice: cheapestPrice?.original_price ?? null,
         isSale: cheapestPrice?.price_type === "sale",
+        variantId: quickAddVariant?.id ?? null,
+        inStock,
+        priceAmount: cheapestPrice?.calculated_price_number ?? null,
+        currencyCode: cheapestPrice?.currency_code ?? null,
       }
     })
 
@@ -114,7 +132,11 @@ export default function ProductRail({
               key={product.id}
               className="w-[62%] min-w-[10rem] max-w-[15rem] shrink-0 xsmall:w-[44%] small:w-[19%]"
             >
-              <ShowcaseCard product={product} priority={productIndex < 2} />
+              <ProductCard
+                product={product}
+                priority={productIndex < 2}
+                featured
+              />
             </div>
           ))}
         </div>
