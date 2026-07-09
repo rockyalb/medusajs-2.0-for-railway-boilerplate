@@ -126,7 +126,9 @@ export default function ProductCard({
     <LocalizedClientLink
       href={`/products/${product.handle}`}
       className="group block h-full rounded-large outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2"
-      aria-label={`${product.title}${product.price ? `, ${product.price}` : ""}`}
+      aria-label={`${product.title}${
+        product.price ? `, ${product.price}` : ""
+      }`}
       data-testid="product-wrapper"
     >
       <article className="flex h-full flex-col overflow-hidden rounded-large border border-white/60 bg-white/60 backdrop-blur-[6px] shadow-[0_1px_2px_rgba(36,33,30,0.04)] transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:border-yco-charcoal/25 group-hover:shadow-[0_24px_44px_-26px_rgba(47,45,41,0.45)]">
@@ -201,7 +203,7 @@ export default function ProductCard({
           </h3>
           <div className="mt-auto flex items-end justify-between gap-3 pt-2">
             {product.price ? (
-              <p className="font-sans text-sm font-bold text-yco-charcoal">
+              <p className="font-hanken text-sm font-bold tracking-tight text-yco-charcoal">
                 {product.isSale && product.originalPrice && (
                   <span
                     className="mr-2 font-normal text-yco-charcoal-muted line-through"
