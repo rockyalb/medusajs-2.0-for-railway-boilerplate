@@ -21,7 +21,7 @@ export default function CollectionTemplate({
   const sort = sortBy || "created_at"
 
   return (
-    <div className="flex flex-col small:flex-row small:items-start py-6 content-container">
+    <div className="content-container flex flex-col px-4 py-6 small:flex-row small:items-start small:px-6">
       <Suspense fallback={null}>
         <RefinementList sortBy={sort} />
       </Suspense>

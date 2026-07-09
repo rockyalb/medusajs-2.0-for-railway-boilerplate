@@ -20,7 +20,7 @@ const StoreTemplate = ({
 
   return (
     <div
-      className="flex flex-col py-6 content-container"
+      className="content-container flex flex-col px-4 py-6 small:px-6"
       data-testid="category-container"
     >
       <div className="w-full">

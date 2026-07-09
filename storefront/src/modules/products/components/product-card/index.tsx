@@ -134,7 +134,7 @@ export default function ProductCard({
       <article className="flex h-full flex-col overflow-hidden rounded-large border border-white/60 bg-white/60 backdrop-blur-[6px] shadow-[0_1px_2px_rgba(36,33,30,0.04)] transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:border-yco-charcoal/25 group-hover:shadow-[0_24px_44px_-26px_rgba(47,45,41,0.45)]">
         <div
           className={`relative overflow-hidden bg-yco-panel ${
-            featured ? "aspect-[11/14]" : "aspect-[3/4]"
+            featured ? "aspect-[11/14]" : "aspect-[4/5] small:aspect-[3/4]"
           }`}
         >
           {product.thumbnail ? (
@@ -174,7 +174,7 @@ export default function ProductCard({
           )}
         </div>
 
-        <div className="flex flex-1 flex-col border-t border-yco-cream-dark px-4 pb-4 pt-3">
+        <div className="flex flex-1 flex-col border-t border-yco-cream-dark px-3 pb-3 pt-3 small:px-4 small:pb-4">
           {/* min-h reserves two rows (2 × leading-snug) so clamp and marquee
               modes render the same footer height. Marquee mode duplicates the
               title and slides by one copy per cycle — a continuous
@@ -201,7 +201,7 @@ export default function ProductCard({
               <span>{product.title}</span>
             )}
           </h3>
-          <div className="mt-auto flex items-end justify-between gap-3 pt-2">
+          <div className="mt-auto flex items-end justify-between gap-3 pt-1.5">
             {product.price ? (
               <p className="font-hanken text-sm font-bold tracking-tight text-yco-charcoal">
                 {product.isSale && product.originalPrice && (
