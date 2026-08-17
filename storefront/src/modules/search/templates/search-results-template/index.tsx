@@ -1,10 +1,11 @@
 import { Heading, Text } from "@medusajs/ui"
-import Link from "next/link"
+import { Suspense } from "react"
 
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import RefinementList from "@modules/store/components/refinement-list"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import PaginatedProducts from "@modules/store/templates/paginated-products"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
 
 type SearchResultsTemplateProps = {
   query: string
@@ -22,41 +23,48 @@ const SearchResultsTemplate = ({
   countryCode,
 }: SearchResultsTemplateProps) => {
   const pageNumber = page ? parseInt(page) : 1
+  const sort = sortBy || "created_at"
 
   return (
-    <>
-      <div className="flex justify-between border-b w-full py-6 px-8 small:px-14 items-center">
-        <div className="flex flex-col items-start">
-          <Text className="text-ui-fg-muted">Rezultatet e kërkimit për:</Text>
-          <Heading>
-            {decodeURI(query)} ({ids.length})
-          </Heading>
-        </div>
-        <LocalizedClientLink
-          href="/store"
-          className="txt-medium text-ui-fg-subtle hover:text-ui-fg-base"
-        >
-          Pastro
-        </LocalizedClientLink>
-      </div>
-      <div className="flex flex-col small:flex-row small:items-start p-6">
-        {ids.length > 0 ? (
-          <>
-            <RefinementList sortBy={sortBy || "created_at"} search />
-            <div className="content-container">
-              <PaginatedProducts
-                productsIds={ids}
-                sortBy={sortBy}
-                page={pageNumber}
-                countryCode={countryCode}
+    <div className="content-container flex flex-col px-4 py-6 small:px-6">
+      <div className="w-full">
+        <div className="mb-8 flex items-center gap-4">
+          <div className="min-w-0 flex-1">
+            <Text className="text-ui-fg-muted">Rezultatet e kërkimit për:</Text>
+            <Heading>
+              {decodeURI(query)} ({ids.length})
+            </Heading>
+          </div>
+          <LocalizedClientLink
+            href="/store"
+            className="txt-medium shrink-0 text-ui-fg-subtle hover:text-ui-fg-base"
+          >
+            Pastro
+          </LocalizedClientLink>
+          {ids.length > 0 && (
+            <Suspense fallback={null}>
+              <RefinementList
+                sortBy={sort}
+                variant="inline"
+                data-testid="sort-by-container"
               />
-            </div>
-          </>
+            </Suspense>
+          )}
+        </div>
+        {ids.length > 0 ? (
+          <Suspense fallback={<SkeletonProductGrid />}>
+            <PaginatedProducts
+              productsIds={ids}
+              sortBy={sort}
+              page={pageNumber}
+              countryCode={countryCode}
+            />
+          </Suspense>
         ) : (
-          <Text className="ml-8 small:ml-14 mt-3">Nuk u gjetën rezultate.</Text>
+          <Text>Nuk u gjetën rezultate.</Text>
         )}
       </div>
-    </>
+    </div>
   )
 }
 
