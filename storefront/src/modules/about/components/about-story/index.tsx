@@ -109,21 +109,6 @@ export default function AboutStory() {
               Një mënyrë më e ndershme për t&apos;u kujdesur për veten, me
               zgjedhje që respektojnë edhe planetin.
             </motion.p>
-
-            <motion.div
-              initial={reducedMotion ? false : { opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.44, ease: EASE }}
-              className="mt-8"
-            >
-              <LocalizedClientLink
-                href="/store"
-                className="yco-btn yco-btn--coral inline-flex min-h-11 items-center gap-2 px-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2"
-              >
-                Zbulo produktet
-                <ArrowRightMini />
-              </LocalizedClientLink>
-            </motion.div>
           </div>
 
           <motion.div
