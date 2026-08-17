@@ -26,8 +26,8 @@ export type ProductCardData = {
 }
 
 /** Unified product card: a tall, image-led canvas with price and purchase
-    action combined into one compact pill. Used by the homepage rail and the
-    store/related-product grids. */
+    action combined into one compact pill below the title. Used by the
+    homepage rail and the store/related-product grids. */
 export default function ProductCard({
   product,
   priority = false,
@@ -123,7 +123,7 @@ export default function ProductCard({
       </span>
       {product.isSale && product.originalPrice && (
         <span
-          className="mt-1 block truncate text-[10px] font-medium text-white/60 line-through"
+          className="mt-1 block truncate text-[10px] font-medium text-yco-charcoal-muted line-through"
           data-testid="original-price"
         >
           {product.originalPrice}
@@ -137,7 +137,7 @@ export default function ProductCard({
   )
 
   const actionIcon = (
-    <span className="grid h-7 w-7 shrink-0 place-items-center rounded-circle bg-white/10">
+    <span className="grid h-7 w-7 shrink-0 place-items-center rounded-circle bg-white/65">
       {isAdding ? (
         <span className="h-3.5 w-3.5 animate-spin rounded-circle border-2 border-current border-t-transparent motion-reduce:animate-none" />
       ) : justAdded ? (
@@ -149,14 +149,14 @@ export default function ProductCard({
   )
 
   const actionClassName =
-    "absolute inset-x-3 bottom-3 z-10 flex min-h-11 items-center justify-between gap-3 rounded-circle bg-yco-charcoal px-3 py-2 text-white shadow-[0_2px_8px_rgba(47,45,41,0.20)] outline-none transition-[transform,background-color] duration-200 hover:bg-yco-coral focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 active:scale-[0.98] motion-reduce:transform-none motion-reduce:transition-none"
+    "mt-2 flex min-h-11 w-full items-center justify-between gap-3 rounded-circle border border-yco-charcoal/10 bg-yco-panel-dark/55 px-3 py-2 text-yco-charcoal shadow-[0_1px_2px_rgba(47,45,41,0.06)] outline-none transition-[transform,background-color,border-color] duration-200 hover:border-yco-charcoal/15 hover:bg-yco-panel-dark/75 focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 active:scale-[0.98] motion-reduce:transform-none motion-reduce:transition-none"
 
   return (
     <article
       className="group flex h-full flex-col overflow-hidden rounded-large border border-yco-cream-dark bg-white/75 shadow-[0_1px_2px_rgba(36,33,30,0.04)] transition-[transform,border-color,box-shadow] duration-300 ease-out hover:-translate-y-0.5 hover:border-yco-charcoal/25 hover:shadow-[0_4px_8px_rgba(47,45,41,0.08)] motion-reduce:transform-none motion-reduce:transition-none"
       data-testid="product-wrapper"
     >
-      <div className="relative">
+      <div>
         <LocalizedClientLink
           href={`/products/${product.handle}`}
           className="block outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-yco-charcoal"
@@ -206,42 +206,12 @@ export default function ProductCard({
             )}
           </div>
         </LocalizedClientLink>
-
-        {product.variantId ? (
-          <button
-            type="button"
-            onClick={handleQuickAdd}
-            disabled={!product.inStock || isAdding}
-            aria-label={
-              justAdded
-                ? "U shtua në shportë"
-                : product.inStock
-                ? `Shto ${product.title} në shportë`
-                : `${product.title} nuk ka stok`
-            }
-            data-testid="quick-add-button"
-            className={`${actionClassName} disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:bg-yco-charcoal`}
-          >
-            {priceContent}
-            {actionIcon}
-          </button>
-        ) : (
-          <LocalizedClientLink
-            href={`/products/${product.handle}`}
-            aria-label={`Zgjidh opsionet për ${product.title}`}
-            data-testid="quick-add-button"
-            className={actionClassName}
-          >
-            {priceContent}
-            {actionIcon}
-          </LocalizedClientLink>
-        )}
       </div>
 
-      <div className="flex flex-1 border-t border-yco-cream-dark px-3 py-3 small:px-4">
+      <div className="flex flex-1 flex-col border-t border-yco-cream-dark px-3 py-3 small:px-4">
         <LocalizedClientLink
           href={`/products/${product.handle}`}
-          className="block self-start rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2"
+          className="block w-full rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2"
         >
           {/* Titles use only the space they need. Rare titles that overflow
               two rows switch into a compact marquee. */}
@@ -268,6 +238,36 @@ export default function ProductCard({
             )}
           </h3>
         </LocalizedClientLink>
+
+        {product.variantId ? (
+          <button
+            type="button"
+            onClick={handleQuickAdd}
+            disabled={!product.inStock || isAdding}
+            aria-label={
+              justAdded
+                ? "U shtua në shportë"
+                : product.inStock
+                ? `Shto ${product.title} në shportë`
+                : `${product.title} nuk ka stok`
+            }
+            data-testid="quick-add-button"
+            className={`${actionClassName} disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:bg-yco-panel-dark/55`}
+          >
+            {priceContent}
+            {actionIcon}
+          </button>
+        ) : (
+          <LocalizedClientLink
+            href={`/products/${product.handle}`}
+            aria-label={`Zgjidh opsionet për ${product.title}`}
+            data-testid="quick-add-button"
+            className={actionClassName}
+          >
+            {priceContent}
+            {actionIcon}
+          </LocalizedClientLink>
+        )}
       </div>
     </article>
   )

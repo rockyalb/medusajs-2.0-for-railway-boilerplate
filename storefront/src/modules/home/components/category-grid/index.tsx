@@ -108,9 +108,31 @@ export default function CategoryGrid({
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         className="max-w-6xl mx-auto"
       >
-        <h2 className="yco-section-title rhode-display mb-6 text-3xl md:text-4xl">
-          Kategoritë
-        </h2>
+        <div className="mb-6 flex items-end justify-between gap-4">
+          <h2 className="yco-section-title rhode-display text-3xl md:text-4xl">
+            Kategoritë
+          </h2>
+          {categories.length > 1 && (
+            <span className="mb-1 flex shrink-0 items-center gap-1.5 font-hanken text-xs font-semibold text-yco-charcoal/80">
+              Rrëshqit për më shumë
+              <svg
+                aria-hidden="true"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M5 12h13m-5-5 5 5-5 5"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </span>
+          )}
+        </div>
 
         <div
           ref={emblaRef}
@@ -123,74 +145,76 @@ export default function CategoryGrid({
           onPointerCancel={endDrag}
           onPointerLeave={endDrag}
         >
-          <div className="flex gap-4">
-            {categories.map(({ category, products, image: imageOverride }, index) => {
-              const image = imageOverride || products[0]?.image
+          <div className="flex gap-4 pr-12 small:pr-16">
+            {categories.map(
+              ({ category, products, image: imageOverride }, index) => {
+                const image = imageOverride || products[0]?.image
 
-              return (
-                <div
-                  key={category.id}
-                  className="w-[78vw] max-w-[25rem] shrink-0 small:w-[calc((100%_-_2rem)/3)]"
-                >
-                  <Link
-                    href={`/categories/${category.handle}`}
-                    className={`group ${CATEGORY_CARD_ACCENT_CLASS} yco-accent-card yco-home-category-card relative flex h-full min-h-[360px] flex-col justify-between overflow-hidden rounded-large p-5 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2`}
-                    aria-label={`Bli ${category.name}`}
-                    draggable={false}
-                    onClick={handleCategoryClick}
+                return (
+                  <div
+                    key={category.id}
+                    className="w-[78vw] max-w-[25rem] shrink-0 small:w-[30%]"
                   >
-                    {category.description && (
-                      <p className="max-w-[17rem] font-hanken text-xs leading-relaxed text-yco-charcoal-muted">
-                        {category.description}
-                      </p>
-                    )}
-
-                    <div className="my-6 aspect-[4/3] overflow-hidden rounded-rounded bg-white/55">
-                      {image ? (
-                        <img
-                          src={image}
-                          alt={products[0]?.title || category.name}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                          loading={index > 1 ? "lazy" : undefined}
-                          draggable={false}
-                        />
-                      ) : (
-                        <div className="flex h-full items-center justify-center font-hanken text-6xl font-black lowercase text-yco-charcoal/20">
-                          {category.name.slice(0, 1)}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex items-end justify-between gap-4">
-                      <div>
-                        <div className="font-hanken text-yco-charcoal text-sm font-bold">
-                          {category.name}
-                        </div>
-                        <p className="mt-1 font-hanken text-xs text-yco-charcoal-muted">
-                          Shfleto kategorinë
+                    <Link
+                      href={`/categories/${category.handle}`}
+                      className={`group ${CATEGORY_CARD_ACCENT_CLASS} yco-accent-card yco-home-category-card relative flex h-full min-h-[360px] flex-col justify-between overflow-hidden rounded-large p-5 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2`}
+                      aria-label={`Bli ${category.name}`}
+                      draggable={false}
+                      onClick={handleCategoryClick}
+                    >
+                      {category.description && (
+                        <p className="max-w-[17rem] font-hanken text-xs leading-relaxed text-yco-charcoal-muted">
+                          {category.description}
                         </p>
-                      </div>
-                      <span className="rhode-round-btn rhode-round-btn--accent shrink-0">
-                        <svg
-                          width="22"
-                          height="22"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                        >
-                          <path
-                            d="M9 8l4 4-4 4"
-                            stroke="currentColor"
-                            strokeWidth="1.3"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
+                      )}
+
+                      <div className="my-6 aspect-[4/3] overflow-hidden rounded-rounded bg-white/55">
+                        {image ? (
+                          <img
+                            src={image}
+                            alt={products[0]?.title || category.name}
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                            loading={index > 1 ? "lazy" : undefined}
+                            draggable={false}
                           />
-                        </svg>
-                      </span>
-                    </div>
-                  </Link>
-                </div>
-              )
-            })}
+                        ) : (
+                          <div className="flex h-full items-center justify-center font-hanken text-6xl font-black lowercase text-yco-charcoal/20">
+                            {category.name.slice(0, 1)}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="flex items-end justify-between gap-4">
+                        <div>
+                          <div className="font-hanken text-yco-charcoal text-sm font-bold">
+                            {category.name}
+                          </div>
+                          <p className="mt-1 font-hanken text-xs text-yco-charcoal-muted">
+                            Shfleto kategorinë
+                          </p>
+                        </div>
+                        <span className="rhode-round-btn rhode-round-btn--accent shrink-0">
+                          <svg
+                            width="22"
+                            height="22"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                          >
+                            <path
+                              d="M9 8l4 4-4 4"
+                              stroke="currentColor"
+                              strokeWidth="1.3"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </span>
+                      </div>
+                    </Link>
+                  </div>
+                )
+              }
+            )}
           </div>
         </div>
       </motion.div>
