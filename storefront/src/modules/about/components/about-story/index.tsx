@@ -111,16 +111,7 @@ export default function AboutStory() {
             </motion.p>
           </div>
 
-          <motion.div
-            initial={
-              reducedMotion
-                ? false
-                : { clipPath: "inset(0 0 0 100%)", scale: 1.035 }
-            }
-            animate={{ clipPath: "inset(0 0 0 0%)", scale: 1 }}
-            transition={{ duration: 1, delay: 0.12, ease: EASE }}
-            className="relative -mx-6 aspect-[4/3] overflow-hidden small:col-span-7 small:mx-0 small:ml-10 small:aspect-auto"
-          >
+          <div className="relative -mx-6 aspect-[4/3] overflow-hidden small:col-span-7 small:mx-0 small:ml-10 small:aspect-auto">
             <Image
               src="/cms/2024/03/our-story-product1.webp"
               alt="Produkte të përzgjedhura për kujdesin e lëkurës në një kompozim pastel"
@@ -132,7 +123,7 @@ export default function AboutStory() {
             <div className="absolute bottom-5 right-5 rounded-circle bg-white/90 px-4 py-2 font-hanken text-xs font-bold text-yco-charcoal shadow-sm">
               YCO · që nga 2021
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -147,27 +138,7 @@ export default function AboutStory() {
 
       <section className="border-y border-yco-cream-dark bg-pastel-coral-soft/50">
         <div className="content-container grid grid-cols-1 items-center gap-12 py-20 small:grid-cols-12 small:gap-10 small:py-28">
-          <motion.div
-            initial={
-              reducedMotion
-                ? false
-                : { clipPath: "inset(100% 0 0 0)", scale: 1.025 }
-            }
-            whileInView={{ clipPath: "inset(0% 0 0 0)", scale: 1 }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.9, ease: EASE }}
-            className="relative aspect-[2/3] overflow-hidden rounded-large small:col-span-5 small:aspect-[4/5]"
-          >
-            <Image
-              src="/cms/2024/03/our-story-product2.webp"
-              alt="Përzgjedhje produktesh për fytyrën dhe trupin në tone të buta"
-              fill
-              sizes="(max-width: 1023px) 100vw, 42vw"
-              className="object-cover"
-            />
-          </motion.div>
-
-          <div className="small:col-span-6 small:col-start-7">
+          <div className="small:col-span-6 small:col-start-7 small:row-start-1">
             <Reveal direction="right">
               <p className="font-hanken text-sm font-bold text-pastel-coral-ink">
                 Filloi në 2021.
@@ -188,6 +159,16 @@ export default function AboutStory() {
                 të menduara dhe standarde që mbështesin atë që premtojnë.
               </p>
             </Reveal>
+          </div>
+
+          <div className="relative aspect-[2/3] overflow-hidden rounded-large small:col-span-5 small:col-start-1 small:row-start-1 small:aspect-[4/5]">
+            <Image
+              src="/cms/2024/03/our-story-product2.webp"
+              alt="Përzgjedhje produktesh për fytyrën dhe trupin në tone të buta"
+              fill
+              sizes="(max-width: 1023px) 100vw, 42vw"
+              className="object-cover"
+            />
           </div>
         </div>
       </section>
