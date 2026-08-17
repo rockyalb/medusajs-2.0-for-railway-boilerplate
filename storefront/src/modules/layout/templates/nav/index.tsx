@@ -41,11 +41,28 @@ export default async function Nav() {
         <Suspense
           fallback={
             <LocalizedClientLink
-              className="font-hanken text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300"
+              className="grid h-12 w-12 place-items-center rounded-circle text-yco-charcoal transition-colors hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-yco-header-pink small:h-auto small:w-auto small:rounded-none small:font-hanken small:text-xs small:font-bold small:uppercase small:tracking-[0.14em] small:hover:bg-transparent small:hover:text-yco-coral"
               href="/cart"
               data-testid="nav-cart-link"
             >
-              Shporta (0)
+              <span className="hidden small:inline">Shporta (0)</span>
+              <span className="relative small:hidden">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  aria-hidden="true"
+                >
+                  <path d="M6 8h12l-1 12H7L6 8Z" strokeLinejoin="round" />
+                  <path d="M9 8V6a3 3 0 0 1 6 0v2" strokeLinecap="round" />
+                </svg>
+                <span className="absolute -right-2 -top-1 grid h-4 min-w-4 place-items-center rounded-circle bg-yco-charcoal px-1 text-[10px] font-bold text-white">
+                  0
+                </span>
+              </span>
             </LocalizedClientLink>
           }
         >

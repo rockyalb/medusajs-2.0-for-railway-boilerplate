@@ -116,7 +116,7 @@ export default function ProductCard({
   const priceContent = product.price ? (
     <span className="min-w-0 text-left font-hanken leading-none">
       <span
-        className="block truncate text-sm font-bold tracking-tight"
+        className="block truncate text-xs font-bold tracking-tight"
         data-testid="price"
       >
         {product.price}
@@ -137,19 +137,19 @@ export default function ProductCard({
   )
 
   const actionIcon = (
-    <span className="grid h-7 w-7 shrink-0 place-items-center rounded-circle bg-white/65">
+    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-circle bg-white/60">
       {isAdding ? (
-        <span className="h-3.5 w-3.5 animate-spin rounded-circle border-2 border-current border-t-transparent motion-reduce:animate-none" />
+        <span className="h-3 w-3 animate-spin rounded-circle border-2 border-current border-t-transparent motion-reduce:animate-none" />
       ) : justAdded ? (
-        <Check />
+        <Check className="h-4 w-4" />
       ) : (
-        <Plus />
+        <Plus className="h-4 w-4" />
       )}
     </span>
   )
 
   const actionClassName =
-    "mt-2 flex min-h-11 w-full items-center justify-between gap-3 rounded-circle border border-yco-charcoal/10 bg-yco-panel-dark/55 px-3 py-2 text-yco-charcoal shadow-[0_1px_2px_rgba(47,45,41,0.06)] outline-none transition-[transform,background-color,border-color] duration-200 hover:border-yco-charcoal/15 hover:bg-yco-panel-dark/75 focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 active:scale-[0.98] motion-reduce:transform-none motion-reduce:transition-none"
+    "relative mt-auto flex min-h-10 w-full items-center justify-between gap-2 rounded-circle border border-yco-charcoal/10 bg-yco-panel-dark/50 px-3 py-1.5 text-yco-charcoal shadow-[0_1px_2px_rgba(47,45,41,0.06)] outline-none before:absolute before:-inset-y-0.5 before:inset-x-0 before:rounded-circle before:content-[''] hover:border-yco-charcoal/15 hover:bg-yco-panel-dark/75 focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 active:scale-[0.98] motion-reduce:transform-none motion-reduce:transition-none"
 
   return (
     <article
@@ -208,7 +208,7 @@ export default function ProductCard({
         </LocalizedClientLink>
       </div>
 
-      <div className="flex flex-1 flex-col border-t border-yco-cream-dark px-3 py-3 small:px-4">
+      <div className="flex flex-1 flex-col gap-2 border-t border-yco-cream-dark px-3 py-3 small:px-4">
         <LocalizedClientLink
           href={`/products/${product.handle}`}
           className="block w-full rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2"
@@ -252,7 +252,7 @@ export default function ProductCard({
                 : `${product.title} nuk ka stok`
             }
             data-testid="quick-add-button"
-            className={`${actionClassName} disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:bg-yco-panel-dark/55`}
+            className={`${actionClassName} disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-yco-panel-dark/50`}
           >
             {priceContent}
             {actionIcon}

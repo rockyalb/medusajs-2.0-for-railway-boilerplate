@@ -321,15 +321,15 @@ const CartDropdown = ({
           onClick={() => setOpen(true)}
           aria-label={"Hap shport\u00ebn"}
           data-testid="nav-cart-link"
-          className="h-full flex items-center"
+          className="flex h-12 w-12 items-center justify-center rounded-circle transition-colors hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-yco-header-pink small:h-full small:w-auto small:rounded-none small:hover:bg-transparent"
         >
           <span className="hidden small:inline-block font-hanken text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300">
             Shporta ({totalItems})
           </span>
           <span className="small:hidden relative text-yco-charcoal">
             <svg
-              width="20"
-              height="20"
+              width="24"
+              height="24"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"

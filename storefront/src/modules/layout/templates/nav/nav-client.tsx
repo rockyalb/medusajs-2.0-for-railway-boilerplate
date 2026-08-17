@@ -66,8 +66,8 @@ function Hamburger({ open, onClick }: { open: boolean; onClick: () => void }) {
 
 const SearchIcon = () => (
   <svg
-    width="18"
-    height="18"
+    width="24"
+    height="24"
     viewBox="0 0 20 20"
     fill="none"
     stroke="currentColor"
@@ -156,9 +156,7 @@ function CategoryNestedList({
         {activeCategory && (
           <>
             <div className="mb-5">
-              <h3 className="rhode-display text-4xl">
-                {activeCategory.name}
-              </h3>
+              <h3 className="rhode-display text-4xl">{activeCategory.name}</h3>
             </div>
 
             {children.length > 0 ? (
@@ -498,9 +496,9 @@ export default function NavClient({
             </LocalizedClientLink>
           </div>
 
-          <div className="flex items-center gap-x-5 small:gap-x-7 h-full flex-1 basis-0 justify-end">
+          <div className="flex h-full flex-1 basis-0 items-center justify-end gap-x-2 small:gap-x-7">
             <LocalizedClientLink
-              className="text-yco-charcoal hover:text-yco-coral transition-colors small:hidden"
+              className="grid h-12 w-12 place-items-center rounded-circle text-yco-charcoal transition-colors hover:bg-white/40 hover:text-yco-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-yco-header-pink small:hidden"
               href="/search"
               scroll={false}
               aria-label="Kërko"
@@ -547,51 +545,54 @@ export default function NavClient({
             onMouseEnter={() => setShopOpen(true)}
           >
             <div className="overflow-hidden border-b border-yco-cream-dark bg-yco-panel shadow-[0_32px_60px_-36px_rgba(47,45,41,0.45)]">
-            <div className="content-container max-h-[calc(100vh-8rem)] overflow-y-auto py-8">
-              <div className="mb-8 flex flex-wrap justify-center gap-x-8 gap-y-2">
-                {categories.length > 0 && (
-                  <button
-                    type="button"
-                    onMouseEnter={() => setActivePanel("categories")}
-                    onClick={() => setActivePanel("categories")}
-                    className={clx(
-                      "font-hanken text-xs font-bold uppercase tracking-[0.16em] pb-1 border-b transition-colors duration-200",
-                      activePanel === "categories"
-                        ? "text-yco-charcoal border-yco-charcoal"
-                        : "text-yco-charcoal-muted border-transparent hover:text-yco-charcoal"
-                    )}
-                  >
-                    Kategoritë
-                  </button>
-                )}
-                {collections.length > 0 && (
-                  <button
-                    type="button"
-                    onMouseEnter={() => setActivePanel("brands")}
-                    onClick={() => setActivePanel("brands")}
-                    className={clx(
-                      "font-hanken text-xs font-bold uppercase tracking-[0.16em] pb-1 border-b transition-colors duration-200",
-                      activePanel === "brands"
-                        ? "text-yco-charcoal border-yco-charcoal"
-                        : "text-yco-charcoal-muted border-transparent hover:text-yco-charcoal"
-                    )}
-                  >
-                    Brendet
-                  </button>
+              <div className="content-container max-h-[calc(100vh-8rem)] overflow-y-auto py-8">
+                <div className="mb-8 flex flex-wrap justify-center gap-x-8 gap-y-2">
+                  {categories.length > 0 && (
+                    <button
+                      type="button"
+                      onMouseEnter={() => setActivePanel("categories")}
+                      onClick={() => setActivePanel("categories")}
+                      className={clx(
+                        "font-hanken text-xs font-bold uppercase tracking-[0.16em] pb-1 border-b transition-colors duration-200",
+                        activePanel === "categories"
+                          ? "text-yco-charcoal border-yco-charcoal"
+                          : "text-yco-charcoal-muted border-transparent hover:text-yco-charcoal"
+                      )}
+                    >
+                      Kategoritë
+                    </button>
+                  )}
+                  {collections.length > 0 && (
+                    <button
+                      type="button"
+                      onMouseEnter={() => setActivePanel("brands")}
+                      onClick={() => setActivePanel("brands")}
+                      className={clx(
+                        "font-hanken text-xs font-bold uppercase tracking-[0.16em] pb-1 border-b transition-colors duration-200",
+                        activePanel === "brands"
+                          ? "text-yco-charcoal border-yco-charcoal"
+                          : "text-yco-charcoal-muted border-transparent hover:text-yco-charcoal"
+                      )}
+                    >
+                      Brendet
+                    </button>
+                  )}
+                </div>
+
+                {activePanel === "categories" && categories.length > 0 ? (
+                  <CategoryNestedList
+                    categories={categories}
+                    activeCategoryId={activeCategoryId}
+                    setActiveCategoryId={setActiveCategoryId}
+                    onNavigate={closeShop}
+                  />
+                ) : (
+                  <BrandsList
+                    collections={collections}
+                    onNavigate={closeShop}
+                  />
                 )}
               </div>
-
-              {activePanel === "categories" && categories.length > 0 ? (
-                <CategoryNestedList
-                  categories={categories}
-                  activeCategoryId={activeCategoryId}
-                  setActiveCategoryId={setActiveCategoryId}
-                  onNavigate={closeShop}
-                />
-              ) : (
-                <BrandsList collections={collections} onNavigate={closeShop} />
-              )}
-            </div>
             </div>
           </div>
         )}
