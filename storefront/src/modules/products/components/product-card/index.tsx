@@ -1,6 +1,6 @@
 "use client"
 
-import { Check, ShoppingBag } from "@medusajs/icons"
+import { Check, Plus } from "@medusajs/icons"
 import Image from "next/image"
 import { useParams } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
@@ -25,9 +25,9 @@ export type ProductCardData = {
   currencyCode: string | null
 }
 
-/** Unified product card: frosted surface with a hairline border, warm-gray
-    image well, divided info footer, and a soft lift + second-image crossfade
-    on hover. Used by the homepage rail and the store/related-product grids. */
+/** Unified product card: a tall, image-led canvas with price and purchase
+    action combined into one compact pill. Used by the homepage rail and the
+    store/related-product grids. */
 export default function ProductCard({
   product,
   priority = false,
@@ -75,19 +75,10 @@ export default function ProductCard({
     return () => observer.disconnect()
   }, [])
 
-  const canQuickAdd = !!product.variantId && product.inStock
-
-  // Single-variant products add straight to the cart; multi-variant products
-  // fall through to the card link so options get picked on the product page.
-  const handleQuickAdd = async (e: React.MouseEvent) => {
-    if (!product.variantId) {
-      return
-    }
-
-    e.preventDefault()
-    e.stopPropagation()
-
-    if (!product.inStock || isAdding) {
+  // Single-variant products add straight to the cart. Multi-variant products
+  // use a link in the same position so options get picked on the product page.
+  const handleQuickAdd = async () => {
+    if (!product.variantId || !product.inStock || isAdding) {
       return
     }
 
@@ -122,59 +113,136 @@ export default function ProductCard({
     }
   }
 
+  const priceContent = product.price ? (
+    <span className="min-w-0 text-left font-hanken leading-none">
+      <span
+        className="block truncate text-sm font-bold tracking-tight"
+        data-testid="price"
+      >
+        {product.price}
+      </span>
+      {product.isSale && product.originalPrice && (
+        <span
+          className="mt-1 block truncate text-[10px] font-medium text-white/60 line-through"
+          data-testid="original-price"
+        >
+          {product.originalPrice}
+        </span>
+      )}
+    </span>
+  ) : (
+    <span className="truncate font-sans text-xs font-semibold">
+      {product.variantId ? "Shto në shportë" : "Shiko produktin"}
+    </span>
+  )
+
+  const actionIcon = (
+    <span className="grid h-7 w-7 shrink-0 place-items-center rounded-circle bg-white/10">
+      {isAdding ? (
+        <span className="h-3.5 w-3.5 animate-spin rounded-circle border-2 border-current border-t-transparent motion-reduce:animate-none" />
+      ) : justAdded ? (
+        <Check />
+      ) : (
+        <Plus />
+      )}
+    </span>
+  )
+
+  const actionClassName =
+    "absolute inset-x-3 bottom-3 z-10 flex min-h-11 items-center justify-between gap-3 rounded-circle bg-yco-charcoal px-3 py-2 text-white shadow-[0_2px_8px_rgba(47,45,41,0.20)] outline-none transition-[transform,background-color] duration-200 hover:bg-yco-coral focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 active:scale-[0.98] motion-reduce:transform-none motion-reduce:transition-none"
+
   return (
-    <LocalizedClientLink
-      href={`/products/${product.handle}`}
-      className="group block h-full rounded-large outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2"
-      aria-label={`${product.title}${
-        product.price ? `, ${product.price}` : ""
-      }`}
+    <article
+      className="group flex h-full flex-col overflow-hidden rounded-large border border-yco-cream-dark bg-white/75 shadow-[0_1px_2px_rgba(36,33,30,0.04)] transition-[transform,border-color,box-shadow] duration-300 ease-out hover:-translate-y-0.5 hover:border-yco-charcoal/25 hover:shadow-[0_4px_8px_rgba(47,45,41,0.08)] motion-reduce:transform-none motion-reduce:transition-none"
       data-testid="product-wrapper"
     >
-      <article className="flex h-full flex-col overflow-hidden rounded-large border border-white/60 bg-white/60 backdrop-blur-[6px] shadow-[0_1px_2px_rgba(36,33,30,0.04)] transition-all duration-300 ease-out group-hover:-translate-y-1 group-hover:border-yco-charcoal/25 group-hover:shadow-[0_24px_44px_-26px_rgba(47,45,41,0.45)]">
-        <div
-          className={`relative overflow-hidden bg-yco-panel ${
-            featured ? "aspect-[11/14]" : "aspect-[4/5] small:aspect-[3/4]"
+      <div className="relative">
+        <LocalizedClientLink
+          href={`/products/${product.handle}`}
+          className="block outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-yco-charcoal"
+          aria-label={`${product.title}${
+            product.price ? `, ${product.price}` : ""
           }`}
         >
-          {product.thumbnail ? (
-            <>
-              <Image
-                src={product.thumbnail}
-                alt={product.title}
-                fill
-                draggable={false}
-                sizes="(max-width: 576px) 70vw, (max-width: 1024px) 42vw, 300px"
-                className={`object-cover transition-all duration-700 ease-out group-hover:scale-[1.05] ${
-                  product.hoverImage ? "group-hover:opacity-0" : ""
-                }`}
-                priority={priority}
-              />
-              {product.hoverImage && (
+          <div
+            className={`relative overflow-hidden bg-yco-panel ${
+              featured ? "aspect-[3/4]" : "aspect-[2/3] small:aspect-[3/4]"
+            }`}
+          >
+            {product.thumbnail ? (
+              <>
                 <Image
-                  src={product.hoverImage}
-                  alt=""
+                  src={product.thumbnail}
+                  alt={product.title}
                   fill
                   draggable={false}
                   sizes="(max-width: 576px) 70vw, (max-width: 1024px) 42vw, 300px"
-                  className="scale-[1.05] object-cover opacity-0 transition-opacity duration-700 ease-out group-hover:opacity-100"
+                  className={`object-cover transition-all duration-700 ease-out group-hover:scale-[1.035] motion-reduce:transform-none motion-reduce:transition-none ${
+                    product.hoverImage ? "group-hover:opacity-0" : ""
+                  }`}
+                  priority={priority}
                 />
-              )}
-            </>
-          ) : (
-            <div className="flex h-full items-center justify-center font-sans text-5xl font-black lowercase text-yco-charcoal/15">
-              {product.title.slice(0, 1)}
-            </div>
-          )}
+                {product.hoverImage && (
+                  <Image
+                    src={product.hoverImage}
+                    alt=""
+                    fill
+                    draggable={false}
+                    sizes="(max-width: 576px) 70vw, (max-width: 1024px) 42vw, 300px"
+                    className="scale-[1.035] object-cover opacity-0 transition-opacity duration-700 ease-out group-hover:opacity-100 motion-reduce:transform-none motion-reduce:transition-none"
+                  />
+                )}
+              </>
+            ) : (
+              <div className="flex h-full items-center justify-center font-sans text-5xl font-black lowercase text-yco-charcoal/15">
+                {product.title.slice(0, 1)}
+              </div>
+            )}
 
-          {product.isSale && (
-            <span className="absolute left-3 top-3 rounded-circle bg-pastel-coral-soft px-3 py-1 font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-pastel-coral-ink">
-              Sale
-            </span>
-          )}
-        </div>
+            {product.isSale && (
+              <span className="absolute left-3 top-3 rounded-circle bg-pastel-coral-soft px-3 py-1 font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-pastel-coral-ink">
+                Sale
+              </span>
+            )}
+          </div>
+        </LocalizedClientLink>
 
-        <div className="flex flex-1 flex-col border-t border-yco-cream-dark px-3 pb-3 pt-3 small:px-4 small:pb-4">
+        {product.variantId ? (
+          <button
+            type="button"
+            onClick={handleQuickAdd}
+            disabled={!product.inStock || isAdding}
+            aria-label={
+              justAdded
+                ? "U shtua në shportë"
+                : product.inStock
+                ? `Shto ${product.title} në shportë`
+                : `${product.title} nuk ka stok`
+            }
+            data-testid="quick-add-button"
+            className={`${actionClassName} disabled:cursor-not-allowed disabled:opacity-55 disabled:hover:bg-yco-charcoal`}
+          >
+            {priceContent}
+            {actionIcon}
+          </button>
+        ) : (
+          <LocalizedClientLink
+            href={`/products/${product.handle}`}
+            aria-label={`Zgjidh opsionet për ${product.title}`}
+            data-testid="quick-add-button"
+            className={actionClassName}
+          >
+            {priceContent}
+            {actionIcon}
+          </LocalizedClientLink>
+        )}
+      </div>
+
+      <div className="flex flex-1 border-t border-yco-cream-dark px-3 py-3 small:px-4">
+        <LocalizedClientLink
+          href={`/products/${product.handle}`}
+          className="block self-start rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2"
+        >
           {/* Titles use only the space they need. Rare titles that overflow
               two rows switch into a compact marquee. */}
           <h3
@@ -199,56 +267,8 @@ export default function ProductCard({
               <span>{product.title}</span>
             )}
           </h3>
-          <div className="flex items-center justify-between gap-3 pt-2">
-            {product.price ? (
-              <p className="font-hanken text-sm font-bold tracking-tight text-yco-charcoal">
-                {product.isSale && product.originalPrice && (
-                  <span
-                    className="mr-2 font-normal text-yco-charcoal-muted line-through"
-                    data-testid="original-price"
-                  >
-                    {product.originalPrice}
-                  </span>
-                )}
-                <span
-                  className={
-                    product.isSale ? "text-pastel-coral-ink" : undefined
-                  }
-                  data-testid="price"
-                >
-                  {product.price}
-                </span>
-              </p>
-            ) : (
-              <span />
-            )}
-            <button
-              type="button"
-              onClick={handleQuickAdd}
-              disabled={!!product.variantId && !product.inStock}
-              aria-label={
-                justAdded
-                  ? "U shtua në shportë"
-                  : canQuickAdd
-                  ? "Shto në shportë"
-                  : product.variantId
-                  ? "Nuk ka stok"
-                  : "Zgjidh opsionet"
-              }
-              data-testid="quick-add-button"
-              className="grid h-11 w-11 shrink-0 place-items-center rounded-circle border border-yco-charcoal/30 bg-white/85 text-yco-charcoal shadow-sm transition-all hover:bg-yco-charcoal hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white/85 disabled:hover:text-yco-charcoal"
-            >
-              {isAdding ? (
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-              ) : justAdded ? (
-                <Check />
-              ) : (
-                <ShoppingBag />
-              )}
-            </button>
-          </div>
-        </div>
-      </article>
-    </LocalizedClientLink>
+        </LocalizedClientLink>
+      </div>
+    </article>
   )
 }
