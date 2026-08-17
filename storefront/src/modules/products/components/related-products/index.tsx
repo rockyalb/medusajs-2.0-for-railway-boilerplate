@@ -2,6 +2,7 @@ import Product from "../product-preview"
 import { getRegion } from "@lib/data/regions"
 import { getProductsList } from "@lib/data/products"
 import { HttpTypes } from "@medusajs/types"
+import RelatedProductsGrid from "./related-products-grid"
 
 type RelatedProductsProps = {
   product: HttpTypes.StoreProduct
@@ -9,6 +10,8 @@ type RelatedProductsProps = {
 }
 
 type StoreProductParamsWithTags = HttpTypes.StoreProductParams & {
+  collection_id?: string[]
+  is_giftcard?: boolean
   tags?: string[]
 }
 
@@ -23,7 +26,7 @@ export default async function RelatedProducts({
   const region = await getRegion(countryCode)
 
   if (!region) {
-  const queryParams: StoreProductParamsWithTags = {}
+    return null
   }
 
   // edit this function to define your related products logic
@@ -57,22 +60,17 @@ export default async function RelatedProducts({
 
   return (
     <div className="product-page-constraint">
-      <div className="flex flex-col items-center text-center mb-16">
-        <span className="text-base-regular text-gray-600 mb-6">
-          Related products
-        </span>
-        <p className="text-2xl-regular text-ui-fg-base max-w-lg">
-          You might also want to check out these products.
-        </p>
-      </div>
+      <h2 className="rhode-display mb-8 text-3xl small:mb-10 small:text-4xl">
+        Related products
+      </h2>
 
-      <ul className="grid grid-cols-2 small:grid-cols-3 medium:grid-cols-4 gap-x-6 gap-y-8">
+      <RelatedProductsGrid>
         {products.map((product) => (
           <li key={product.id}>
-            {region && <Product region={region} product={product} />}
+            <Product region={region} product={product} />
           </li>
         ))}
-      </ul>
+      </RelatedProductsGrid>
     </div>
   )
 }

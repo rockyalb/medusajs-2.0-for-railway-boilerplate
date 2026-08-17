@@ -7,27 +7,34 @@ type ProductInfoProps = {
 }
 
 const ProductInfo = ({ product }: ProductInfoProps) => {
+  const normalizedTitle = product.title.trim().toLocaleLowerCase()
+  const displayTitle = normalizedTitle
+    ? normalizedTitle.charAt(0).toLocaleUpperCase() + normalizedTitle.slice(1)
+    : product.title
+
   return (
     <div id="product-info">
-      <div className="flex flex-col gap-y-5">
+      <div>
+        <Heading
+          level="h2"
+          className="rhode-display max-w-full break-words text-[clamp(28px,7vw,38px)] leading-[0.98] small:text-[clamp(30px,3vw,44px)]"
+          data-testid="product-title"
+        >
+          {displayTitle}
+        </Heading>
+
         {product.collection && (
           <LocalizedClientLink
             href={`/collections/${product.collection.handle}`}
-            className="rhode-eyebrow hover:text-yco-charcoal"
+            className="rhode-eyebrow mt-2 inline-block hover:text-yco-charcoal"
+            data-testid="product-brand"
           >
             {product.collection.title}
           </LocalizedClientLink>
         )}
-        <Heading
-          level="h2"
-          className="rhode-display max-w-full break-words text-[clamp(30px,4.2vw,52px)]"
-          data-testid="product-title"
-        >
-          {product.title.toLowerCase()}
-        </Heading>
 
         <Text
-          className="max-w-2xl whitespace-pre-line font-sans text-base leading-7 text-yco-charcoal"
+          className="mt-4 max-w-2xl whitespace-pre-line font-sans text-sm leading-6 text-yco-charcoal small:text-base small:leading-7"
           data-testid="product-description"
         >
           {product.description}

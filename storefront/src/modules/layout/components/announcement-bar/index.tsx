@@ -3,10 +3,10 @@
 import { useState } from "react"
 
 const messages = [
-  "Complimentary delivery on orders over €50",
-  "New daily essentials now in store",
-  "Plastic-free, planet-friendly packaging",
-  "Certified organic, cruelty-free brands",
+  "Transport falas për porosi mbi 8,000 ALL",
+  "Produkte të reja për kujdesin e përditshëm",
+  "Paketim pa plastikë dhe miqësor me mjedisin",
+  "Brende organike, pa testim te kafshët",
 ]
 
 export default function AnnouncementBar() {
@@ -37,7 +37,7 @@ export default function AnnouncementBar() {
       <button
         type="button"
         onClick={() => setPaused((p) => !p)}
-        aria-label={paused ? "Play announcements" : "Pause announcements"}
+        aria-label={paused ? "Luaj njoftimet" : "Ndalo njoftimet"}
         className="absolute right-3 grid h-6 w-6 place-items-center text-yco-charcoal-muted hover:text-yco-charcoal transition-colors"
       >
         {paused ? (

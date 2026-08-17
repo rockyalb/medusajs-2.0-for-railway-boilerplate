@@ -22,11 +22,14 @@ export default function ProductPrice({
   }
 
   return (
-    <div className="flex flex-col text-ui-fg-base">
+    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-ui-fg-base">
       <span
-        className={clx("text-xl-semi", {
-          "text-pastel-coral-ink": selectedPrice.price_type === "sale",
-        })}
+        className={clx(
+          "font-hanken text-xl font-bold leading-none tracking-tight",
+          {
+            "text-pastel-coral-ink": selectedPrice.price_type === "sale",
+          }
+        )}
       >
         {!variant && "Nga "}
         <span
@@ -38,17 +41,14 @@ export default function ProductPrice({
       </span>
       {selectedPrice.price_type === "sale" && (
         <>
-          <p>
-            <span className="text-ui-fg-subtle">Origjinali: </span>
-            <span
-              className="line-through"
-              data-testid="original-product-price"
-              data-value={selectedPrice.original_price_number}
-            >
-              {selectedPrice.original_price}
-            </span>
-          </p>
-          <span className="font-semibold text-pastel-coral-ink">
+          <span
+            className="font-sans text-xs text-yco-charcoal-muted line-through"
+            data-testid="original-product-price"
+            data-value={selectedPrice.original_price_number}
+          >
+            {selectedPrice.original_price}
+          </span>
+          <span className="rounded-circle bg-pastel-coral-soft px-2 py-0.5 font-sans text-[10px] font-bold text-pastel-coral-ink">
             -{selectedPrice.percentage_diff}%
           </span>
         </>

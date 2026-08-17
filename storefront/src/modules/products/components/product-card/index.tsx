@@ -175,13 +175,11 @@ export default function ProductCard({
         </div>
 
         <div className="flex flex-1 flex-col border-t border-yco-cream-dark px-3 pb-3 pt-3 small:px-4 small:pb-4">
-          {/* min-h reserves two rows (2 × leading-snug) so clamp and marquee
-              modes render the same footer height. Marquee mode duplicates the
-              title and slides by one copy per cycle — a continuous
-              left-to-right ticker loop, faded at both clipped edges. */}
+          {/* Titles use only the space they need. Rare titles that overflow
+              two rows switch into a compact marquee. */}
           <h3
             ref={titleRef}
-            className={`min-h-[2.75em] font-sans text-sm leading-snug text-yco-charcoal ${
+            className={`font-sans text-sm leading-snug text-yco-charcoal ${
               needsMarquee
                 ? "overflow-hidden whitespace-nowrap [mask-image:linear-gradient(to_right,transparent,black_16px,black_calc(100%-16px),transparent)]"
                 : "line-clamp-2"
@@ -201,7 +199,7 @@ export default function ProductCard({
               <span>{product.title}</span>
             )}
           </h3>
-          <div className="mt-auto flex items-end justify-between gap-3 pt-1.5">
+          <div className="flex items-center justify-between gap-3 pt-2">
             {product.price ? (
               <p className="font-hanken text-sm font-bold tracking-tight text-yco-charcoal">
                 {product.isSale && product.originalPrice && (
@@ -238,7 +236,7 @@ export default function ProductCard({
                   : "Zgjidh opsionet"
               }
               data-testid="quick-add-button"
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-circle border border-yco-charcoal/30 bg-white/85 text-yco-charcoal shadow-sm transition-all hover:bg-yco-charcoal hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white/85 disabled:hover:text-yco-charcoal"
+              className="grid h-11 w-11 shrink-0 place-items-center rounded-circle border border-yco-charcoal/30 bg-white/85 text-yco-charcoal shadow-sm transition-all hover:bg-yco-charcoal hover:text-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-white/85 disabled:hover:text-yco-charcoal"
             >
               {isAdding ? (
                 <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />

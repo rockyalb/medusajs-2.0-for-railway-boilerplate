@@ -2,14 +2,12 @@
 
 import { isEqual } from "lodash"
 import { useParams } from "next/navigation"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 
-import { useIntersection } from "@lib/hooks/use-in-view"
 import Divider from "@modules/common/components/divider"
 import QuantityStepper from "@modules/common/components/quantity-stepper"
 import OptionSelect from "@modules/products/components/product-actions/option-select"
 
-import MobileActions from "./mobile-actions"
 import ProductPrice from "../product-price"
 import { addToCart } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
@@ -22,12 +20,19 @@ type ProductActionsProps = {
 }
 
 const optionsAsKeymap = (variantOptions: any) => {
-  return variantOptions?.reduce((acc: Record<string, string | undefined>, varopt: any) => {
-    if (varopt.option && varopt.value !== null && varopt.value !== undefined) {
-      acc[varopt.option.title] = varopt.value
-    }
-    return acc
-  }, {})
+  return variantOptions?.reduce(
+    (acc: Record<string, string | undefined>, varopt: any) => {
+      if (
+        varopt.option &&
+        varopt.value !== null &&
+        varopt.value !== undefined
+      ) {
+        acc[varopt.option.title] = varopt.value
+      }
+      return acc
+    },
+    {}
+  )
 }
 
 export default function ProductActions({
@@ -110,10 +115,6 @@ export default function ProductActions({
     setQuantity(1)
   }, [selectedVariant?.id])
 
-  const actionsRef = useRef<HTMLDivElement>(null)
-
-  const inView = useIntersection(actionsRef, "0px")
-
   // add the selected variant to the cart
   const handleAddToCart = async () => {
     if (!selectedVariant?.id) return null
@@ -140,7 +141,9 @@ export default function ProductActions({
           quantity,
         },
       ]),
-      currency: price?.currency_code?.toUpperCase() ?? region.currency_code?.toUpperCase(),
+      currency:
+        price?.currency_code?.toUpperCase() ??
+        region.currency_code?.toUpperCase(),
       value: typeof itemPrice === "number" ? itemPrice * quantity : undefined,
     })
 
@@ -149,7 +152,7 @@ export default function ProductActions({
 
   return (
     <>
-      <div className="flex flex-col gap-y-2" ref={actionsRef}>
+      <div className="flex flex-col gap-y-3">
         <div>
           {hasSelectableVariants && (
             <div className="flex flex-col gap-y-4">
@@ -172,53 +175,45 @@ export default function ProductActions({
           )}
         </div>
 
-        <ProductPrice product={product} variant={selectedVariant} />
+        <div className="grid gap-3 border-t border-yco-cream-dark pt-4 xsmall:grid-cols-[auto_minmax(0,1fr)] xsmall:items-center">
+          <ProductPrice product={product} variant={selectedVariant} />
 
-        <div className="flex items-center gap-3">
-          <span className="font-sans text-xs font-bold uppercase tracking-[0.14em] text-yco-charcoal-muted">
-            Qty
-          </span>
-          <QuantityStepper
-            quantity={quantity}
-            onChange={setQuantity}
-            max={maxQuantity}
-            disabled={!inStock || !selectedVariant || !!disabled || isAdding}
-            data-testid="product-quantity-stepper"
-          />
+          <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-2">
+            <div>
+              <span className="sr-only">Quantity</span>
+              <QuantityStepper
+                quantity={quantity}
+                onChange={setQuantity}
+                max={maxQuantity}
+                disabled={
+                  !inStock || !selectedVariant || !!disabled || isAdding
+                }
+                data-testid="product-quantity-stepper"
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              disabled={!inStock || !selectedVariant || !!disabled || isAdding}
+              className="yco-btn yco-btn--header-pink yco-btn--block !min-h-[44px] !px-4"
+              data-testid="add-product-button"
+            >
+              {isAdding ? (
+                <>
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  Adding…
+                </>
+              ) : !selectedVariant ? (
+                "Select variant"
+              ) : !inStock ? (
+                "Out of stock"
+              ) : (
+                "Add to cart"
+              )}
+            </button>
+          </div>
         </div>
-
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          disabled={!inStock || !selectedVariant || !!disabled || isAdding}
-          className="yco-btn yco-btn--header-pink yco-btn--block"
-          data-testid="add-product-button"
-        >
-          {isAdding ? (
-            <>
-              <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-              Adding…
-            </>
-          ) : !selectedVariant ? (
-            "Select variant"
-          ) : !inStock ? (
-            "Out of stock"
-          ) : (
-            "Add to cart"
-          )}
-        </button>
-        <MobileActions
-          product={product}
-          variant={selectedVariant}
-          options={options}
-          updateOptions={setOptionValue}
-          inStock={inStock}
-          handleAddToCart={handleAddToCart}
-          isAdding={isAdding}
-          show={!inView}
-          optionsDisabled={!!disabled || isAdding}
-          hasSelectableVariants={hasSelectableVariants}
-        />
       </div>
     </>
   )

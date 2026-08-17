@@ -6,15 +6,8 @@ import RefinementList from "@modules/store/components/refinement-list"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import PaginatedProducts from "@modules/store/templates/paginated-products"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import SubcategoryDropdown from "@modules/categories/components/subcategory-dropdown"
 import { HttpTypes } from "@medusajs/types"
-
-const formatSubcategoryName = (name: string) => {
-  const lowerName = name.trim().toLocaleLowerCase("sq-AL")
-
-  return lowerName
-    ? lowerName.charAt(0).toLocaleUpperCase("sq-AL") + lowerName.slice(1)
-    : name
-}
 
 export default async function CategoryTemplate({
   categories,
@@ -73,20 +66,7 @@ export default async function CategoryTemplate({
           </div>
         )}
         {childCategories.length > 0 && (
-          <div className="mb-6">
-            <div className="flex gap-2 overflow-x-auto pb-2">
-              {childCategories.map((child) => (
-                <LocalizedClientLink
-                  key={child.id}
-                  href={`/categories/${child.handle}`}
-                  className="flex min-h-[64px] items-center justify-center rounded-rounded border border-white/60 bg-white/40 px-4 py-3 text-center font-hanken text-xs font-bold tracking-[0.08em] text-yco-charcoal shadow-[0_16px_34px_-30px_rgba(47,45,41,0.65)] backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-yco-charcoal/30 hover:bg-white/70 small:min-w-[11rem] small:shrink-0"
-                  aria-label={`Bli ${child.name}`}
-                >
-                  {formatSubcategoryName(child.name)}
-                </LocalizedClientLink>
-              ))}
-            </div>
-          </div>
+          <SubcategoryDropdown categories={childCategories} />
         )}
         <Suspense fallback={<SkeletonProductGrid />}>
           <PaginatedProducts

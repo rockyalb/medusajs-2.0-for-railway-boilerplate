@@ -64,22 +64,22 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
         role="region"
         aria-label="Product images"
       >
-        <div className="flex gap-3">
+        <div className="flex">
           {images.map((image, index) => {
             return (
               <Container
                 key={image.id}
-                className="relative aspect-[4/5] w-[86vw] shrink-0 overflow-hidden rounded-rounded bg-yco-panel-dark shadow-none small:h-full small:w-full"
+                className="relative aspect-[4/5] w-full shrink-0 overflow-hidden rounded-none bg-yco-panel-dark shadow-none"
                 id={image.id}
               >
                 {!!image.url && (
                   <Image
                     src={image.url}
                     priority={index <= 2 ? true : false}
-                    className="absolute inset-0 rounded-rounded"
+                    className="absolute inset-0"
                     alt={`Product image ${index + 1}`}
                     fill
-                    sizes="(max-width: 1023px) 86vw, 58vw"
+                    sizes="(max-width: 1023px) 100vw, 58vw"
                     style={{
                       objectFit: "cover",
                     }}
