@@ -897,27 +897,6 @@
     animation: yco-drift-c 25s ease-in-out infinite alternate;
   }
 
-  /* Twinkling star. The outer span drifts, the inner svg twinkles, so the
-     two transforms never fight. Glow comes from two stacked drop-shadows in
-     the halo colour; on these tiny elements the filter is cheap. */
-  .yco-spark {
-    @apply absolute;
-    color: var(--spark-color, #ffffff);
-    animation: yco-spark-float var(--spark-float, 0s) ease-in-out
-      var(--spark-delay, 0s) infinite alternate;
-    will-change: transform;
-  }
-
-  .yco-spark__star {
-    @apply block h-full w-full opacity-0;
-    transform-origin: 50% 50%;
-    filter: drop-shadow(0 0 4px var(--spark-glow, currentColor))
-      drop-shadow(0 0 14px var(--spark-glow, currentColor));
-    animation: yco-twinkle var(--spark-dur, 5s) ease-in-out
-      var(--spark-delay, 0s) infinite;
-    will-change: transform, opacity;
-  }
-
   /* Product-of-the-month band: the hero wash, gently panning. */
   .yco-potm {
     background:
@@ -1011,14 +990,8 @@
   @media (prefers-reduced-motion: reduce) {
     .yco-ambient__aurora,
     .yco-ambient__blob,
-    .yco-spark,
     .yco-potm {
       animation: none;
-    }
-
-    .yco-spark__star {
-      animation: none;
-      opacity: 0.6;
     }
   }
 }
@@ -1059,34 +1032,7 @@
   }
 }
 
-@keyframes yco-spark-float {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-  to {
-    transform: translate3d(var(--spark-dx, 0px), var(--spark-dy, 0px), 0);
-  }
-}
 
-@keyframes yco-twinkle {
-  0%,
-  100% {
-    opacity: 0;
-    transform: scale(0.2) rotate(-25deg);
-  }
-  38% {
-    opacity: var(--spark-peak, 0.95);
-    transform: scale(1.08) rotate(12deg);
-  }
-  50% {
-    opacity: calc(var(--spark-peak, 0.95) * 0.85);
-    transform: scale(0.92) rotate(18deg);
-  }
-  62% {
-    opacity: var(--spark-peak, 0.95);
-    transform: scale(1) rotate(24deg);
-  }
-}
 
 @keyframes yco-gradient-pan {
   from {

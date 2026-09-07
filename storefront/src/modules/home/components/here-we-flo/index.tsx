@@ -1,52 +1,50 @@
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
-/** Brand feature for Here We Flo, laid out like the old ycorganics.com
- * homepage: the original pink product-stack artwork (B Corp badge and script
- * logo are part of the image) fills the panel, with the copy in a white card
- * on the left. Copy is the old site's; the CTA uses our button system and the
- * live collection route. */
+/** Brand feature for Here We Flo: the campaign photo on the left, the old
+ * ycorganics.com copy on the right, in our own type and button styles.
+ *
+ * Height note: the panel is capped near a third of the viewport at every
+ * width, so the section reads as a band between the brand rail and the trust
+ * badges rather than a second hero. The photo is portrait, so it is cropped
+ * by `object-cover` to the middle band where the Flo boxes sit. */
 export default function HereWeFloSection() {
   return (
     <section className="yco-section bg-white/40 px-3 py-3 small:px-7 small:py-4">
-      <div className="relative overflow-hidden rounded-rounded bg-[#ec459f]">
+      <div className="grid h-[29vh] min-h-[196px] max-h-[290px] grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] grid-rows-[minmax(0,1fr)] overflow-hidden rounded-rounded bg-[#f3e3f4] small:h-[28vh] small:min-h-[224px] small:max-h-[340px] small:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)]">
         <img
-          src="/cms/2024/04/here-we-flo-2048x1147.webp"
-          srcSet="/cms/2024/04/here-we-flo-1024x573.webp 1024w, /cms/2024/04/here-we-flo-2048x1147.webp 2048w"
-          sizes="(max-width: 1024px) 100vw, 1400px"
-          alt="Produktet Here We Flo: peceta, tamponë dhe liners organikë me certifikim B Corporation"
-          className="aspect-[16/9] w-full object-cover object-right small:aspect-[2048/1147] small:object-center"
+          src="/cms/2024/04/here-we-flo-pads.webp"
+          alt="Peceta dhe liners Flo për ndjeshmëri, të certifikuara OEKO-TEX"
+          className="h-full w-full object-cover"
           loading="lazy"
         />
 
-        <div className="relative px-3 pb-4 pt-0 small:absolute small:inset-0 small:flex small:items-center small:px-12 small:py-16 medium:px-16">
-          <div className="-mt-8 max-w-[440px] rounded-large bg-white p-7 shadow-[0_18px_40px_-20px_rgba(47,45,41,0.45)] small:mt-0 small:p-10">
-            <h2 className="rhode-display text-3xl small:text-4xl">
-              Kujdesi për ciklin Hipoalergjike Here We Flo
-            </h2>
-            <p className="mt-5 max-w-sm font-sans text-sm leading-relaxed text-yco-charcoal-muted small:text-base">
-              Brandi i pacipë, i pa turp, natyral &amp; organik për momentet më te
-              lëmshme të muajit për herë të parë në Shqipëri.
-            </p>
-            <LocalizedClientLink
-              href="/collections/here-we-flo"
-              className="yco-btn yco-btn--blue mt-7 w-fit"
+        <div className="flex min-w-0 flex-col justify-center px-4 py-3 small:px-10 small:py-6">
+          <h2 className="rhode-display text-base leading-tight small:text-3xl medium:text-4xl">
+            Kujdesi për ciklin Hipoalergjike Here We Flo
+          </h2>
+          <p className="mt-2 max-w-md font-sans text-[11px] leading-snug text-yco-charcoal-muted small:mt-4 small:text-sm small:leading-relaxed">
+            Brandi i pacipë, i pa turp, natyral &amp; organik për momentet më te
+            lëmshme të muajit për herë të parë në Shqipëri.
+          </p>
+          <LocalizedClientLink
+            href="/collections/here-we-flo"
+            className="yco-btn yco-btn--blue mt-3 w-fit small:mt-6"
+          >
+            Më shumë
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
             >
-              Më shumë
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M5 12h13m-5-5 5 5-5 5" />
-              </svg>
-            </LocalizedClientLink>
-          </div>
+              <path d="M5 12h13m-5-5 5 5-5 5" />
+            </svg>
+          </LocalizedClientLink>
         </div>
       </div>
     </section>
