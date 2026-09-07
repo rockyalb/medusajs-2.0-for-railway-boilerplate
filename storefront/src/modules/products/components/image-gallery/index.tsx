@@ -141,20 +141,25 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
       </Container>
 
       {images.length > 1 && (
-        <div className="mt-3 flex justify-center gap-1.5 small:hidden">
+        <div className="absolute inset-x-0 bottom-2 z-[2] flex justify-center small:hidden">
           {images.map((image, index) => (
             <button
               key={image.id}
               type="button"
-              className={`h-1.5 rounded-circle transition-all ${
-                mobileIndex === index
-                  ? "w-5 bg-yco-charcoal"
-                  : "w-1.5 bg-yco-charcoal/35"
-              }`}
+              className="flex h-11 w-11 items-center justify-center rounded-circle focus-visible:outline focus-visible:outline-2 focus-visible:outline-yco-charcoal"
               aria-label={`Show product image ${index + 1}`}
               aria-current={mobileIndex === index}
               onClick={() => scrollMobileImage(index)}
-            />
+            >
+              <span
+                aria-hidden="true"
+                className={`h-1.5 rounded-circle transition-all ${
+                  mobileIndex === index
+                    ? "w-5 bg-yco-charcoal"
+                    : "w-1.5 bg-yco-charcoal/35"
+                }`}
+              />
+            </button>
           ))}
         </div>
       )}
