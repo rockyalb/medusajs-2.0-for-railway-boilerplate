@@ -82,7 +82,7 @@ const GiftCardPaymentButton = () => {
       className="yco-btn yco-btn--coral"
       data-testid="submit-order-button"
     >
-      Vendos porosinë
+      Përfundo porosinë
     </Button>
   )
 }
@@ -185,7 +185,7 @@ const StripePaymentButton = ({
         className="yco-btn yco-btn--coral"
         data-testid={dataTestId}
       >
-        Vendos porosinë
+        Përfundo porosinë
       </Button>
       <ErrorMessage
         error={errorMessage}
@@ -295,7 +295,7 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
         className="yco-btn yco-btn--coral"
         data-testid="submit-order-button"
       >
-        Vendos porosinë
+        Përfundo porosinë
       </Button>
       <ErrorMessage
         error={errorMessage}

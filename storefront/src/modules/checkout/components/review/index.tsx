@@ -38,7 +38,7 @@ const Review = ({ cart }: { cart: any }) => {
           <div className="flex items-start gap-x-1 w-full mb-6">
             <div className="w-full">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
-                Duke klikuar butonin “Vendos porosinë”, konfirmoni se keni
+                Duke klikuar butonin “Përfundo porosinë”, konfirmoni se keni
                 lexuar, kuptuar dhe pranuar kushtet e përdorimit, kushtet e
                 shitjes dhe politikën e kthimeve, si edhe politikën tonë të
                 privatësisë.
