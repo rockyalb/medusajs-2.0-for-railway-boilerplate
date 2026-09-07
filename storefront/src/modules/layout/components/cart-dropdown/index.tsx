@@ -272,18 +272,6 @@ const CartDropdown = ({
                 </span>
               </div>
               <LocalizedClientLink
-                href="/cart"
-                passHref
-                onClick={() => setOpen(false)}
-              >
-                <span
-                  className="yco-btn yco-btn--outline yco-btn--block"
-                  data-testid="go-to-cart-button"
-                >
-                  {"Shiko shport\u00ebn"}
-                </span>
-              </LocalizedClientLink>
-              <LocalizedClientLink
                 href="/checkout?step=address"
                 passHref
                 onClick={() => setOpen(false)}
