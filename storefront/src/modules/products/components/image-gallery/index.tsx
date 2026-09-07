@@ -141,7 +141,7 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
       </Container>
 
       {images.length > 1 && (
-        <div className="absolute inset-x-0 bottom-2 z-[2] flex justify-center small:hidden">
+        <div className="absolute bottom-3 left-1/2 z-[2] flex -translate-x-1/2 justify-center rounded-circle border border-yco-charcoal/20 bg-white px-1 shadow-sm small:hidden">
           {images.map((image, index) => (
             <button
               key={image.id}
@@ -156,7 +156,7 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
                 className={`h-1.5 rounded-circle transition-all ${
                   mobileIndex === index
                     ? "w-5 bg-yco-charcoal"
-                    : "w-1.5 bg-yco-charcoal/35"
+                    : "w-1.5 bg-yco-charcoal/70"
                 }`}
               />
             </button>
