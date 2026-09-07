@@ -47,7 +47,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
 
         <div
           id="product-details-panel"
-          className="order-2 flex w-full flex-col gap-y-6 rounded-none border-x-0 border-y border-white/60 bg-yco-panel/55 px-5 py-7 shadow-[0_16px_34px_-30px_rgba(47,45,41,0.65)] backdrop-blur-sm small:h-full small:overflow-y-auto small:overscroll-contain small:rounded-rounded small:border small:px-10 small:py-10"
+          className="order-2 flex w-full flex-col gap-y-2 rounded-none border-x-0 border-y border-white/60 bg-yco-panel/55 px-5 py-7 shadow-[0_16px_34px_-30px_rgba(47,45,41,0.65)] backdrop-blur-sm small:h-full small:overflow-y-auto small:overscroll-contain small:rounded-rounded small:border small:px-10 small:py-10"
         >
           <ProductInfo product={product} />
 

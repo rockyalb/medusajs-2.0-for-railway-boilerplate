@@ -153,8 +153,8 @@ export default function ProductActions({
   return (
     <>
       <div className="flex flex-col gap-y-3">
-        <div>
-          {hasSelectableVariants && (
+        {hasSelectableVariants && (
+          <div>
             <div className="flex flex-col gap-y-4">
               {(product.options || []).map((option) => {
                 return (
@@ -172,10 +172,10 @@ export default function ProductActions({
               })}
               <Divider />
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        <div className="grid gap-3 border-t border-yco-cream-dark pt-4 xsmall:grid-cols-[auto_minmax(0,1fr)] xsmall:items-center">
+        <div className="grid gap-3 border-t border-yco-cream-dark pt-1 xsmall:grid-cols-[auto_minmax(0,1fr)] xsmall:items-center">
           <ProductPrice product={product} variant={selectedVariant} />
 
           <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-2">

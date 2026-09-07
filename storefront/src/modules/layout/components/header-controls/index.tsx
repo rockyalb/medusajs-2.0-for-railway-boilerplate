@@ -1,7 +1,7 @@
 /* Shared mobile header controls. Glyphs use the Heroicons solid set. */
 
 export const headerChipClass =
-  "relative grid h-11 w-11 shrink-0 place-items-center rounded-circle border border-white/80 bg-white/60 text-yco-charcoal shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_8px_20px_-14px_rgba(47,45,41,0.55)] transition-[background-color,transform,color] duration-200 hover:bg-white/85 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-yco-header-pink"
+  "relative grid h-11 w-11 shrink-0 place-items-center rounded-circle border border-white/80 bg-white/60 text-yco-charcoal transition-colors duration-200 hover:bg-white/85 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-yco-header-pink"
 
 export { SearchIcon, BagIcon, MenuIcon, CloseIcon } from "./heroicons"
 

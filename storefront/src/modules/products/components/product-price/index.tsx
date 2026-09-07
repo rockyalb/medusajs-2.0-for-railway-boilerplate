@@ -1,5 +1,3 @@
-import { clx } from "@medusajs/ui"
-
 import { getProductPrice } from "@lib/util/get-product-price"
 import { HttpTypes } from "@medusajs/types"
 
@@ -22,14 +20,9 @@ export default function ProductPrice({
   }
 
   return (
-    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-ui-fg-base">
+    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-[#2f2d29]">
       <span
-        className={clx(
-          "font-hanken text-xl font-bold leading-none tracking-tight",
-          {
-            "text-pastel-coral-ink": selectedPrice.price_type === "sale",
-          }
-        )}
+        className="font-hanken text-xl font-bold leading-none tracking-tight"
       >
         {!variant && "Nga "}
         <span

@@ -258,17 +258,13 @@
   }
 }
 
-/* ── YCO bubbly pressable buttons ─────────────────────────────────────────
-   Pastel fill + dark ink text + a solid darker-accent "base" beneath, so the
-   button looks like a physical key that drops onto its base when pressed.
-   Defaults to coral (the logo's dominant hue); variants swap the palette. */
+/* Flat YCO buttons with pastel fills and coordinated outlines. */
 @layer components {
   .yco-btn {
     --btn-bg: #fc8c84;
     --btn-bg-hover: #fb7c72;
     --btn-base: #e0726a;
     --btn-text: #2f2d29;
-    --btn-depth: 5px;
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -285,14 +281,9 @@
     text-transform: uppercase;
     color: var(--btn-text);
     background-color: var(--btn-bg);
-    box-shadow:
-      0 var(--btn-depth) 0 0 var(--btn-base),
-      0 calc(var(--btn-depth) + 8px) 18px -8px rgba(47, 45, 41, 0.4);
-    transform: translateY(0);
-    transition:
-      transform 90ms cubic-bezier(0.22, 1, 0.36, 1),
-      box-shadow 90ms ease,
-      background-color 200ms ease;
+    border: 1px solid var(--btn-base);
+    box-shadow: none;
+    transition: background-color 200ms ease, border-color 200ms ease;
     cursor: pointer;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
@@ -303,19 +294,8 @@
   }
 
   .yco-btn:focus-visible {
-    outline: none;
-    box-shadow:
-      0 var(--btn-depth) 0 0 var(--btn-base),
-      0 calc(var(--btn-depth) + 8px) 18px -8px rgba(47, 45, 41, 0.4),
-      0 0 0 4px color-mix(in srgb, var(--btn-base) 45%, transparent);
-  }
-
-  /* Pressed: the key drops onto its base. */
-  .yco-btn:active {
-    transform: translateY(var(--btn-depth));
-    box-shadow:
-      0 0 0 0 var(--btn-base),
-      0 3px 8px -5px rgba(47, 45, 41, 0.5);
+    outline: 2px solid var(--btn-text);
+    outline-offset: 3px;
   }
 
   .yco-btn:disabled,
@@ -325,8 +305,7 @@
     color: #a8a39a;
     background-color: #e7e4df;
     --btn-base: #d2cfc8;
-    box-shadow: 0 var(--btn-depth) 0 0 var(--btn-base);
-    transform: translateY(0);
+    box-shadow: none;
   }
 
   .yco-btn--coral {
@@ -374,7 +353,7 @@
   }
 
   .yco-btn--hero-blue:focus-visible {
-    box-shadow: 0 0 0 4px rgba(103, 100, 94, 0.18);
+    outline-color: #67645e;
   }
 
   .yco-btn.yco-btn--hero-blue:active {
@@ -396,7 +375,7 @@
     --btn-text: #ffffff;
   }
 
-  /* Ghost / outline — still pressable, sits on a faint base. */
+  /* Neutral outline variant. */
   .yco-btn--outline {
     --btn-bg: #ffffff;
     --btn-bg-hover: #faf9f7;
