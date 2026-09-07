@@ -1,6 +1,10 @@
 "use client"
 
 import { clx } from "@medusajs/ui"
+import {
+  SearchIcon,
+  headerChipClass,
+} from "@modules/layout/components/header-controls"
 import { ReactNode, useEffect, useState } from "react"
 
 import { BRAND_LOGOS } from "@lib/data/brand-logos"
@@ -40,43 +44,25 @@ function Hamburger({ open, onClick }: { open: boolean; onClick: () => void }) {
       aria-label={open ? "Mbyll menunë" : "Hap menunë"}
       aria-expanded={open}
       data-testid="nav-menu-button"
-      className="flex h-full min-h-14 w-14 min-w-14 flex-col items-center justify-center gap-[5px]"
+      className={headerChipClass}
     >
-      <span
-        className={clx(
-          "block h-[1.5px] w-6 bg-yco-charcoal transition-transform duration-300",
-          open && "translate-y-[6.5px] rotate-45"
-        )}
-      />
-      <span
-        className={clx(
-          "block h-[1.5px] w-6 bg-yco-charcoal transition-all duration-300",
-          open ? "opacity-0" : "opacity-100"
-        )}
-      />
-      <span
-        className={clx(
-          "block h-[1.5px] w-6 bg-yco-charcoal transition-transform duration-300",
-          open && "-translate-y-[6.5px] -rotate-45"
-        )}
-      />
+      <span className="relative block h-[14px] w-[22px]">
+        <span
+          className={clx(
+            "absolute left-0 top-0 block h-[1.75px] w-full rounded-full bg-current transition-transform duration-300",
+            open && "translate-y-[6px] rotate-45"
+          )}
+        />
+        <span
+          className={clx(
+            "absolute bottom-0 right-0 block h-[1.75px] rounded-full bg-current transition-[transform,width] duration-300",
+            open ? "w-full -translate-y-[6px] -rotate-45" : "w-[14px]"
+          )}
+        />
+      </span>
     </button>
   )
 }
-
-const SearchIcon = () => (
-  <svg
-    width="24"
-    height="24"
-    viewBox="0 0 20 20"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="1.5"
-  >
-    <circle cx="9" cy="9" r="6" />
-    <path d="M14 14l4 4" strokeLinecap="round" />
-  </svg>
-)
 
 function CategoryNestedList({
   categories,
@@ -290,7 +276,7 @@ function MobileCategoryPanel({
             <button
               type="button"
               onClick={() => setActiveCategoryId(expanded ? "" : category.id)}
-              className="flex min-h-14 w-full items-center justify-between py-3 text-left font-hanken text-lg font-bold text-yco-charcoal"
+              className="flex min-h-12 w-full items-center justify-between py-2 text-left font-hanken text-lg font-bold text-yco-charcoal"
               aria-expanded={expanded}
             >
               <span>{category.name}</span>
@@ -306,11 +292,11 @@ function MobileCategoryPanel({
               )}
             >
               <div className="yco-expand-grid__inner">
-                <div className="pb-3">
+                <div className="pb-2">
                   <LocalizedClientLink
                     href={`/categories/${category.handle}`}
                     onClick={onNavigate}
-                    className="mb-2 flex min-h-11 items-center rounded-base px-3 py-2 font-hanken text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:bg-yco-panel hover:text-yco-coral"
+                    className="mb-1 flex min-h-10 items-center rounded-base px-3 py-1.5 font-hanken text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:bg-yco-panel hover:text-yco-coral"
                   >
                     Shiko të gjitha {category.name}
                   </LocalizedClientLink>
@@ -322,7 +308,7 @@ function MobileCategoryPanel({
                           <LocalizedClientLink
                             href={`/categories/${child.handle}`}
                             onClick={onNavigate}
-                            className="flex min-h-11 items-center rounded-base px-3 py-2 font-hanken text-sm text-yco-charcoal-muted transition-colors hover:bg-yco-panel hover:text-yco-charcoal"
+                            className="flex min-h-10 items-center rounded-base px-3 py-1.5 font-hanken text-sm text-yco-charcoal-muted transition-colors hover:bg-yco-panel hover:text-yco-charcoal"
                           >
                             {child.name}
                           </LocalizedClientLink>
@@ -348,13 +334,13 @@ function MobileBrandPanel({
   onNavigate: () => void
 }) {
   return (
-    <ul className="space-y-1 border-t border-yco-cream-dark pt-4">
+    <ul className="space-y-0 border-t border-yco-cream-dark pt-2">
       {collections.map((collection) => (
         <li key={collection.id}>
           <LocalizedClientLink
             href={`/collections/${collection.handle}`}
             onClick={onNavigate}
-            className="block rounded-base px-3 py-3 font-hanken text-sm text-yco-charcoal-muted transition-colors hover:bg-yco-panel hover:text-yco-charcoal"
+            className="flex min-h-10 items-center rounded-base px-3 py-1.5 font-hanken text-sm text-yco-charcoal-muted transition-colors hover:bg-yco-panel hover:text-yco-charcoal"
           >
             {collection.title}
           </LocalizedClientLink>
@@ -496,9 +482,9 @@ export default function NavClient({
             </LocalizedClientLink>
           </div>
 
-          <div className="flex h-full flex-1 basis-0 items-center justify-end gap-x-2 small:gap-x-7">
+          <div className="flex h-full flex-1 basis-0 items-center justify-end gap-x-2.5 small:gap-x-7">
             <LocalizedClientLink
-              className="grid h-14 w-14 place-items-center rounded-circle text-yco-charcoal transition-colors hover:bg-white/40 hover:text-yco-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-yco-header-pink small:hidden"
+              className={`${headerChipClass} small:hidden`}
               href="/search"
               scroll={false}
               aria-label="Kërko"
@@ -506,7 +492,7 @@ export default function NavClient({
               <SearchIcon />
             </LocalizedClientLink>
             <LocalizedClientLink
-              className={`hidden small:inline-block ${navLink}`}
+              className={`hidden small:inline-flex ${navLink}`}
               href="/search"
               scroll={false}
               data-testid="nav-search-link"
@@ -514,7 +500,7 @@ export default function NavClient({
               Kërko
             </LocalizedClientLink>
             <LocalizedClientLink
-              className={`hidden small:inline-block ${navLink}`}
+              className={`hidden small:inline-flex ${navLink}`}
               href="/account"
               data-testid="nav-account-link"
             >
@@ -610,7 +596,7 @@ export default function NavClient({
         aria-label="Navigimi mobil"
       >
         <div className="px-6 py-5 pb-12">
-          <div className="mb-8 flex items-center justify-between border-b border-yco-cream-dark pb-5">
+          <div className="mb-5 flex items-center justify-between border-b border-yco-cream-dark pb-4">
             <LocalizedClientLink
               href="/"
               className="hover:opacity-80 transition-opacity duration-300"
@@ -634,7 +620,7 @@ export default function NavClient({
             href="/search"
             scroll={false}
             onClick={closeMobile}
-            className="mb-5 flex min-h-[52px] items-center gap-3 rounded-large border border-yco-cream-dark bg-yco-panel px-4 font-hanken text-sm text-yco-charcoal-muted"
+            className="mb-4 flex min-h-[48px] items-center gap-3 rounded-large border border-yco-cream-dark bg-yco-panel px-4 font-hanken text-sm text-yco-charcoal-muted"
           >
             <SearchIcon />
             Kërko produkte, brende dhe kategori
@@ -645,7 +631,7 @@ export default function NavClient({
               <button
                 type="button"
                 onClick={() => toggleMobileSection("categories")}
-                className="flex w-full items-center justify-between border-b border-yco-cream-dark py-4 text-left font-hanken text-2xl font-black tracking-[-0.02em] text-yco-charcoal"
+                className="flex min-h-12 w-full items-center justify-between border-b border-yco-cream-dark py-2.5 text-left font-hanken text-2xl font-black tracking-[-0.02em] text-yco-charcoal"
                 aria-expanded={mobileSection === "categories"}
               >
                 <span>Kategoritë</span>
@@ -679,7 +665,7 @@ export default function NavClient({
               <button
                 type="button"
                 onClick={() => toggleMobileSection("brands")}
-                className="flex w-full items-center justify-between border-b border-yco-cream-dark py-4 text-left font-hanken text-2xl font-black tracking-[-0.02em] text-yco-charcoal"
+                className="flex min-h-12 w-full items-center justify-between border-b border-yco-cream-dark py-2.5 text-left font-hanken text-2xl font-black tracking-[-0.02em] text-yco-charcoal"
                 aria-expanded={mobileSection === "brands"}
               >
                 <span>Brendet</span>
@@ -717,7 +703,7 @@ export default function NavClient({
                 <LocalizedClientLink
                   href={link.href}
                   onClick={closeMobile}
-                  className="block py-4 font-hanken text-yco-charcoal text-2xl font-black tracking-[-0.02em] hover:text-yco-coral transition-colors"
+                  className="flex min-h-12 items-center py-2.5 font-hanken text-yco-charcoal text-2xl font-black tracking-[-0.02em] hover:text-yco-coral transition-colors"
                 >
                   {link.label}
                 </LocalizedClientLink>

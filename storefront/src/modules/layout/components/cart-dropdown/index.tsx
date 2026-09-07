@@ -13,6 +13,11 @@ import LineItemPrice from "@modules/common/components/line-item-price"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import QuantityStepper from "@modules/common/components/quantity-stepper"
 import Thumbnail from "@modules/products/components/thumbnail"
+import {
+  BagIcon,
+  CartBadge,
+  headerChipClass,
+} from "@modules/layout/components/header-controls"
 
 const DropdownItem = ({
   item,
@@ -309,26 +314,16 @@ const CartDropdown = ({
           onClick={() => setOpen(true)}
           aria-label={`Hap shportën (${totalItems} artikuj)`}
           data-testid="nav-cart-link"
-          className="flex h-14 w-14 items-center justify-center rounded-circle transition-colors hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-yco-header-pink small:h-full small:w-auto small:rounded-none small:hover:bg-transparent"
+          className={`${headerChipClass} small:h-full small:w-auto small:rounded-none small:border-0 small:bg-transparent small:px-2 small:shadow-none small:hover:bg-transparent small:hover:text-yco-coral small:active:scale-100`}
         >
-          <span className="hidden small:inline-block font-hanken text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300">
+          <span className="hidden font-hanken text-xs font-bold uppercase tracking-[0.14em] transition-colors duration-300 small:inline-block">
             Shporta ({totalItems})
           </span>
-          <span className="small:hidden relative text-yco-charcoal">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            >
-              <path d="M6 8h12l-1 12H7L6 8Z" strokeLinejoin="round" />
-              <path d="M9 8V6a3 3 0 0 1 6 0v2" strokeLinecap="round" />
-            </svg>
-            <span aria-live="polite" className="absolute -right-2 -top-1 grid h-4 min-w-4 place-items-center rounded-circle bg-yco-charcoal px-1 text-[10px] font-bold text-white">
-              {totalItems}
-            </span>
+          <span className="small:hidden">
+            <BagIcon />
+          </span>
+          <span className="small:hidden">
+            <CartBadge count={totalItems} />
           </span>
         </button>
       </div>

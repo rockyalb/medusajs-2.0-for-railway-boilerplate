@@ -17,7 +17,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
       <div>
         <Heading
           level="h2"
-          className="rhode-display max-w-full break-words text-[clamp(28px,7vw,38px)] leading-[0.98] small:text-[clamp(30px,3vw,44px)]"
+          className="rhode-display max-w-full break-words text-[clamp(22px,5.5vw,28px)] leading-[1.02] small:text-[clamp(24px,2.2vw,32px)]"
           data-testid="product-title"
         >
           {displayTitle}
