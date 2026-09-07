@@ -17,6 +17,13 @@ const nextConfig = {
     qualities: [50, 75],
     remotePatterns: [
       {
+        // Older catalog images still use this bucket alongside the current one.
+        protocol: "https",
+        hostname: "bucket-production-9ef2.up.railway.app",
+        port: "",
+        pathname: "/medusa-media/**",
+      },
+      {
         protocol: "http",
         hostname: "localhost",
       },
