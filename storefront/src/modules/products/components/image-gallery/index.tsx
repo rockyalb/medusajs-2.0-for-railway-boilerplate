@@ -188,22 +188,22 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
       </Container>
 
       {images.length > 1 && (
-        <div className="absolute bottom-3 left-1/2 z-[2] flex -translate-x-1/2 justify-center rounded-circle border border-yco-charcoal/20 bg-white px-1 shadow-sm small:hidden">
+        <div className="absolute bottom-3 left-1/2 z-[2] flex -translate-x-1/2 justify-center small:hidden">
           {images.map((image, index) => (
             <button
               key={image.id}
               type="button"
-              className="flex h-11 w-11 items-center justify-center rounded-circle focus-visible:outline focus-visible:outline-2 focus-visible:outline-yco-charcoal"
+              className="flex h-11 w-6 items-center justify-center rounded-circle focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
               aria-label={`Show product image ${index + 1}`}
               aria-current={mobileIndex === index}
               onClick={() => scrollMobileImage(index)}
             >
               <span
                 aria-hidden="true"
-                className={`h-1.5 rounded-circle transition-all ${
+                className={`h-1.5 rounded-circle ring-1 ring-white transition-all ${
                   mobileIndex === index
-                    ? "w-5 bg-yco-charcoal"
-                    : "w-1.5 bg-yco-charcoal/70"
+                    ? "w-4 bg-yco-charcoal"
+                    : "w-1.5 bg-yco-charcoal"
                 }`}
               />
             </button>
