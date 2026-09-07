@@ -821,16 +821,25 @@
     @apply top-[-22%] h-[24%] w-[74%];
     border-radius: 999px 999px 8px 8px;
   }
+  /* Ambient storefront backdrop: the logo pastels as a panning aurora wash
+     plus drifting gradient blobs and twinkling sparks. Sits behind
+     translucent sections so the whole page shares one moving background.
 
-  /* Ambient storefront backdrop: a static pastel wash keeps long pages
-     visually continuous while avoiding fixed-layer seams during scrolling. */
+     Seam-safe rules: no `filter: blur()` on large elements (blurred layers
+     are rasterised in GPU tiles whose edges show as lines while scrolling),
+     animate `transform` only, and pin the layer to the large viewport so it
+     does not resize while a mobile browser bar collapses. */
   .yco-ambient {
-    @apply pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[#fbfaf7];
-    min-height: 100svh;
+    @apply pointer-events-none fixed inset-x-0 top-0 z-0 overflow-hidden bg-[#fbfaf7];
+    height: 100vh;
+    height: 100lvh;
+    transform: translateZ(0);
+    backface-visibility: hidden;
   }
 
   .yco-ambient__aurora {
-    @apply absolute inset-0;
+    @apply absolute;
+    inset: -45%;
     background: linear-gradient(
       115deg,
       #daefe4,
@@ -839,32 +848,66 @@
       #f6e6d9 76%,
       #daefe4
     );
-    background-size: 160% 160%;
+    animation: yco-aurora-pan 26s ease-in-out infinite alternate;
+    will-change: transform;
   }
 
   .yco-ambient__blob {
-    @apply absolute rounded-circle opacity-80 blur-[64px];
+    @apply absolute rounded-circle;
+    will-change: transform;
   }
 
   .yco-ambient__blob--mint {
-    @apply left-[-14%] top-[-12%] h-[58vw] w-[58vw] bg-[#bfe4d2];
+    @apply left-[-22%] top-[-20%] h-[72vw] w-[72vw];
+    background: radial-gradient(
+      circle,
+      rgba(191, 228, 210, 0.95) 0%,
+      rgba(191, 228, 210, 0.6) 32%,
+      rgba(191, 228, 210, 0) 68%
+    );
+    animation: yco-drift-a 16s ease-in-out infinite alternate;
   }
 
   .yco-ambient__blob--rose {
-    @apply right-[-16%] top-[26%] h-[50vw] w-[50vw] bg-[#f7c3b9];
+    @apply right-[-24%] top-[22%] h-[66vw] w-[66vw];
+    background: radial-gradient(
+      circle,
+      rgba(247, 195, 185, 0.95) 0%,
+      rgba(247, 195, 185, 0.6) 32%,
+      rgba(247, 195, 185, 0) 68%
+    );
+    animation: yco-drift-b 21s ease-in-out infinite alternate;
   }
 
   .yco-ambient__blob--blue {
-    @apply bottom-[-20%] left-[16%] h-[54vw] w-[54vw] bg-[#bed5f6];
+    @apply bottom-[-28%] left-[10%] h-[70vw] w-[70vw];
+    background: radial-gradient(
+      circle,
+      rgba(190, 213, 246, 0.95) 0%,
+      rgba(190, 213, 246, 0.6) 32%,
+      rgba(190, 213, 246, 0) 68%
+    );
+    animation: yco-drift-c 25s ease-in-out infinite alternate;
   }
 
-  /* Decorative stars used by the product-of-the-month band. The ambient
-     page backdrop intentionally does not render this layer. */
+  /* Twinkling star. The outer span drifts, the inner svg twinkles, so the
+     two transforms never fight. Glow comes from two stacked drop-shadows in
+     the halo colour; on these tiny elements the filter is cheap. */
   .yco-spark {
-    @apply absolute opacity-0;
+    @apply absolute;
     color: var(--spark-color, #ffffff);
-    animation: yco-twinkle var(--spark-dur, 5s) ease-in-out var(--spark-delay, 0s) infinite;
-    filter: drop-shadow(0 0 5px currentColor);
+    animation: yco-spark-float var(--spark-float, 0s) ease-in-out
+      var(--spark-delay, 0s) infinite alternate;
+    will-change: transform;
+  }
+
+  .yco-spark__star {
+    @apply block h-full w-full opacity-0;
+    transform-origin: 50% 50%;
+    filter: drop-shadow(0 0 4px var(--spark-glow, currentColor))
+      drop-shadow(0 0 14px var(--spark-glow, currentColor));
+    animation: yco-twinkle var(--spark-dur, 5s) ease-in-out
+      var(--spark-delay, 0s) infinite;
     will-change: transform, opacity;
   }
 
@@ -877,15 +920,144 @@
     animation: yco-gradient-pan 18s ease-in-out infinite alternate;
   }
 
+  /* Pre-launch font switcher (see modules/common/components/font-lab). */
+  .yco-font-lab {
+    @apply fixed bottom-24 left-3 z-[120] small:bottom-5 small:left-5;
+    font-family: var(--font-hanken), system-ui, sans-serif;
+  }
+
+  .yco-font-lab__fab {
+    @apply relative grid h-12 w-12 place-items-center rounded-circle border border-yco-charcoal/15 bg-white/90 text-yco-charcoal shadow-[0_10px_30px_-12px_rgba(47,45,41,0.5)] backdrop-blur transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2;
+  }
+
+  .yco-font-lab__glyph {
+    @apply text-base font-black tracking-tight;
+    font-family: var(--font-brand, var(--font-fredoka)), sans-serif;
+  }
+
+  .yco-font-lab__dot {
+    @apply absolute -right-0.5 -top-0.5 h-3 w-3 rounded-circle border-2 border-white bg-pastel-coral;
+  }
+
+  .yco-font-lab__panel {
+    @apply absolute bottom-14 left-0 flex w-[min(92vw,22rem)] max-h-[min(70vh,34rem)] flex-col overflow-hidden rounded-large border border-yco-charcoal/10 bg-white/95 text-yco-charcoal shadow-[0_24px_60px_-24px_rgba(47,45,41,0.55)] backdrop-blur;
+  }
+
+  /* `display: flex` above would otherwise beat the [hidden] preflight rule. */
+  .yco-font-lab__panel[hidden] {
+    display: none;
+  }
+
+  .yco-font-lab__head {
+    @apply flex items-start justify-between gap-3 border-b border-yco-cream-dark px-4 pb-3 pt-4;
+  }
+
+  .yco-font-lab__title {
+    @apply text-[11px] font-bold uppercase tracking-[0.2em];
+  }
+
+  .yco-font-lab__sub {
+    @apply mt-1 text-xs text-yco-charcoal-muted;
+  }
+
+  .yco-font-lab__reset {
+    @apply rounded-circle border border-yco-charcoal/25 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] transition-colors hover:bg-yco-charcoal hover:text-white disabled:cursor-default disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-yco-charcoal;
+  }
+
+  .yco-font-lab__tabs {
+    @apply flex gap-1 px-3 pt-3;
+  }
+
+  .yco-font-lab__tab {
+    @apply flex-1 rounded-circle px-3 py-2 text-[11px] font-bold uppercase tracking-[0.1em] text-yco-charcoal-muted transition-colors hover:text-yco-charcoal disabled:opacity-40 aria-selected:bg-yco-charcoal aria-selected:text-white;
+  }
+
+  .yco-font-lab__link {
+    @apply flex items-center gap-2 px-4 py-2 text-xs text-yco-charcoal-muted;
+  }
+
+  .yco-font-lab__list {
+    @apply flex-1 overflow-y-auto px-2 pb-2;
+  }
+
+  .yco-font-lab__option {
+    @apply flex w-full flex-col items-start gap-0.5 rounded-rounded border border-transparent px-3 py-2 text-left transition-colors hover:bg-yco-panel;
+  }
+
+  .yco-font-lab__option.is-active {
+    @apply border-yco-charcoal/20 bg-yco-panel;
+  }
+
+  .yco-font-lab__name {
+    @apply text-sm font-bold;
+  }
+
+  .yco-font-lab__sample {
+    @apply text-base leading-snug;
+  }
+
+  .yco-font-lab__note {
+    @apply text-[11px] leading-snug text-yco-charcoal-muted;
+    font-family: var(--font-hanken), system-ui, sans-serif;
+  }
+
   @media (prefers-reduced-motion: reduce) {
+    .yco-ambient__aurora,
+    .yco-ambient__blob,
+    .yco-spark,
     .yco-potm {
       animation: none;
     }
 
-    .yco-spark {
+    .yco-spark__star {
       animation: none;
-      opacity: 0.5;
+      opacity: 0.6;
     }
+  }
+}
+
+@keyframes yco-aurora-pan {
+  from {
+    transform: translate3d(-6%, -4%, 0) rotate(0deg);
+  }
+  to {
+    transform: translate3d(6%, 4%, 0) rotate(6deg);
+  }
+}
+
+@keyframes yco-drift-a {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(18vw, 12vh, 0) scale(1.18);
+  }
+}
+
+@keyframes yco-drift-b {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.1);
+  }
+  to {
+    transform: translate3d(-20vw, -14vh, 0) scale(0.9);
+  }
+}
+
+@keyframes yco-drift-c {
+  from {
+    transform: translate3d(0, 0, 0) scale(0.94);
+  }
+  to {
+    transform: translate3d(16vw, -18vh, 0) scale(1.14);
+  }
+}
+
+@keyframes yco-spark-float {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(var(--spark-dx, 0px), var(--spark-dy, 0px), 0);
   }
 }
 
@@ -893,10 +1065,18 @@
   0%,
   100% {
     opacity: 0;
-    transform: scale(0.35) rotate(0deg);
+    transform: scale(0.2) rotate(-25deg);
+  }
+  38% {
+    opacity: var(--spark-peak, 0.95);
+    transform: scale(1.08) rotate(12deg);
   }
   50% {
-    opacity: var(--spark-peak, 0.9);
+    opacity: calc(var(--spark-peak, 0.95) * 0.85);
+    transform: scale(0.92) rotate(18deg);
+  }
+  62% {
+    opacity: var(--spark-peak, 0.95);
     transform: scale(1) rotate(24deg);
   }
 }
