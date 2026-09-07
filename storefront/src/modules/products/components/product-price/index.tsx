@@ -1,12 +1,15 @@
+import { clx } from "@medusajs/ui"
 import { getProductPrice } from "@lib/util/get-product-price"
 import { HttpTypes } from "@medusajs/types"
 
 export default function ProductPrice({
   product,
   variant,
+  compact = false,
 }: {
   product: HttpTypes.StoreProduct
   variant?: HttpTypes.StoreProductVariant
+  compact?: boolean
 }) {
   const { cheapestPrice, variantPrice } = getProductPrice({
     product,
@@ -16,13 +19,25 @@ export default function ProductPrice({
   const selectedPrice = variant ? variantPrice : cheapestPrice
 
   if (!selectedPrice) {
-    return <div className="block w-32 h-9 bg-gray-100 animate-pulse" />
+    return (
+      <div className="block w-32 max-w-full h-9 bg-gray-100 animate-pulse" />
+    )
   }
 
   return (
-    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-yco-charcoal">
+    <div
+      className={clx(
+        "flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-0.5 text-yco-charcoal",
+        compact && "justify-center text-center"
+      )}
+    >
       <span
-        className="font-hanken text-xl font-bold leading-none tracking-tight"
+        className={clx(
+          "min-w-0 break-words font-hanken font-bold tracking-tight",
+          compact
+            ? "text-sm leading-tight xsmall:text-base"
+            : "text-xl leading-none"
+        )}
       >
         {!variant && "Nga "}
         <span

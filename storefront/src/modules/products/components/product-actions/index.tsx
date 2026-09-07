@@ -175,44 +175,40 @@ export default function ProductActions({
           </div>
         )}
 
-        <div className="grid gap-3 border-t border-yco-cream-dark pt-1 xsmall:grid-cols-[auto_minmax(0,1fr)] xsmall:items-center">
-          <ProductPrice product={product} variant={selectedVariant} />
-
-          <div className="grid grid-cols-[auto_minmax(0,1fr)] items-center gap-2">
-            <div>
-              <span className="sr-only">Quantity</span>
-              <QuantityStepper
-                quantity={quantity}
-                onChange={setQuantity}
-                max={maxQuantity}
-                disabled={
-                  !inStock || !selectedVariant || !!disabled || isAdding
-                }
-                data-testid="product-quantity-stepper"
-              />
-            </div>
-
-            <button
-              type="button"
-              onClick={handleAddToCart}
+        <div className="grid grid-cols-[auto_minmax(0,1fr)_minmax(0,1.1fr)] items-center gap-1.5 border-t border-yco-cream-dark pt-1">
+          <div>
+            <span className="sr-only">Quantity</span>
+            <QuantityStepper
+              quantity={quantity}
+              onChange={setQuantity}
+              max={maxQuantity}
               disabled={!inStock || !selectedVariant || !!disabled || isAdding}
-              className="yco-btn yco-btn--header-pink yco-btn--block !min-h-[44px] !px-4"
-              data-testid="add-product-button"
-            >
-              {isAdding ? (
-                <>
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-                  Adding…
-                </>
-              ) : !selectedVariant ? (
-                "Select variant"
-              ) : !inStock ? (
-                "Out of stock"
-              ) : (
-                "Add to cart"
-              )}
-            </button>
+              data-testid="product-quantity-stepper"
+            />
           </div>
+
+          <ProductPrice product={product} variant={selectedVariant} compact />
+
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            disabled={!inStock || !selectedVariant || !!disabled || isAdding}
+            className="yco-btn yco-btn--header-pink yco-btn--block !min-h-[44px] min-w-0 !px-2 !text-[10px] !leading-tight !tracking-normal xsmall:!text-xs"
+            data-testid="add-product-button"
+          >
+            {isAdding ? (
+              <>
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                Adding…
+              </>
+            ) : !selectedVariant ? (
+              "Select variant"
+            ) : !inStock ? (
+              "Out of stock"
+            ) : (
+              "Add to cart"
+            )}
+          </button>
         </div>
       </div>
     </>
