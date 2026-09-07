@@ -28,14 +28,14 @@ export default function ProductPrice({
     <div
       className={clx(
         "flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-0.5 text-yco-charcoal",
-        compact && "justify-center text-center"
+        compact && "justify-start text-left"
       )}
     >
       <span
         className={clx(
           "min-w-0 break-words font-hanken font-bold tracking-tight",
           compact
-            ? "text-sm leading-tight xsmall:text-base"
+            ? "text-lg leading-tight xsmall:text-xl"
             : "text-xl leading-none"
         )}
       >

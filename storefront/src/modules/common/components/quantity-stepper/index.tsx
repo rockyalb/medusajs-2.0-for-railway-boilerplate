@@ -8,8 +8,8 @@ type QuantityStepperProps = {
   min?: number
   max?: number
   disabled?: boolean
-  /** compact = cart drawer rows, base = PDP / forms (44px touch targets) */
-  size?: "compact" | "base"
+  /** compact = cart rows, slim = narrow PDP row, base = 44px square controls */
+  size?: "compact" | "slim" | "base"
   "data-testid"?: string
 }
 
@@ -23,14 +23,18 @@ export default function QuantityStepper({
   "data-testid": dataTestid,
 }: QuantityStepperProps) {
   const buttonClasses = clx(
-    "grid place-items-center text-yco-charcoal transition-colors hover:bg-yco-panel disabled:cursor-not-allowed disabled:opacity-30 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-inset",
-    size === "compact" ? "h-8 w-8" : "h-11 w-11"
+    "grid place-items-center text-yco-charcoal transition-colors disabled:cursor-not-allowed disabled:opacity-30 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-inset",
+    size === "slim" ? "hover:text-yco-charcoal-muted" : "hover:bg-yco-panel",
+    size === "compact" ? "h-8 w-8" : size === "slim" ? "h-11 w-7" : "h-11 w-11"
   )
 
   return (
     <div
       className={clx(
-        "inline-flex items-center overflow-hidden rounded-circle border border-yco-cream-dark bg-white",
+        "inline-flex items-center overflow-hidden rounded-circle border",
+        size === "slim"
+          ? "border-yco-charcoal/25 bg-transparent"
+          : "border-yco-cream-dark bg-white",
         disabled && "opacity-60"
       )}
       data-testid={dataTestid}
@@ -53,7 +57,8 @@ export default function QuantityStepper({
       </button>
       <span
         className={clx(
-          "min-w-8 select-none text-center font-sans font-bold text-yco-charcoal",
+          "select-none text-center font-sans font-bold text-yco-charcoal",
+          size === "slim" ? "min-w-5" : "min-w-8",
           size === "compact" ? "text-xs" : "text-sm"
         )}
         aria-live="polite"

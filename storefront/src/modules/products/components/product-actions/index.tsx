@@ -175,10 +175,13 @@ export default function ProductActions({
           </div>
         )}
 
-        <div className="grid grid-cols-[auto_minmax(0,1fr)_minmax(0,1.1fr)] items-center gap-1.5 border-t border-yco-cream-dark pt-1">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1.15fr)] items-center gap-1.5 border-t border-yco-cream-dark pt-1">
+          <ProductPrice product={product} variant={selectedVariant} compact />
+
           <div>
             <span className="sr-only">Quantity</span>
             <QuantityStepper
+              size="slim"
               quantity={quantity}
               onChange={setQuantity}
               max={maxQuantity}
@@ -187,13 +190,11 @@ export default function ProductActions({
             />
           </div>
 
-          <ProductPrice product={product} variant={selectedVariant} compact />
-
           <button
             type="button"
             onClick={handleAddToCart}
             disabled={!inStock || !selectedVariant || !!disabled || isAdding}
-            className="yco-btn yco-btn--header-pink yco-btn--block !min-h-[44px] min-w-0 !px-2 !text-[10px] !leading-tight !tracking-normal xsmall:!text-xs"
+            className="yco-btn yco-btn--header-pink yco-btn--block !min-h-[48px] min-w-0 !px-2 !text-xs !leading-tight !tracking-normal xsmall:!text-sm"
             data-testid="add-product-button"
           >
             {isAdding ? (
