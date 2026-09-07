@@ -277,7 +277,7 @@ const CartDropdown = ({
                 onClick={() => setOpen(false)}
               >
                 <span className="yco-btn yco-btn--coral yco-btn--block">
-                  {"P\u00ebrfundo blerjen"}
+                  Checkout
                 </span>
               </LocalizedClientLink>
             </div>
@@ -307,9 +307,9 @@ const CartDropdown = ({
         <button
           type="button"
           onClick={() => setOpen(true)}
-          aria-label={"Hap shport\u00ebn"}
+          aria-label={`Hap shportën (${totalItems} artikuj)`}
           data-testid="nav-cart-link"
-          className="flex h-12 w-12 items-center justify-center rounded-circle transition-colors hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-yco-header-pink small:h-full small:w-auto small:rounded-none small:hover:bg-transparent"
+          className="flex h-14 w-14 items-center justify-center rounded-circle transition-colors hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-yco-header-pink small:h-full small:w-auto small:rounded-none small:hover:bg-transparent"
         >
           <span className="hidden small:inline-block font-hanken text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300">
             Shporta ({totalItems})
@@ -326,7 +326,7 @@ const CartDropdown = ({
               <path d="M6 8h12l-1 12H7L6 8Z" strokeLinejoin="round" />
               <path d="M9 8V6a3 3 0 0 1 6 0v2" strokeLinecap="round" />
             </svg>
-            <span className="absolute -right-2 -top-1 grid h-4 min-w-4 place-items-center rounded-circle bg-yco-charcoal px-1 text-[10px] font-bold text-white">
+            <span aria-live="polite" className="absolute -right-2 -top-1 grid h-4 min-w-4 place-items-center rounded-circle bg-yco-charcoal px-1 text-[10px] font-bold text-white">
               {totalItems}
             </span>
           </span>

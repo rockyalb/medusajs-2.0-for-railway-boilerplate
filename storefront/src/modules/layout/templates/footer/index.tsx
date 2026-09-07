@@ -4,7 +4,7 @@ import { getCollectionsList } from "@lib/data/collections"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const colHeading =
-  "font-sans text-yco-charcoal text-[11px] tracking-[0.22em] uppercase font-bold block mb-6"
+  "font-sans text-yco-charcoal text-[11px] tracking-[0.22em] uppercase font-bold block mb-4"
 const colLink =
   "font-sans text-yco-charcoal-muted text-sm hover:text-yco-charcoal transition-colors duration-300 inline-block"
 
@@ -16,7 +16,7 @@ export default async function Footer() {
     <footer className="bg-yco-panel w-full">
       <div className="content-container">
         {/* Newsletter + link columns */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_2fr] gap-12 pt-14 pb-16 border-t border-yco-cream-dark">
+        <div className="grid grid-cols-1 gap-8 border-t border-yco-cream-dark pb-16 pt-14 lg:grid-cols-[1.2fr_2fr] lg:gap-12">
           {/* Newsletter */}
           <div className="max-w-sm">
             <LocalizedClientLink
@@ -31,7 +31,7 @@ export default async function Footer() {
               />
             </LocalizedClientLink>
             <p className="font-sans text-yco-charcoal text-sm leading-relaxed mb-2">
-              Bashkohuni me ne për një shkëlqim natyral.
+              YCO do të thotë <span className="font-bold">Young, Clean &amp; Organic</span> — kujdes i përditshëm për ju dhe planetin.
             </p>
             <p className="font-sans text-yco-charcoal-muted text-sm leading-relaxed mb-6">
               Këshilla, produkte të reja dhe oferta të veçanta direkt në
@@ -54,11 +54,11 @@ export default async function Footer() {
           </div>
 
           {/* Columns */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-10">
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-10">
             {/* Navigate */}
             <div>
               <span className={colHeading}>Navigo</span>
-              <ul className="grid grid-cols-1 gap-3">
+              <ul className="grid grid-cols-1 gap-1">
                 <li>
                   <LocalizedClientLink className={colLink} href="/store">
                     Dyqani
@@ -86,7 +86,7 @@ export default async function Footer() {
             {product_categories && product_categories.length > 0 && (
               <div>
                 <span className={colHeading}>Kategoritë</span>
-                <ul className="grid grid-cols-1 gap-3" data-testid="footer-categories">
+                <ul className="grid grid-cols-1 gap-1" data-testid="footer-categories">
                   {product_categories.slice(0, 6).map((c) => {
                     if (c.parent_category) return null
                     return (
@@ -109,7 +109,7 @@ export default async function Footer() {
             {collections && collections.length > 0 && (
               <div>
                 <span className={colHeading}>Brendet</span>
-                <ul className="grid grid-cols-1 gap-3">
+                <ul className="grid grid-cols-1 gap-1">
                   {collections.slice(0, 6).map((c) => (
                     <li key={c.id}>
                       <LocalizedClientLink
@@ -127,7 +127,7 @@ export default async function Footer() {
             {/* Support */}
             <div>
               <span className={colHeading}>Mbështetje</span>
-              <ul className="grid grid-cols-1 gap-3">
+              <ul className="grid grid-cols-1 gap-1">
                 {[
                   { label: "Historia jone", href: "/historia-jone" },
                   { label: "Diferenca jone", href: "/diferenca-jone" },
