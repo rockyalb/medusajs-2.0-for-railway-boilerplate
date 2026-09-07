@@ -20,7 +20,7 @@ export default function ProductPrice({
   }
 
   return (
-    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-[#2f2d29]">
+    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-yco-charcoal">
       <span
         className="font-hanken text-xl font-bold leading-none tracking-tight"
       >
