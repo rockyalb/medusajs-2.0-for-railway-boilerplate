@@ -682,7 +682,7 @@
 
   .bs-rhode-hero__stage {
     background: transparent;
-    @apply relative grid overflow-hidden small:h-[calc(100svh-88px)] small:min-h-[560px] small:max-h-[760px] small:grid-cols-[minmax(0,0.44fr)_minmax(0,0.56fr)];
+    @apply relative flex flex-col overflow-hidden small:grid small:h-[calc(100svh-88px)] small:min-h-[560px] small:max-h-[760px] small:grid-cols-[minmax(0,0.44fr)_minmax(0,0.56fr)];
   }
 
   .bs-rhode-hero__stage::after {
@@ -696,11 +696,18 @@
     background:
       radial-gradient(circle at 54% 44%, rgba(255, 255, 255, 0.58), transparent 0 20%, transparent 42%),
       linear-gradient(118deg, var(--hero-a), var(--hero-b) 54%, var(--hero-c));
-    @apply relative order-1 min-w-0 aspect-[3/4] min-h-[190px] overflow-hidden small:order-2 small:aspect-auto small:min-h-0;
+    /* Mobile: an explicit height (not aspect-ratio) so the absolutely
+       positioned image always fills the box — Safari does not resolve a
+       percentage image height inside an aspect-ratio grid item, which left a
+       gradient gap below the photo and pushed the copy off the fold. Capped so
+       the headline stays visible on a phone. */
+    height: min(58vh, 480px);
+    height: min(58svh, 480px);
+    @apply relative order-1 w-full min-w-0 shrink-0 overflow-hidden small:order-2 small:h-auto;
   }
 
   .bs-rhode-hero__image {
-    @apply h-full w-full object-cover;
+    @apply absolute inset-0 h-full w-full object-cover;
   }
 
   .bs-rhode-hero__visual {
