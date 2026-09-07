@@ -108,13 +108,12 @@ export default function CategoryGrid({
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         className="max-w-6xl mx-auto"
       >
-        <div className="mb-6 flex items-end justify-between gap-4">
-          <h2 className="yco-section-title rhode-display text-3xl md:text-4xl">
+        <div className="mb-4 flex items-end justify-between gap-4 small:mb-5">
+          <h2 className="rhode-display text-2xl md:text-3xl">
             Kategoritë
           </h2>
           {categories.length > 1 && (
-            <span className="mb-1 flex shrink-0 items-center gap-1.5 font-hanken text-xs font-semibold text-yco-charcoal/80">
-              Rrëshqit për më shumë
+            <span className="mb-0.5 flex shrink-0 items-center font-hanken text-[10px] font-semibold uppercase tracking-[0.14em] text-yco-charcoal/60">
               <svg
                 aria-hidden="true"
                 width="18"
@@ -145,7 +144,7 @@ export default function CategoryGrid({
           onPointerCancel={endDrag}
           onPointerLeave={endDrag}
         >
-          <div className="flex gap-4 pr-12 small:pr-16">
+          <div className="flex gap-3 pr-8 small:pr-12">
             {categories.map(
               ({ category, products, image: imageOverride }, index) => {
                 const image = imageOverride || products[0]?.image
@@ -157,18 +156,12 @@ export default function CategoryGrid({
                   >
                     <Link
                       href={`/categories/${category.handle}`}
-                      className={`group ${CATEGORY_CARD_ACCENT_CLASS} yco-accent-card yco-home-category-card relative flex h-full min-h-[360px] flex-col justify-between overflow-hidden rounded-large p-5 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2`}
+                      className={`group ${CATEGORY_CARD_ACCENT_CLASS} yco-accent-card yco-home-category-card relative flex h-full flex-col overflow-hidden rounded-large p-0 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2`}
                       aria-label={`Bli ${category.name}`}
                       draggable={false}
                       onClick={handleCategoryClick}
                     >
-                      {category.description && (
-                        <p className="max-w-[17rem] font-hanken text-xs leading-relaxed text-yco-charcoal-muted">
-                          {category.description}
-                        </p>
-                      )}
-
-                      <div className="my-6 aspect-[4/3] overflow-hidden rounded-rounded bg-white/55">
+                      <div className="aspect-[4/3] w-full overflow-hidden bg-white/55">
                         {image ? (
                           <img
                             src={image}
@@ -184,14 +177,9 @@ export default function CategoryGrid({
                         )}
                       </div>
 
-                      <div className="flex items-end justify-between gap-4">
-                        <div>
-                          <div className="font-hanken text-yco-charcoal text-sm font-bold">
-                            {category.name}
-                          </div>
-                          <p className="mt-1 font-hanken text-xs text-yco-charcoal-muted">
-                            Shfleto kategorinë
-                          </p>
+                      <div className="flex items-center justify-between gap-3 px-4 py-3">
+                        <div className="font-hanken text-sm font-bold text-yco-charcoal">
+                          {category.name}
                         </div>
                         <span className="rhode-round-btn rhode-round-btn--accent shrink-0">
                           <svg
