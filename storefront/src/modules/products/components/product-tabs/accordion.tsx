@@ -50,14 +50,14 @@ const Item: React.FC<AccordionItemProps> = ({
       {...props}
       className={clx(
         "group border-t border-yco-cream-dark last:mb-0 last:border-b",
-        "py-4 scroll-mt-28",
+        "py-2 scroll-mt-28",
         className
       )}
     >
       {/* x@ts-expect-error */}
       <AccordionPrimitive.Header className="px-1">
         {/* x@ts-expect-error */}
-        <AccordionPrimitive.Trigger className="flex w-full flex-col text-left outline-none">
+        <AccordionPrimitive.Trigger className="flex min-h-11 w-full flex-col justify-center text-left outline-none">
           <div className="flex w-full items-center justify-between">
             <div className="flex items-center gap-4">
               <Text className="font-sans text-sm font-bold uppercase tracking-[0.14em] text-yco-charcoal">
