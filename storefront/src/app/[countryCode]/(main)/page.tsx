@@ -4,6 +4,7 @@ import Hero from "@modules/home/components/hero"
 import CategoryGrid from "@modules/home/components/category-grid"
 import FeaturedBrands from "@modules/home/components/featured-brands"
 import HereWeFloSection from "@modules/home/components/here-we-flo"
+import EditorialTiles from "@modules/home/components/editorial-tiles"
 import ProductOfTheMonth from "@modules/home/components/product-of-the-month"
 import FeaturedProducts from "@modules/home/components/featured-products"
 import LatestBlogPosts from "@modules/home/components/latest-blog-posts"
@@ -30,28 +31,6 @@ export const metadata: Metadata = {
 }
 
 const normalizedCategoryName = (name: string) => name.toLowerCase()
-
-/* Editorial cover photos shipped with the storefront, so a category card
-   shows a styled image instead of the first product thumbnail. The
-   admin-managed setting still wins; these only fill the gap. Matched on
-   handle and name together so renaming a category in Medusa does not blank
-   the card. "men care" is matched as a phrase because "menstruale" would
-   otherwise capture the period-care category. */
-const CATEGORY_COVER_IMAGES: Array<[RegExp, string]> = [
-  [/hair|flok/, "/categories/hair-care.webp"],
-  [/skin|face|fytyr/, "/categories/face-care.webp"],
-  [/body|trup/, "/categories/body-care.webp"],
-  [/men[\s-]care|burra/, "/categories/men-care.webp"],
-]
-
-const categoryCoverImage = (category: HttpTypes.StoreProductCategory) => {
-  const haystack = `${category.handle ?? ""} ${category.name}`.toLowerCase()
-
-  return (
-    CATEGORY_COVER_IMAGES.find(([pattern]) => pattern.test(haystack))?.[1] ??
-    null
-  )
-}
 
 const isSkinCareCategory = (category: HttpTypes.StoreProductCategory) =>
   normalizedCategoryName(category.name).includes("skin")
@@ -136,9 +115,7 @@ export default async function Home({
 
       return {
         category,
-        image:
-          homepageSettings.category_cards.images[category.id] ||
-          categoryCoverImage(category),
+        image: homepageSettings.category_cards.images[category.id] || null,
         products: uniqueProducts.map((product) => ({
           id: product.id,
           title: product.title,
@@ -168,6 +145,7 @@ export default async function Home({
       <FeaturedBrands collections={collectionResponse ?? []} />
       <HereWeFloSection />
       <TrustBadges />
+      <EditorialTiles />
       <ProductOfTheMonth countryCode={countryCode} />
       <Testimonials />
       <LatestBlogPosts posts={latestPosts} />
