@@ -822,13 +822,11 @@
     border-radius: 999px 999px 8px 8px;
   }
 
-  /* Ambient homepage backdrop: the logo pastels as a panning aurora wash
-     plus blurred drifting blobs and twinkling sparks. Sits behind
-     translucent sections so the whole page shares one moving background. */
+  /* Ambient storefront backdrop: a static pastel wash keeps long pages
+     visually continuous while avoiding fixed-layer seams during scrolling. */
   .yco-ambient {
     @apply pointer-events-none fixed inset-0 z-0 overflow-hidden bg-[#fbfaf7];
-    contain: paint;
-    max-width: 100vw;
+    min-height: 100svh;
   }
 
   .yco-ambient__aurora {
@@ -841,30 +839,27 @@
       #f6e6d9 76%,
       #daefe4
     );
-    background-size: 340% 340%;
-    animation: yco-gradient-pan 14s ease-in-out infinite alternate;
+    background-size: 160% 160%;
   }
 
   .yco-ambient__blob {
     @apply absolute rounded-circle opacity-80 blur-[64px];
-    will-change: transform;
   }
 
   .yco-ambient__blob--mint {
     @apply left-[-14%] top-[-12%] h-[58vw] w-[58vw] bg-[#bfe4d2];
-    animation: yco-drift-a 13s ease-in-out infinite alternate;
   }
 
   .yco-ambient__blob--rose {
     @apply right-[-16%] top-[26%] h-[50vw] w-[50vw] bg-[#f7c3b9];
-    animation: yco-drift-b 17s ease-in-out infinite alternate;
   }
 
   .yco-ambient__blob--blue {
     @apply bottom-[-20%] left-[16%] h-[54vw] w-[54vw] bg-[#bed5f6];
-    animation: yco-drift-c 21s ease-in-out infinite alternate;
   }
 
+  /* Decorative stars used by the product-of-the-month band. The ambient
+     page backdrop intentionally does not render this layer. */
   .yco-spark {
     @apply absolute opacity-0;
     color: var(--spark-color, #ffffff);
@@ -883,8 +878,6 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .yco-ambient__aurora,
-    .yco-ambient__blob,
     .yco-potm {
       animation: none;
     }
@@ -893,33 +886,6 @@
       animation: none;
       opacity: 0.5;
     }
-  }
-}
-
-@keyframes yco-drift-a {
-  from {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  to {
-    transform: translate3d(24vw, 16vh, 0) scale(1.22);
-  }
-}
-
-@keyframes yco-drift-b {
-  from {
-    transform: translate3d(0, 0, 0) scale(1.12);
-  }
-  to {
-    transform: translate3d(-26vw, -18vh, 0) scale(0.88);
-  }
-}
-
-@keyframes yco-drift-c {
-  from {
-    transform: translate3d(0, 0, 0) scale(0.92);
-  }
-  to {
-    transform: translate3d(20vw, -22vh, 0) scale(1.18);
   }
 }
 

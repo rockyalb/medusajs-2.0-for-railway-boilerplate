@@ -41,8 +41,9 @@ export default async function Nav() {
         <Suspense
           fallback={
             <LocalizedClientLink
-              className="grid h-12 w-12 place-items-center rounded-circle text-yco-charcoal transition-colors hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-yco-header-pink small:h-auto small:w-auto small:rounded-none small:font-hanken small:text-xs small:font-bold small:uppercase small:tracking-[0.14em] small:hover:bg-transparent small:hover:text-yco-coral"
+              className="grid h-14 w-14 place-items-center rounded-circle text-yco-charcoal transition-colors hover:bg-white/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-yco-header-pink small:inline-flex small:min-h-11 small:w-auto small:items-center small:justify-center small:px-2 small:rounded-none small:font-hanken small:text-xs small:font-bold small:uppercase small:tracking-[0.14em] small:hover:bg-transparent small:hover:text-yco-coral"
               href="/cart"
+              aria-label="Hap shportën (0 artikuj)"
               data-testid="nav-cart-link"
             >
               <span className="hidden small:inline">Shporta (0)</span>
@@ -59,7 +60,7 @@ export default async function Nav() {
                   <path d="M6 8h12l-1 12H7L6 8Z" strokeLinejoin="round" />
                   <path d="M9 8V6a3 3 0 0 1 6 0v2" strokeLinecap="round" />
                 </svg>
-                <span className="absolute -right-2 -top-1 grid h-4 min-w-4 place-items-center rounded-circle bg-yco-charcoal px-1 text-[10px] font-bold text-white">
+                <span aria-live="polite" className="absolute -right-2 -top-1 grid h-4 min-w-4 place-items-center rounded-circle bg-yco-charcoal px-1 text-[10px] font-bold text-white">
                   0
                 </span>
               </span>

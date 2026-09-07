@@ -3,6 +3,7 @@ import { Metadata } from "next"
 import Hero from "@modules/home/components/hero"
 import CategoryGrid from "@modules/home/components/category-grid"
 import FeaturedBrands from "@modules/home/components/featured-brands"
+import HereWeFloSection from "@modules/home/components/here-we-flo"
 import ProductOfTheMonth from "@modules/home/components/product-of-the-month"
 import FeaturedProducts from "@modules/home/components/featured-products"
 import LatestBlogPosts from "@modules/home/components/latest-blog-posts"
@@ -141,6 +142,7 @@ export default async function Home({
       )}
 
       <FeaturedBrands collections={collectionResponse ?? []} />
+      <HereWeFloSection />
       <TrustBadges />
       <ProductOfTheMonth countryCode={countryCode} />
       <Testimonials />

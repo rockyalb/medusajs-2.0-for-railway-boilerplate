@@ -222,7 +222,7 @@ export const getProductOfTheMonth = cache(async function (
       limit: 100,
       region_id: region.id,
       fields:
-        "id,title,handle,subtitle,description,thumbnail,*images,*variants.calculated_price",
+        "id,title,handle,subtitle,description,thumbnail,*images,+metadata,*variants.calculated_price",
     },
     { next: { tags: ["products"] } }
   )

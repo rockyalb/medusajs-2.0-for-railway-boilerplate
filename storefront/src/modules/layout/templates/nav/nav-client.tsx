@@ -24,7 +24,7 @@ type ShopPanel = "categories" | "brands"
 type MobileSection = "categories" | "brands" | null
 
 const navLink =
-  "font-hanken text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300"
+  "inline-flex min-h-11 items-center px-2 font-hanken text-yco-charcoal text-xs font-bold tracking-[0.14em] uppercase hover:text-yco-coral transition-colors duration-300"
 
 const secondaryLinks = [
   { label: "Rreth nesh", href: "/historia-jone" },
@@ -40,7 +40,7 @@ function Hamburger({ open, onClick }: { open: boolean; onClick: () => void }) {
       aria-label={open ? "Mbyll menunë" : "Hap menunë"}
       aria-expanded={open}
       data-testid="nav-menu-button"
-      className="flex flex-col justify-center gap-[5px] h-full w-7"
+      className="flex h-full min-h-14 w-14 min-w-14 flex-col items-center justify-center gap-[5px]"
     >
       <span
         className={clx(
@@ -290,7 +290,7 @@ function MobileCategoryPanel({
             <button
               type="button"
               onClick={() => setActiveCategoryId(expanded ? "" : category.id)}
-              className="flex w-full items-center justify-between py-4 text-left font-hanken text-lg font-bold text-yco-charcoal"
+              className="flex min-h-14 w-full items-center justify-between py-3 text-left font-hanken text-lg font-bold text-yco-charcoal"
               aria-expanded={expanded}
             >
               <span>{category.name}</span>
@@ -306,23 +306,23 @@ function MobileCategoryPanel({
               )}
             >
               <div className="yco-expand-grid__inner">
-                <div className="pb-5">
+                <div className="pb-3">
                   <LocalizedClientLink
                     href={`/categories/${category.handle}`}
                     onClick={onNavigate}
-                    className="mb-4 inline-block font-hanken text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:text-yco-coral"
+                    className="mb-2 flex min-h-11 items-center rounded-base px-3 py-2 font-hanken text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal hover:bg-yco-panel hover:text-yco-coral"
                   >
                     Shiko të gjitha {category.name}
                   </LocalizedClientLink>
 
                   {children.length > 0 ? (
-                    <ul className="space-y-1">
+                    <ul className="space-y-0">
                       {children.map((child) => (
                         <li key={child.id}>
                           <LocalizedClientLink
                             href={`/categories/${child.handle}`}
                             onClick={onNavigate}
-                            className="block rounded-base px-3 py-3 font-hanken text-sm text-yco-charcoal-muted transition-colors hover:bg-yco-panel hover:text-yco-charcoal"
+                            className="flex min-h-11 items-center rounded-base px-3 py-2 font-hanken text-sm text-yco-charcoal-muted transition-colors hover:bg-yco-panel hover:text-yco-charcoal"
                           >
                             {child.name}
                           </LocalizedClientLink>
@@ -498,7 +498,7 @@ export default function NavClient({
 
           <div className="flex h-full flex-1 basis-0 items-center justify-end gap-x-2 small:gap-x-7">
             <LocalizedClientLink
-              className="grid h-12 w-12 place-items-center rounded-circle text-yco-charcoal transition-colors hover:bg-white/40 hover:text-yco-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-yco-header-pink small:hidden"
+              className="grid h-14 w-14 place-items-center rounded-circle text-yco-charcoal transition-colors hover:bg-white/40 hover:text-yco-coral focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2 focus-visible:ring-offset-yco-header-pink small:hidden"
               href="/search"
               scroll={false}
               aria-label="Kërko"

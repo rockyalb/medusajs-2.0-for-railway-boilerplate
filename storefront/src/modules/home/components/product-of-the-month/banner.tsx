@@ -24,6 +24,7 @@ type PotmBannerProps = {
   title: string
   subtitle: string | null
   description: string | null
+  whyChosen: string | null
   handle: string
   image: string
   price: string | null
@@ -37,6 +38,7 @@ export default function PotmBanner({
   title,
   subtitle,
   description,
+  whyChosen,
   handle,
   image,
   price,
@@ -44,7 +46,7 @@ export default function PotmBanner({
   monthLabel,
 }: PotmBannerProps) {
   const reducedMotion = useReducedMotion()
-  const productCopy = description || subtitle
+  const productCopy = whyChosen || description || subtitle
 
   return (
     <section className="px-3 py-3 small:px-7 small:py-4">
@@ -64,7 +66,7 @@ export default function PotmBanner({
           Produkti i muajit — {monthLabel}
         </p>
 
-        <div className="relative grid min-h-[420px] grid-cols-1 items-center gap-2 small:min-h-[600px] small:grid-cols-2">
+        <div className="relative grid min-h-[460px] grid-cols-1 items-center gap-0 small:min-h-[680px] small:grid-cols-[0.82fr_1.18fr]">
           <motion.div
             initial={reducedMotion ? false : { opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -88,9 +90,16 @@ export default function PotmBanner({
               {title}
             </h2>
             {productCopy && (
-              <p className="mt-4 max-w-md font-sans text-sm leading-relaxed text-yco-charcoal/80 line-clamp-4 small:text-base">
-                {productCopy}
-              </p>
+              <div className="mt-4 max-w-md">
+                {whyChosen && (
+                  <p className="font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-yco-charcoal-muted">
+                    Pse u zgjodh produkti i muajit
+                  </p>
+                )}
+                <p className="mt-2 font-sans text-sm leading-relaxed text-yco-charcoal/80 line-clamp-5 small:text-base">
+                  {productCopy}
+                </p>
+              </div>
             )}
             {price && (
               <p className="mt-5 font-sans text-lg font-bold">
@@ -112,7 +121,7 @@ export default function PotmBanner({
             </div>
           </motion.div>
 
-          <div className="order-1 flex h-full min-h-[320px] items-center justify-center overflow-hidden p-7 pb-0 small:order-2 small:min-h-[600px] small:p-8">
+          <div className="order-1 flex h-full min-h-[340px] items-center justify-center overflow-hidden p-5 pb-0 small:order-2 small:min-h-[680px] small:p-8">
             <motion.div
               initial={
                 reducedMotion
@@ -146,11 +155,11 @@ export default function PotmBanner({
                   <img
                     src={image}
                     alt={title}
-                    className="max-h-[280px] w-full object-contain small:max-h-[520px]"
+                    className="max-h-[330px] w-full object-contain small:max-h-[600px]"
                     loading="lazy"
                   />
                 ) : (
-                  <div className="h-[280px] w-full rounded-rounded bg-white/30 small:h-[520px]" />
+                  <div className="h-[330px] w-full rounded-rounded bg-white/30 small:h-[600px]" />
                 )}
               </motion.div>
             </motion.div>

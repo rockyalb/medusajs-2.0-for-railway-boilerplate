@@ -18,11 +18,11 @@ export default function Newsletter() {
 
   return (
     <section className="bg-white/40 px-3 pb-4 small:px-7 small:pb-6">
-      <div className="relative overflow-hidden rounded-rounded bg-yco-coral px-6 py-16 text-white small:py-24">
+      <div className="relative overflow-hidden rounded-rounded border border-yco-cream-dark bg-yco-panel px-6 py-16 text-yco-charcoal shadow-[0_16px_34px_-30px_rgba(47,45,41,0.65)] small:py-24">
         {/* Oversized watermark wordmark for depth, clipped by the panel. */}
         <span
           aria-hidden
-          className="rhode-display pointer-events-none absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap !text-white/[0.06] text-[26vw] small:-bottom-24 small:text-[18rem]"
+          className="rhode-display pointer-events-none absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap !text-yco-charcoal/[0.06] text-[26vw] small:-bottom-24 small:text-[18rem]"
         >
           yco
         </span>
@@ -34,11 +34,11 @@ export default function Newsletter() {
           transition={{ duration: 0.85, ease: EASE_OUT }}
           className="relative mx-auto max-w-2xl text-center"
         >
-          <h2 className="rhode-display font-hanken !text-white text-3xl md:text-4xl">
+          <h2 className="rhode-display font-hanken text-3xl md:text-4xl">
             Bashkohuni me komunitetin e ndërgjegjshëm
           </h2>
 
-          <p className="mx-auto mt-5 max-w-md font-sans text-sm leading-relaxed text-white/80">
+          <p className="mx-auto mt-5 max-w-md font-sans text-sm leading-relaxed text-yco-charcoal-muted">
             Merrni të parët produktet e reja, ofertat ekskluzive dhe udhëzuesin
             tonë mujor për një jetesë më të qëndrueshme, direkt në email.
           </p>
@@ -48,7 +48,7 @@ export default function Newsletter() {
               className="mt-9 flex items-center justify-center gap-3 py-4"
               role="status"
             >
-              <span className="grid h-8 w-8 place-items-center rounded-circle bg-white/15">
+              <span className="grid h-8 w-8 place-items-center rounded-circle bg-yco-cream-dark text-yco-charcoal">
                 <svg
                   width="14"
                   height="14"
@@ -63,7 +63,7 @@ export default function Newsletter() {
                   <path d="M2 7l3.5 3.5 6.5-6.5" />
                 </svg>
               </span>
-              <span className="font-sans text-sm font-medium">
+              <span className="font-sans text-sm font-medium text-yco-charcoal">
                 Jeni regjistruar! Mirë se vini në komunitetin YCO.
               </span>
             </div>
@@ -91,12 +91,12 @@ export default function Newsletter() {
             </form>
           )}
 
-          <p className="mt-5 font-sans text-[11px] tracking-wide text-white/60">
+          <p className="mt-5 font-sans text-[11px] tracking-wide text-yco-charcoal-muted">
             Pa spam. Mund të çregjistroheni në çdo kohë.
           </p>
 
-          <div className="mt-12 flex items-center justify-center gap-6 border-t border-white/15 pt-9">
-            <span className="font-sans text-xs uppercase tracking-widest text-white/60">
+          <div className="mt-12 flex items-center justify-center gap-6 border-t border-yco-charcoal/15 pt-9">
+            <span className="font-sans text-xs uppercase tracking-widest text-yco-charcoal-muted">
               Na ndiqni
             </span>
             <a
@@ -104,7 +104,7 @@ export default function Newsletter() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="text-white/80 transition-colors duration-300 hover:text-white active:scale-95"
+              className="text-yco-charcoal/75 transition-colors duration-300 hover:text-yco-charcoal active:scale-95"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
@@ -117,7 +117,7 @@ export default function Newsletter() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
-              className="text-white/80 transition-colors duration-300 hover:text-white active:scale-95"
+              className="text-yco-charcoal/75 transition-colors duration-300 hover:text-yco-charcoal active:scale-95"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
                 <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
@@ -128,7 +128,7 @@ export default function Newsletter() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="TikTok"
-              className="text-white/80 transition-colors duration-300 hover:text-white active:scale-95"
+              className="text-yco-charcoal/75 transition-colors duration-300 hover:text-yco-charcoal active:scale-95"
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden>
                 <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.77a4.85 4.85 0 0 1-1.01-.08z" />

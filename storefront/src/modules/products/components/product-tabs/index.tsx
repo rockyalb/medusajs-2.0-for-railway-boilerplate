@@ -101,7 +101,7 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
     ...dynamicTabs.map((section) => ({
       label: section.label,
       component: (
-        <div className="text-small-regular py-8 text-ui-fg-subtle">
+        <div className="text-small-regular py-4 text-ui-fg-subtle">
           <MetadataValue value={section.value} />
         </div>
       ),
@@ -163,7 +163,7 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
 
 const ShippingInfoTab = () => {
   return (
-    <div className="text-small-regular py-8">
+    <div className="text-small-regular py-4">
       <p className="max-w-sm">
         Transporti FALAS në porosi me vlerë mbi 8,000 ALL
       </p>

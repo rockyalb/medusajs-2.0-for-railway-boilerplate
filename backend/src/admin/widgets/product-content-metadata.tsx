@@ -19,6 +19,7 @@ type ProductMetadata = Record<string, unknown>
 type MetadataField = {
   key:
     | "details"
+    | "product_of_the_month_reason"
     | "ingredients"
     | "how_to_use"
     | "meta_custom_label_0"
@@ -36,6 +37,12 @@ const fields: MetadataField[] = [
     key: "details",
     label: "Details",
     aliases: ["product_details"],
+  },
+  {
+    key: "product_of_the_month_reason",
+    label: "Why chosen as product of the month",
+    aliases: ["product_of_month_reason"],
+    rows: 5,
   },
   {
     key: "ingredients",

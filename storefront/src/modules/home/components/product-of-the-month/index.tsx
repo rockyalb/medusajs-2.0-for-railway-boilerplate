@@ -29,12 +29,20 @@ export default async function ProductOfTheMonth({
   }
 
   const { cheapestPrice } = getProductPrice({ product })
+  const metadata = (product.metadata || {}) as Record<string, unknown>
+  const whyChosen =
+    typeof metadata.product_of_the_month_reason === "string"
+      ? metadata.product_of_the_month_reason
+      : typeof metadata.product_of_month_reason === "string"
+        ? metadata.product_of_month_reason
+        : null
 
   return (
     <PotmBanner
       title={product.title}
       subtitle={product.subtitle ?? null}
       description={product.description ?? null}
+      whyChosen={whyChosen}
       handle={product.handle}
       image={product.thumbnail || product.images?.[0]?.url || ""}
       price={cheapestPrice?.calculated_price ?? null}
