@@ -3,6 +3,8 @@
 import { clx } from "@medusajs/ui"
 import {
   SearchIcon,
+  MenuIcon,
+  CloseIcon,
   headerChipClass,
 } from "@modules/layout/components/header-controls"
 import { ReactNode, useEffect, useState } from "react"
@@ -46,20 +48,7 @@ function Hamburger({ open, onClick }: { open: boolean; onClick: () => void }) {
       data-testid="nav-menu-button"
       className={headerChipClass}
     >
-      <span className="relative block h-[14px] w-[22px]">
-        <span
-          className={clx(
-            "absolute left-0 top-0 block h-[1.75px] w-full rounded-full bg-current transition-transform duration-300",
-            open && "translate-y-[6px] rotate-45"
-          )}
-        />
-        <span
-          className={clx(
-            "absolute bottom-0 right-0 block h-[1.75px] rounded-full bg-current transition-[transform,width] duration-300",
-            open ? "w-full -translate-y-[6px] -rotate-45" : "w-[14px]"
-          )}
-        />
-      </span>
+      {open ? <CloseIcon /> : <MenuIcon />}
     </button>
   )
 }
