@@ -5,20 +5,26 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
  *
  * Height note: the panel is capped near a third of the viewport at every
  * width, so the section reads as a band between the brand rail and the trust
- * badges rather than a second hero. The photo is portrait, so it is cropped
- * by `object-cover` to the middle band where the Flo boxes sit. */
+ * badges rather than a second hero.
+ *
+ * The photo is a 4:5 portrait and must never be cropped, so its box carries
+ * that exact ratio: on desktop the box takes the panel height and derives its
+ * width, on mobile it takes a share of the width and derives its height. The
+ * ratio matches the file, so `object-cover` has nothing to trim. */
 export default function HereWeFloSection() {
   return (
     <section className="yco-section bg-white/40 px-3 py-3 small:px-7 small:py-4">
-      <div className="grid h-[29vh] min-h-[196px] max-h-[290px] grid-cols-[minmax(0,0.38fr)_minmax(0,0.62fr)] grid-rows-[minmax(0,1fr)] overflow-hidden rounded-rounded bg-[#f3e3f4] small:h-[28vh] small:min-h-[224px] small:max-h-[340px] small:grid-cols-[minmax(0,0.34fr)_minmax(0,0.66fr)]">
-        <img
-          src="/cms/2024/04/here-we-flo-pads.webp"
-          alt="Peceta dhe liners Flo për ndjeshmëri, të certifikuara OEKO-TEX"
-          className="h-full w-full object-cover"
-          loading="lazy"
-        />
+      <div className="flex h-[29vh] min-h-[196px] max-h-[290px] overflow-hidden rounded-rounded bg-[#f3e3f4] small:h-[28vh] small:min-h-[224px] small:max-h-[340px]">
+        <div className="aspect-[4/5] w-[44%] shrink-0 self-center small:h-full small:w-auto small:self-stretch">
+          <img
+            src="/cms/2024/04/here-we-flo-pads.webp"
+            alt="Peceta dhe liners Flo për ndjeshmëri, të certifikuara OEKO-TEX"
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
+        </div>
 
-        <div className="flex min-w-0 flex-col justify-center px-4 py-3 small:px-10 small:py-6">
+        <div className="flex min-w-0 flex-1 flex-col justify-center px-4 py-3 small:px-10 small:py-6">
           <h2 className="rhode-display text-base leading-tight small:text-3xl medium:text-4xl">
             Kujdesi për ciklin Hipoalergjike Here We Flo
           </h2>
