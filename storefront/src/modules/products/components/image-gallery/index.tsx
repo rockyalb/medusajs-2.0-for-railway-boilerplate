@@ -3,22 +3,63 @@
 import { HttpTypes } from "@medusajs/types"
 import { Container } from "@medusajs/ui"
 import useEmblaCarousel from "embla-carousel-react"
-import Image from "next/image"
+import Image, { getImageProps } from "next/image"
 import { useCallback, useEffect, useState } from "react"
 
 type ImageGalleryProps = {
   images: HttpTypes.StoreProductImage[]
 }
 
+// Keep displayed and background images on the same responsive cache entries.
+const gallerySizes = "(max-width: 1023px) 100vw, 58vw"
+
 const ImageGallery = ({ images }: ImageGalleryProps) => {
   const [activeIndex, setActiveIndex] = useState(0)
   const [mobileIndex, setMobileIndex] = useState(0)
+  const [settledFirstUrl, setSettledFirstUrl] = useState<string>()
+  const firstUrl = images[0]?.url
+  const firstImageSettled = !!firstUrl && settledFirstUrl === firstUrl
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "center",
     containScroll: "trimSnaps",
     skipSnaps: false,
   })
   const activeImage = images[activeIndex] ?? images[0]
+
+  useEffect(() => {
+    if (!firstImageSettled) return
+
+    let cancelled = false
+    let pending: HTMLImageElement | undefined
+    const remaining = images.slice(1).filter((image) => image.url)
+    let index = 0
+    const loadNext = () => {
+      if (cancelled || index >= remaining.length) return
+      const image = remaining[index++]
+      const { props } = getImageProps({
+        src: image.url,
+        alt: "",
+        fill: true,
+        sizes: gallerySizes,
+      })
+      pending = new window.Image()
+      pending.setAttribute("fetchpriority", "low")
+      pending.decoding = "async"
+      pending.onload = loadNext
+      pending.onerror = loadNext
+      pending.sizes = props.sizes ?? gallerySizes
+      pending.srcset = props.srcSet ?? ""
+      pending.src = props.src
+    }
+    loadNext()
+    return () => {
+      cancelled = true
+      if (pending) {
+        pending.onload = null
+        pending.onerror = null
+      }
+    }
+  }, [images, firstImageSettled])
 
   const updateMobileIndex = useCallback(() => {
     if (!emblaApi) {
@@ -72,14 +113,17 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
                 className="relative aspect-[4/5] w-full shrink-0 overflow-hidden rounded-none bg-yco-panel-dark shadow-none"
                 id={image.id}
               >
-                {!!image.url && (
+                {!!image.url && (index === 0 || firstImageSettled || index === mobileIndex) && (
                   <Image
                     src={image.url}
-                    priority={index <= 2 ? true : false}
+                    loading={index === 0 || index === mobileIndex ? "eager" : "lazy"}
+                    fetchPriority={index === 0 ? "high" : "low"}
+                    onLoad={index === 0 ? () => setSettledFirstUrl(firstUrl) : undefined}
+                    onError={index === 0 ? () => setSettledFirstUrl(firstUrl) : undefined}
                     className="absolute inset-0"
                     alt={`Product image ${index + 1}`}
                     fill
-                    sizes="(max-width: 1023px) 100vw, 58vw"
+                    sizes={gallerySizes}
                     style={{
                       objectFit: "cover",
                     }}
@@ -95,11 +139,14 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
         {!!activeImage?.url && (
           <Image
             src={activeImage.url}
-            priority
+            loading="eager"
+            fetchPriority={activeIndex === 0 ? "high" : "auto"}
+            onLoad={activeIndex === 0 ? () => setSettledFirstUrl(firstUrl) : undefined}
+            onError={activeIndex === 0 ? () => setSettledFirstUrl(firstUrl) : undefined}
             className="absolute inset-0 rounded-rounded"
             alt={`Product image ${activeIndex + 1}`}
             fill
-            sizes="58vw"
+            sizes={gallerySizes}
             style={{
               objectFit: "cover",
             }}

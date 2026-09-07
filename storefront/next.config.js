@@ -11,7 +11,9 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    // Uses Next's built-in Sharp optimizer in the existing Railway service.
+    formats: ["image/webp"],
+    minimumCacheTTL: 14400,
     qualities: [50, 75],
     remotePatterns: [
       {
@@ -21,13 +23,15 @@ const nextConfig = {
       ...(process.env.NEXT_PUBLIC_BASE_URL
         ? [{ // Note: needed to serve images from /public folder
             protocol: process.env.NEXT_PUBLIC_BASE_URL.startsWith("https") ? "https" : "http",
-            hostname: process.env.NEXT_PUBLIC_BASE_URL.replace(/^https?:\/\//, ""),
+            hostname: new URL(process.env.NEXT_PUBLIC_BASE_URL).hostname,
+            port: new URL(process.env.NEXT_PUBLIC_BASE_URL).port,
           }]
         : []),
       ...(process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL
         ? [{ // Note: only needed when using local-file for product media
             protocol: process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL.startsWith("https") ? "https" : "http",
-            hostname: process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL.replace(/^https?:\/\//, ""),
+            hostname: new URL(process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL).hostname,
+            port: new URL(process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL).port,
           }]
         : []),
       { // Note: can be removed after deleting demo products
@@ -44,7 +48,7 @@ const nextConfig = {
       },
       ...(process.env.NEXT_PUBLIC_MINIO_ENDPOINT ? [{ // Note: needed when using MinIO bucket storage for media
         protocol: "https",
-        hostname: process.env.NEXT_PUBLIC_MINIO_ENDPOINT,
+        hostname: new URL(process.env.NEXT_PUBLIC_MINIO_ENDPOINT.includes("://") ? process.env.NEXT_PUBLIC_MINIO_ENDPOINT : `https://${process.env.NEXT_PUBLIC_MINIO_ENDPOINT}`).hostname,
       }] : []),
     ],
   }
