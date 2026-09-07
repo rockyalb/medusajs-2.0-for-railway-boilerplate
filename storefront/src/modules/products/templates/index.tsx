@@ -41,13 +41,13 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         currency={price?.currency_code ?? region.currency_code}
       />
       <ProductScrollStage>
-        <div className="order-1 small:h-full">
+        <div className="order-1 min-w-0 small:h-full small:min-h-0">
           <ImageGallery images={product?.images || []} />
         </div>
 
         <div
           id="product-details-panel"
-          className="order-2 flex w-full flex-col gap-y-2 rounded-none border-x-0 border-y border-white/60 bg-yco-panel/55 px-5 py-7 shadow-[0_16px_34px_-30px_rgba(47,45,41,0.65)] backdrop-blur-sm small:h-full small:overflow-y-auto small:overscroll-contain small:rounded-rounded small:border small:px-10 small:py-10"
+          className="order-2 flex w-full min-w-0 flex-col gap-y-2 rounded-none border-x-0 border-y border-white/60 bg-yco-panel/55 px-5 py-7 shadow-[0_16px_34px_-30px_rgba(47,45,41,0.65)] backdrop-blur-sm small:h-full small:min-h-0 small:overflow-y-auto small:overscroll-contain small:rounded-rounded small:border small:p-[clamp(1rem,3dvh,2.5rem)] small:[&>*]:shrink-0"
         >
           <ProductInfo product={product} />
 

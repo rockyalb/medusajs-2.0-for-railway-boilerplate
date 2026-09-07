@@ -92,7 +92,7 @@ const ProductScrollStage = ({ children }: ProductScrollStageProps) => {
   return (
     <div
       ref={stageRef}
-      className="mx-auto grid w-full grid-cols-1 gap-0 py-0 small:h-[calc(100dvh_-_var(--site-header-height,7.5rem))] small:max-w-[1440px] small:grid-cols-[minmax(0,1.18fr)_minmax(390px,0.82fr)] small:items-stretch small:gap-8 small:overflow-hidden small:px-6 small:py-3"
+      className="mx-auto grid w-full grid-cols-1 gap-0 py-0 small:h-[calc(100dvh_-_var(--site-header-height,7.5rem))] small:min-h-0 small:max-w-[1440px] small:grid-cols-[minmax(0,1.18fr)_minmax(390px,0.82fr)] small:grid-rows-[minmax(0,1fr)] small:items-stretch small:gap-8 small:overflow-hidden small:px-6 small:py-3"
       data-testid="product-container"
     >
       {children}

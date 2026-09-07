@@ -17,7 +17,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
       <div>
         <Heading
           level="h2"
-          className="rhode-display max-w-full break-words text-[clamp(22px,5.5vw,28px)] leading-[1.02] small:text-[clamp(24px,2.2vw,32px)]"
+          className="rhode-display max-w-full break-words text-[clamp(22px,5.5vw,28px)] leading-[1.02] small:text-[clamp(24px,3.5dvh,32px)]"
           data-testid="product-title"
         >
           {displayTitle}
@@ -34,7 +34,7 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
         )}
 
         <Text
-          className="mt-4 max-w-2xl whitespace-pre-line font-sans text-sm leading-6 text-yco-charcoal small:text-base small:leading-7"
+          className="mt-4 max-w-2xl whitespace-pre-line font-sans text-sm leading-6 text-yco-charcoal small:mt-[clamp(0.5rem,1.5dvh,1rem)] small:text-[clamp(14px,1.8dvh,16px)] small:leading-relaxed"
           data-testid="product-description"
         >
           {product.description}

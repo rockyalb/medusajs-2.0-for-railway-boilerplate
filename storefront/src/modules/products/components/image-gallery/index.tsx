@@ -98,7 +98,7 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
   }
 
   return (
-    <div className="relative h-full">
+    <div className="relative h-full min-h-0">
       <div
         ref={emblaRef}
         className="overflow-hidden small:hidden"
@@ -135,7 +135,7 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
         </div>
       </div>
 
-      <Container className="relative hidden h-full w-full overflow-hidden rounded-rounded bg-yco-panel-dark shadow-none small:block">
+      <Container className="relative hidden h-full min-h-0 w-full overflow-hidden rounded-rounded bg-yco-panel-dark shadow-none small:block">
         {!!activeImage?.url && (
           <Image
             src={activeImage.url}
@@ -148,13 +148,13 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
             fill
             sizes={gallerySizes}
             style={{
-              objectFit: "cover",
+              objectFit: "contain",
             }}
           />
         )}
 
         {images.length > 1 && (
-          <div className="absolute bottom-6 left-6 z-[2] flex flex-col gap-3">
+          <div className="absolute bottom-4 left-4 z-[2] flex max-h-[calc(100%_-_2rem)] flex-col gap-3 overflow-y-auto p-1">
             {images.map((image, index) => (
               <button
                 key={image.id}
@@ -162,7 +162,7 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
                 onMouseEnter={() => setActiveIndex(index)}
                 onFocus={() => setActiveIndex(index)}
                 onClick={() => setActiveIndex(index)}
-                className="relative h-14 w-14 overflow-hidden rounded-rounded border bg-white/60 transition-all duration-300 hover:scale-105"
+                className="relative h-14 w-14 shrink-0 overflow-hidden rounded-rounded border bg-white/60 transition-all duration-300 hover:scale-105"
                 style={{
                   borderColor:
                     activeIndex === index
