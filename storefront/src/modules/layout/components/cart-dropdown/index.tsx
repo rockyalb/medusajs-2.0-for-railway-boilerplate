@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
+import { lockPageScroll } from "@lib/util/lock-page-scroll"
 
 import { deleteLineItem, updateLineItem } from "@lib/data/cart"
 import { convertToLocale } from "@lib/util/money"
@@ -54,7 +55,7 @@ const DropdownItem = ({
 
   return (
     <div
-      className={`grid grid-cols-[92px_1fr] gap-x-4 rounded-large border border-yco-cream-dark bg-yco-panel/70 p-3 transition-opacity ${
+      className={`grid shrink-0 grid-cols-[92px_1fr] gap-x-4 rounded-large border border-yco-cream-dark bg-yco-panel/70 p-3 transition-opacity ${
         removing ? "opacity-50" : "opacity-100"
       }`}
       data-testid="cart-item"
@@ -183,36 +184,37 @@ const CartDropdown = ({
 
   // Lock body scroll + close on Escape while the drawer is open.
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : ""
+    if (!open) return
+    const unlock = lockPageScroll()
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false)
     window.addEventListener("keydown", onKey)
     return () => {
-      document.body.style.overflow = ""
+      unlock()
       window.removeEventListener("keydown", onKey)
     }
   }, [open])
 
   const drawer = (
     <div
-      className={`fixed inset-0 z-[120] overflow-hidden ${
+      className={`fixed inset-x-0 top-0 z-[120] h-dvh overflow-hidden overscroll-none ${
         open ? "visible" : "invisible pointer-events-none"
       }`}
       aria-hidden={!open}
     >
       <div
         onClick={() => setOpen(false)}
-        className={`absolute inset-0 bg-black/40 transition-opacity duration-300 ${
+        className={`absolute inset-0 touch-none bg-black/40 transition-opacity duration-300 ${
           open ? "opacity-100" : "opacity-0"
         }`}
       />
 
       <div
         data-testid="nav-cart-dropdown"
-        className={`absolute right-0 top-0 flex h-full w-full max-w-[440px] flex-col bg-white shadow-2xl transition-transform duration-300 ease-out ${
+        className={`absolute right-0 top-0 flex h-full min-h-0 w-full max-w-[440px] flex-col overflow-hidden overscroll-none bg-white shadow-2xl transition-transform duration-300 ease-out ${
           open ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between border-b border-yco-cream-dark px-6 py-5">
+        <div className="flex shrink-0 items-center justify-between border-b border-yco-cream-dark px-6 py-5">
           <h3 className="font-sans text-yco-charcoal text-sm font-bold uppercase tracking-[0.18em]">
             Shporta ({totalItems})
           </h3>
@@ -238,7 +240,7 @@ const CartDropdown = ({
 
         {cartState && cartState.items?.length ? (
           <>
-            <div className="border-b border-yco-cream-dark px-6 py-5">
+            <div className="shrink-0 border-b border-yco-cream-dark px-6 py-5">
               <FreeShippingProgress
                 subtotal={subtotal}
                 currency_code={cartState.currency_code}
@@ -246,7 +248,7 @@ const CartDropdown = ({
               />
             </div>
 
-            <div className="flex-1 overflow-y-auto px-6 py-6 flex flex-col content-start gap-y-5 no-scrollbar">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-6 flex flex-col content-start gap-y-5 no-scrollbar">
               {cartState.items
                 .sort((a, b) =>
                   (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
@@ -260,7 +262,7 @@ const CartDropdown = ({
                 ))}
             </div>
 
-            <div className="border-t border-yco-cream-dark px-6 py-6 flex flex-col gap-y-4">
+            <div className="shrink-0 border-t border-yco-cream-dark px-6 py-6 flex flex-col gap-y-4">
               <div className="flex items-center justify-between">
                 <span className="font-sans text-yco-charcoal text-sm font-bold uppercase tracking-[0.12em]">
                   {"N\u00ebntotali"}

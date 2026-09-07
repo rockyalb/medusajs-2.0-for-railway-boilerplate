@@ -1,5 +1,7 @@
 "use client"
 
+import { lockPageScroll } from "@lib/util/lock-page-scroll"
+
 import { clx } from "@medusajs/ui"
 import {
   SearchIcon,
@@ -371,10 +373,8 @@ export default function NavClient({
 
   // Lock body scroll while the mobile menu is open.
   useEffect(() => {
-    document.body.style.overflow = mobileOpen ? "hidden" : ""
-    return () => {
-      document.body.style.overflow = ""
-    }
+    if (!mobileOpen) return
+    return lockPageScroll()
   }, [mobileOpen])
 
   useEffect(() => {
