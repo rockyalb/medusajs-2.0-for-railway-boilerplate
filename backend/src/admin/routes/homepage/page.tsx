@@ -57,6 +57,46 @@ type AdminProduct = {
 }
 
 const MAX_BESTSELLERS = 12
+const PRODUCT_PAGE_SIZE = 200
+const PRODUCT_SNAPSHOT_MAX = 2000
+
+/* Albanian product titles carry ë and ç. The admin product search sends `q`
+   to Postgres, whose ILIKE is accent-sensitive, so typing "lares" never
+   returns "Larës". We strip the accents off both the typed term and the
+   titles and match locally against a cached list of products, then merge
+   that with whatever the server returned so large catalogues still work. */
+const foldAccents = (value: string) =>
+  value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+
+const fetchAllProducts = async (): Promise<AdminProduct[]> => {
+  const products: AdminProduct[] = []
+
+  for (
+    let offset = 0;
+    offset < PRODUCT_SNAPSHOT_MAX;
+    offset += PRODUCT_PAGE_SIZE
+  ) {
+    const params = new URLSearchParams()
+    params.set("limit", String(PRODUCT_PAGE_SIZE))
+    params.set("offset", String(offset))
+    params.set("fields", "id,title,thumbnail,status")
+
+    const data = await sdk.client.fetch<{ products: AdminProduct[] }>(
+      `/admin/products?${params.toString()}`
+    )
+    const page = data.products ?? []
+    products.push(...page)
+
+    if (page.length < PRODUCT_PAGE_SIZE) {
+      break
+    }
+  }
+
+  return products
+}
 
 const uploadImage = async (file: File): Promise<string> => {
   const formData = new FormData()
@@ -505,6 +545,24 @@ const BestsellersSection = ({
   const [isSearching, setIsSearching] = useState(false)
   const [isPending, setIsPending] = useState(false)
   const searchSeq = useRef(0)
+  const allProducts = useRef<AdminProduct[] | null>(null)
+  const allProductsRequest = useRef<Promise<AdminProduct[]> | null>(null)
+
+  // Loaded once, on the first search, and reused for accent-folded matching.
+  const getAllProducts = useCallback(async () => {
+    if (allProducts.current) {
+      return allProducts.current
+    }
+
+    if (!allProductsRequest.current) {
+      allProductsRequest.current = fetchAllProducts().catch(() => [])
+    }
+
+    const products = await allProductsRequest.current
+    allProducts.current = products
+
+    return products
+  }, [])
 
   // Hydrate the saved ids into product rows (title + thumbnail).
   useEffect(() => {
@@ -557,11 +615,39 @@ const BestsellersSection = ({
         params.set("limit", "8")
         params.set("fields", "id,title,thumbnail,status")
 
-        const data = await sdk.client.fetch<{ products: AdminProduct[] }>(
-          `/admin/products?${params.toString()}`
+        const [matchedOnServer, everyProduct] = await Promise.all([
+          sdk.client
+            .fetch<{ products: AdminProduct[] }>(
+              `/admin/products?${params.toString()}`
+            )
+            .then((data) => data.products ?? [])
+            .catch(() => [] as AdminProduct[]),
+          getAllProducts(),
+        ])
+
+        const needle = foldAccents(term)
+        const matchedLocally = everyProduct.filter((product) =>
+          foldAccents(product.title ?? "").includes(needle)
         )
+
+        const merged: AdminProduct[] = []
+        const seenIds = new Set<string>()
+
+        for (const product of [...matchedOnServer, ...matchedLocally]) {
+          if (seenIds.has(product.id)) {
+            continue
+          }
+
+          seenIds.add(product.id)
+          merged.push(product)
+
+          if (merged.length >= 8) {
+            break
+          }
+        }
+
         if (seq === searchSeq.current) {
-          setResults(data.products ?? [])
+          setResults(merged)
         }
       } catch {
         if (seq === searchSeq.current) {
@@ -575,7 +661,7 @@ const BestsellersSection = ({
     }, 300)
 
     return () => clearTimeout(timer)
-  }, [query])
+  }, [query, getAllProducts])
 
   const selectedIds = useMemo(
     () => new Set(selected.map((product) => product.id)),
