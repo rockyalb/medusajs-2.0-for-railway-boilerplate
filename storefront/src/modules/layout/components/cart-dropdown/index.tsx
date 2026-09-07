@@ -322,7 +322,7 @@ const CartDropdown = ({
           <span className="small:hidden">
             <BagIcon />
           </span>
-          <span className="small:hidden">
+          <span className="contents small:hidden">
             <CartBadge count={totalItems} />
           </span>
         </button>
