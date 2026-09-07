@@ -114,7 +114,7 @@ module.exports = {
         // category cards, which intentionally stay on the grotesque (see
         // the `hanken` family below).
         sans: [
-          "var(--font-fredoka)",
+          "var(--font-brand, var(--font-fredoka))",
           "Helvetica Neue",
           "Helvetica",
           "Arial",
@@ -125,7 +125,7 @@ module.exports = {
           "sans-serif",
         ],
         serif: [
-          "var(--font-fredoka)",
+          "var(--font-brand, var(--font-fredoka))",
           "Helvetica Neue",
           "Helvetica",
           "Arial",
@@ -133,7 +133,7 @@ module.exports = {
         ],
         // Reserved for the header/nav and homepage category cards.
         hanken: [
-          "var(--font-hanken)",
+          "var(--font-ui, var(--font-hanken))",
           "Helvetica Neue",
           "Helvetica",
           "Arial",

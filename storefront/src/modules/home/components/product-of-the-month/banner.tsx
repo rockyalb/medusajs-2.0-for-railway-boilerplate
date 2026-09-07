@@ -8,16 +8,17 @@ import Sparkles, {
 
 const EASE_OUT = [0.22, 1, 0.36, 1] as const
 
-/* Deeper tints of the logo pastels so the sparks read on the pale wash. */
+/* Cores stay light so they feel like light, while the halo carries a
+   saturated logo tint so each star still reads on the pale wash. */
 const BAND_SPARKS: Spark[] = [
-  { top: "14%", left: "6%", size: 13, dur: 5.4, delay: 0.6, color: "#ffffff" },
-  { top: "22%", left: "44%", size: 9, dur: 6.6, delay: 2.2, color: "#e9a89c" },
-  { top: "12%", left: "88%", size: 12, dur: 5.9, delay: 1.1, color: "#ffffff" },
-  { top: "48%", left: "52%", size: 8, dur: 7.2, delay: 3.4, color: "#93b6ec" },
-  { top: "66%", left: "8%", size: 10, dur: 6.1, delay: 0.3, color: "#8ec7aa" },
-  { top: "80%", left: "38%", size: 12, dur: 5.6, delay: 2.8, color: "#ffffff" },
-  { top: "72%", left: "92%", size: 9, dur: 6.8, delay: 1.7, color: "#e9a89c" },
-  { top: "38%", left: "96%", size: 8, dur: 7.5, delay: 4.1, color: "#ffffff" },
+  { top: "12%", left: "6%", size: 26, dur: 5.6, delay: 0.6, color: "#ffffff", glow: "#7CA4EB", float: 10, dy: -8 },
+  { top: "24%", left: "44%", size: 16, dur: 6.8, delay: 2.2, color: "#FEE2E0", glow: "#FC8C84", float: 12, dy: -6 },
+  { top: "10%", left: "88%", size: 22, dur: 6.1, delay: 1.1, color: "#ffffff", glow: "#84C3AC", float: 11, dy: -7 },
+  { top: "46%", left: "54%", size: 14, dur: 7.4, delay: 3.4, color: "#ffffff", glow: "#7CA4EB", float: 13, dy: -5 },
+  { top: "64%", left: "7%", size: 20, dur: 6.3, delay: 0.3, color: "#E0F0EA", glow: "#84C3AC", float: 12, dy: -7 },
+  { top: "80%", left: "36%", size: 24, dur: 5.8, delay: 2.8, color: "#ffffff", glow: "#FC8C84", float: 10, dy: -9 },
+  { top: "72%", left: "92%", size: 16, dur: 7.0, delay: 1.7, color: "#DEE8FA", glow: "#7CA4EB", float: 14, dy: -6 },
+  { top: "36%", left: "96%", size: 14, dur: 7.7, delay: 4.1, color: "#ffffff", glow: "#84C3AC", float: 11, dy: -5 },
 ]
 
 type PotmBannerProps = {
