@@ -1,5 +1,7 @@
 "use client"
 
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { useFormState } from "react-dom"
 
 import Input from "@modules/common/components/input"
@@ -11,19 +13,25 @@ import { signup } from "@lib/data/customer"
 
 type Props = {
   setCurrentView: (view: LOGIN_VIEW) => void
+  returnTo?: string
 }
 
-const Register = ({ setCurrentView }: Props) => {
-  const [message, formAction] = useFormState(signup, null)
+const Register = ({ setCurrentView, returnTo }: Props) => {
+  const [message, formAction] = useFormState(signup, "idle")
+  const router = useRouter()
+  useEffect(() => {
+    if (message === null) {
+      if (returnTo === "/checkout") router.push(returnTo)
+      else router.refresh()
+    }
+  }, [message, returnTo, router])
 
   return (
     <div
       className="max-w-sm flex flex-col items-center"
       data-testid="register-page"
     >
-      <h1 className="text-large-semi uppercase mb-6">
-        Krijoni llogari në YCO
-      </h1>
+      <h1 className="text-large-semi uppercase mb-6">Krijoni llogari në YCO</h1>
       <p className="text-center text-base-regular text-ui-fg-base mb-4">
         Krijoni profilin tuaj dhe përfitoni një përvojë më të mirë blerjeje.
       </p>
@@ -67,7 +75,10 @@ const Register = ({ setCurrentView }: Props) => {
             data-testid="password-input"
           />
         </div>
-        <ErrorMessage error={message} data-testid="register-error" />
+        <ErrorMessage
+          error={message === "idle" ? null : message}
+          data-testid="register-error"
+        />
         <span className="text-center text-ui-fg-base text-small-regular mt-6">
           Duke krijuar një llogari, pranoni{" "}
           <LocalizedClientLink
@@ -76,7 +87,7 @@ const Register = ({ setCurrentView }: Props) => {
           >
             Politikën e privatësisë
           </LocalizedClientLink>{" "}
-          and{" "}
+          dhe{" "}
           <LocalizedClientLink
             href="/content/terms-of-use"
             className="underline"

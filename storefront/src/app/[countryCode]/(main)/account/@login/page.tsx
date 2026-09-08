@@ -10,9 +10,10 @@ export const metadata: Metadata = {
 export default async function Login({
   searchParams,
 }: {
-  searchParams?: Promise<{ returnTo?: string }>
+  searchParams?: Promise<{ returnTo?: string; view?: string }>
 }) {
-  const returnTo = (await searchParams)?.returnTo
+  const params = await searchParams
+  const returnTo = params?.returnTo === "/checkout" ? "/checkout" : undefined
 
-  return <LoginTemplate returnTo={returnTo} />
+  return <LoginTemplate returnTo={returnTo} initialView={params?.view} />
 }

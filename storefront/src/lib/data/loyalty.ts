@@ -2,7 +2,7 @@
 
 import { cache } from "react"
 import { sdk } from "@lib/config"
-import { revalidateTag } from "next/cache"
+import { updateTag } from "next/cache"
 import { getAuthHeaders } from "./cookies"
 
 export type LoyaltyRewardSetting = {
@@ -64,12 +64,18 @@ export const getCustomerStoreCreditAccounts = cache(async function (
 
 export async function applyStoreCreditToCart(cartId: string, amount: number) {
   const authHeaders = await getAuthHeaders()
-  await sdk.client
-    .fetch(`/store/carts/${cartId}/store-credits`, {
+  try {
+    await sdk.client.fetch(`/store/carts/${cartId}/store-credits`, {
       method: "POST",
       body: { amount },
       headers: authHeaders as Record<string, string>,
     })
-    .catch(() => null)
-  revalidateTag("cart")
+    updateTag("cart")
+    return { error: null }
+  } catch {
+    return {
+      error:
+        "Krediti nuk u aplikua. Duhet një bilanc prej të paktën 500 ALL dhe mund të përdorni deri në 25% të produkteve me TVSH, pa transport. Rifreskoni shportën dhe provoni përsëri.",
+    }
+  }
 }

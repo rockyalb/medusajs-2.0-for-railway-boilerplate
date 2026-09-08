@@ -1,6 +1,6 @@
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
-import { Button, Text } from "@medusajs/ui"
+import { Text } from "@medusajs/ui"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 type LoyaltyRewardPromptProps = {
@@ -32,7 +32,7 @@ const LoyaltyRewardPrompt = ({
     currency_code: cart.currency_code,
   })
   const formattedEndDate = endDate
-    ? new Intl.DateTimeFormat("en-US", {
+    ? new Intl.DateTimeFormat("sq-AL", {
         month: "short",
         day: "numeric",
         year: "numeric",
@@ -40,32 +40,57 @@ const LoyaltyRewardPrompt = ({
     : null
 
   return (
-    <div className="border border-ui-border-base bg-ui-bg-subtle px-4 py-3">
-      <div className="flex flex-col gap-y-3 small:flex-row small:items-center small:justify-between small:gap-x-6">
-        <div>
-          <Text size="small" leading="compact" weight="plus">
-            Earn {percentage}% back in store credit
-          </Text>
-          <Text
-            size="small"
-            leading="compact"
-            className="text-ui-fg-subtle mt-1"
+    <section
+      className="relative overflow-hidden rounded-large border border-pastel-mint/60 bg-pastel-mint-soft/60 p-5 small:p-6"
+      aria-label="Përfitimet e llogarisë YCO"
+    >
+      <div className="flex flex-col gap-5 small:flex-row small:items-center small:justify-between">
+        <div className="flex items-start gap-4">
+          <div
+            aria-hidden="true"
+            className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-pastel-mint text-2xl font-bold text-yco-coral"
           >
-            {customer
-              ? `This order can add about ${formattedReward} to your account after checkout.`
-              : `Create an account or sign in before checkout to get about ${formattedReward} back.`}
-            {formattedEndDate ? ` Campaign ends ${formattedEndDate}.` : ""}
-          </Text>
+            {percentage}%
+          </div>
+          <div>
+            <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-pastel-mint-ink">
+              Blerjet e tua të shpërblejnë
+            </p>
+            <h2 className="text-xl font-bold text-yco-coral">
+              Pak kujdes për veten. Një bonus për herën tjetër.
+            </h2>
+            <Text size="small" className="mt-2 text-yco-charcoal">
+              {customer
+                ? `Kjo porosi mund të shtojë rreth ${formattedReward} kredit në llogarinë tënde.`
+                : `Hyr ose krijo llogarinë tënde dhe përfito rreth ${formattedReward} kredit nga kjo porosi.`}
+              {formattedEndDate
+                ? ` Oferta përfundon më ${formattedEndDate}.`
+                : ""}
+            </Text>
+          </div>
         </div>
         {!customer && (
-          <LocalizedClientLink href="/account?returnTo=/checkout">
-            <Button variant="secondary" className="h-10 w-full small:w-auto">
-              Sign in
-            </Button>
-          </LocalizedClientLink>
+          <div className="flex shrink-0 flex-col gap-2 xsmall:flex-row small:flex-col">
+            <LocalizedClientLink
+              href="/account?view=register&returnTo=/checkout"
+              className="yco-btn yco-btn--ink min-h-11 text-center"
+            >
+              Krijo llogari · Fillo të përfitosh
+            </LocalizedClientLink>
+            <LocalizedClientLink
+              href="/account?returnTo=/checkout"
+              className="yco-btn yco-btn--outline min-h-11 text-center"
+            >
+              Kam llogari · Hyr
+            </LocalizedClientLink>
+          </div>
         )}
       </div>
-    </div>
+      <p className="mt-4 border-t border-pastel-mint/50 pt-3 text-xs leading-relaxed text-yco-charcoal">
+        Përdore kredinë kur bilanci arrin 500 ALL, deri në 25% të vlerës së
+        produkteve me TVSH. Transporti nuk përfshihet.
+      </p>
+    </section>
   )
 }
 

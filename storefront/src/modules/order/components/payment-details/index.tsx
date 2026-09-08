@@ -10,17 +10,22 @@ type PaymentDetailsProps = {
 }
 
 const PaymentDetails = ({ order }: PaymentDetailsProps) => {
-  const payment = order.payment_collections?.[0].payments?.[0]
+  const payment = order.payment_collections?.[0]?.payments?.[0]
 
   return (
     <div>
-      <Heading level="h2" className="flex flex-row text-3xl-regular my-6">
+      <Heading level="h2" className="flex flex-row text-xl font-bold mb-4">
         Pagesa
       </Heading>
       <div>
+        {!payment && (
+          <Text className="text-sm text-yco-charcoal">
+            Detajet e pagesës do të shfaqen sapo të përpunohen.
+          </Text>
+        )}
         {payment && (
-          <div className="flex items-start gap-x-1 w-full">
-            <div className="flex flex-col w-1/3">
+          <div className="grid gap-4 xsmall:grid-cols-2">
+            <div className="flex min-w-0 flex-col">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
                 Metoda e pagesës
               </Text>
@@ -28,16 +33,16 @@ const PaymentDetails = ({ order }: PaymentDetailsProps) => {
                 className="txt-medium text-ui-fg-subtle"
                 data-testid="payment-method"
               >
-                {paymentInfoMap[payment.provider_id].title}
+                {paymentInfoMap[payment.provider_id]?.title ?? "Pagesë"}
               </Text>
             </div>
-            <div className="flex flex-col w-2/3">
+            <div className="flex min-w-0 flex-col">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
                 Detajet e pagesës
               </Text>
               <div className="flex gap-2 txt-medium text-ui-fg-subtle items-center">
                 <Container className="flex items-center h-7 w-fit p-2 bg-ui-button-neutral-hover">
-                  {paymentInfoMap[payment.provider_id].icon}
+                  {paymentInfoMap[payment.provider_id]?.icon}
                 </Container>
                 <Text data-testid="payment-amount">
                   {isStripe(payment.provider_id) && payment.data?.card_last4
@@ -49,7 +54,9 @@ const PaymentDetails = ({ order }: PaymentDetailsProps) => {
                         currency_code: order.currency_code,
                       })} paguar më ${new Date(
                         payment.created_at ?? ""
-                      ).toLocaleString()}`}
+                      ).toLocaleString("sq-AL", {
+                        timeZone: "Europe/Tirane",
+                      })}`}
                 </Text>
               </div>
             </div>

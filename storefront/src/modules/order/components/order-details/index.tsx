@@ -18,7 +18,7 @@ const OrderDetails = ({ order, showStatus }: OrderDetailsProps) => {
       <Text>
         I kemi dërguar detajet e konfirmimit të porosisë te{" "}
         <span
-          className="text-ui-fg-medium-plus font-semibold"
+          className="text-yco-coral font-semibold break-all"
           data-testid="order-email"
         >
           {order.email}
@@ -28,14 +28,25 @@ const OrderDetails = ({ order, showStatus }: OrderDetailsProps) => {
       <Text className="mt-2">
         Data e porosisë:{" "}
         <span data-testid="order-date">
-          {new Date(order.created_at).toDateString()}
+          {new Intl.DateTimeFormat("sq-AL", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+            timeZone: "Europe/Tirane",
+          }).format(new Date(order.created_at))}
         </span>
       </Text>
-      <Text className="mt-2 text-ui-fg-interactive">
+      <Text className="mt-2 font-semibold text-yco-coral">
         Numri i porosisë: <span data-testid="order-id">{order.display_id}</span>
       </Text>
 
-      <div className="flex items-center text-compact-small gap-x-4 mt-4">
+      <div
+        className={
+          showStatus
+            ? "flex flex-wrap items-center text-compact-small gap-4 mt-4"
+            : "hidden"
+        }
+      >
         {showStatus && (
           <>
             <Text>

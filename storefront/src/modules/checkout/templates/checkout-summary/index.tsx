@@ -32,13 +32,12 @@ const CheckoutSummary = async ({
     )
 
     const creditBalance = currencyAccount ? Number(currencyAccount.balance) : 0
-    const alreadyApplied = (cart.gift_card_total ?? 0) > 0
 
-    if (creditBalance > 0 && !alreadyApplied) {
+    if (creditBalance > 0) {
       storeCreditApply = (
         <StoreCreditApply
           cartId={cart.id}
-          cartTotal={cart.total ?? 0}
+          cartTotal={cart.item_total ?? 0}
           balance={creditBalance}
           currency_code={cart.currency_code}
         />

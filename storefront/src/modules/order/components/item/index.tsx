@@ -19,21 +19,27 @@ const Item = ({ item }: ItemProps) => {
         </div>
       </Table.Cell>
 
-      <Table.Cell className="text-left">
+      <Table.Cell className="text-left whitespace-normal px-2">
         <Text
           className="txt-medium-plus text-ui-fg-base"
           data-testid="product-name"
         >
           {item.title}
         </Text>
-        {item.variant && (
-          <LineItemOptions variant={item.variant} data-testid="product-variant" />
-        )}
+        {item.variant &&
+          !["default", "default variant"].includes(
+            item.variant.title?.toLowerCase() ?? ""
+          ) && (
+            <LineItemOptions
+              variant={item.variant}
+              data-testid="product-variant"
+            />
+          )}
       </Table.Cell>
 
-      <Table.Cell className="!pr-0">
+      <Table.Cell className="!pr-0 pl-2">
         <span className="!pr-0 flex flex-col items-end h-full justify-center">
-          <span className="flex gap-x-1 ">
+          <span className="flex flex-wrap justify-end gap-x-1 text-xs">
             <Text className="text-ui-fg-muted">
               <span data-testid="product-quantity">{item.quantity}</span>x{" "}
             </Text>
