@@ -161,4 +161,11 @@ You can also use [these example templates](https://demo.react.email/preview/magi
 
 ### Brevo
 
+New-order confirmations BCC `ycoorders@gmail.com` so the store admin receives the same
+email as the customer. Set `BREVO_ORDER_ADMIN_EMAIL` on the service processing
+`order.placed` events to override this address, or set it to an empty string to
+disable the copy. If the customer email matches the admin address, no BCC is added.
+This applies to both Brevo-hosted and locally rendered order templates. After
+deploying, place a test order and verify delivery to the customer and admin inboxes.
+
 * Docs: [Send a transactional email](https://developers.brevo.com/docs/send-a-transactional-email)

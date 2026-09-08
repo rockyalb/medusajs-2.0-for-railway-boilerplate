@@ -74,6 +74,7 @@ export const BREVO_FROM_EMAIL = process.env.BREVO_FROM_EMAIL || process.env.BREV
 export const BREVO_FROM_NAME = process.env.BREVO_FROM_NAME;
 export const BREVO_REPLY_TO_EMAIL = process.env.BREVO_REPLY_TO_EMAIL || BREVO_FROM_EMAIL;
 export const BREVO_ORDER_PLACED_TEMPLATE_ID = process.env.BREVO_ORDER_PLACED_TEMPLATE_ID;
+export const BREVO_ORDER_ADMIN_EMAIL = (process.env.BREVO_ORDER_ADMIN_EMAIL ?? 'ycoorders@gmail.com').trim();
 export const BREVO_INVITE_USER_TEMPLATE_ID = process.env.BREVO_INVITE_USER_TEMPLATE_ID;
 
 /**

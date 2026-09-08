@@ -2,7 +2,7 @@ import { Modules } from '@medusajs/framework/utils'
 import { INotificationModuleService, IOrderModuleService } from '@medusajs/framework/types'
 import { SubscriberArgs, SubscriberConfig } from '@medusajs/medusa'
 import { EmailTemplates } from '../modules/email-notifications/templates'
-import { BREVO_ORDER_PLACED_TEMPLATE_ID, BREVO_REPLY_TO_EMAIL } from '../lib/constants'
+import { BREVO_ORDER_ADMIN_EMAIL, BREVO_ORDER_PLACED_TEMPLATE_ID, BREVO_REPLY_TO_EMAIL } from '../lib/constants'
 
 export default async function orderPlacedHandler({
   event: { data },
@@ -23,6 +23,9 @@ export default async function orderPlacedHandler({
       data: {
         emailOptions: {
           replyTo: BREVO_REPLY_TO_EMAIL,
+          ...(BREVO_ORDER_ADMIN_EMAIL && BREVO_ORDER_ADMIN_EMAIL.toLowerCase() !== order.email?.trim().toLowerCase()
+            ? { bcc: BREVO_ORDER_ADMIN_EMAIL }
+            : {}),
           ...(BREVO_ORDER_PLACED_TEMPLATE_ID
             ? { templateId: BREVO_ORDER_PLACED_TEMPLATE_ID }
             : { subject: `Porosia YCO #${orderNumber} u konfirmua` })
