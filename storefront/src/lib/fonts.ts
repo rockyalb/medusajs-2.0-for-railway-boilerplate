@@ -6,7 +6,6 @@ import {
   Figtree,
   Fredoka,
   Hanken_Grotesk,
-  Inter,
   Lexend,
   Manrope,
   Nunito,
@@ -19,24 +18,10 @@ import {
   Urbanist,
 } from "next/font/google"
 
-/* Site-wide default typeface. Self-hosted by next/font, variable axis so every
-   weight from 100–900 comes out of one file. Tailwind's `sans`, `serif` and
-   `hanken` families all fall back to this, so it covers every element unless
-   the font lab points `--font-brand` / `--font-ui` somewhere else. */
-export const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-})
-
-/* The former brand pairing. Now reachable only through the font lab, so
-   `preload: false` keeps them out of the critical path — the browser fetches
-   them the moment something is rendered in them and not before. */
 export const hankenGrotesk = Hanken_Grotesk({
   subsets: ["latin"],
   variable: "--font-hanken",
   display: "swap",
-  preload: false,
   weight: ["300", "400", "500", "600", "700"],
 })
 
@@ -44,7 +29,6 @@ export const fredoka = Fredoka({
   subsets: ["latin"],
   variable: "--font-fredoka",
   display: "swap",
-  preload: false,
   weight: ["300", "400", "500", "600", "700"],
 })
 

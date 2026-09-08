@@ -15,19 +15,8 @@
 
   body {
     @apply bg-[#fbfaf7] text-yco-charcoal antialiased;
-    /* Inter runs slightly tight by default at UI sizes; +0.01em is the tracking
-       beauty storefronts (Comfort Zone, Rhode) use for body copy. The old
-       `ss01` feature setting was a Fredoka-era holdover and is dropped so Inter
-       renders with its designed defaults. */
-    letter-spacing: 0.01em;
+    font-feature-settings: "ss01";
     overflow-x: clip;
-  }
-
-  /* Inter's optical weight climbs fast, so large display type needs negative
-     tracking to keep the same colour as the body. */
-  h1,
-  h2 {
-    letter-spacing: -0.015em;
   }
 }
 

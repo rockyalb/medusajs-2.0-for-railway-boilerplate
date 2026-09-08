@@ -1,5 +1,5 @@
 import { getBaseURL } from "@lib/util/env"
-import { fontLabVariables, fredoka, hankenGrotesk, inter } from "@lib/fonts"
+import { fontLabVariables, fredoka, hankenGrotesk } from "@lib/fonts"
 import { Metadata } from "next"
 import MetaPixel from "@modules/analytics/components/meta-pixel"
 import AmbientBackground from "@modules/home/components/ambient-background"
@@ -19,7 +19,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
     <html
       lang="en"
       data-mode="light"
-      className={`${inter.variable} ${hankenGrotesk.variable} ${fredoka.variable} ${fontLabVariables}`}
+      className={`${hankenGrotesk.variable} ${fredoka.variable} ${fontLabVariables}`}
     >
       <body>
         <AmbientBackground />

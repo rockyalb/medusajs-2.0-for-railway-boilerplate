@@ -109,14 +109,15 @@ module.exports = {
       fontSize: {
         "3xl": "2rem",
       },
-      // One typeface across the whole site: Inter. `sans`, `serif` and `hanken`
-      // all resolve to it, so the header/nav and the body no longer diverge.
-      // The font lab still overrides via --font-brand / --font-ui, which is how
-      // the old Fredoka + Hanken pairing can be put back without a code change.
       fontFamily: {
+        // Site-wide default. Kept out of the header/nav and the homepage
+        // category cards, which intentionally stay on the grotesque (see
+        // the `hanken` family below).
         sans: [
-          "var(--font-brand, var(--font-inter))",
-          "system-ui",
+          "var(--font-brand, var(--font-fredoka))",
+          "Helvetica Neue",
+          "Helvetica",
+          "Arial",
           "-apple-system",
           "BlinkMacSystemFont",
           "Segoe UI",
@@ -124,19 +125,18 @@ module.exports = {
           "sans-serif",
         ],
         serif: [
-          "var(--font-brand, var(--font-inter))",
-          "system-ui",
-          "-apple-system",
-          "BlinkMacSystemFont",
-          "Segoe UI",
-          "Roboto",
+          "var(--font-brand, var(--font-fredoka))",
+          "Helvetica Neue",
+          "Helvetica",
+          "Arial",
           "sans-serif",
         ],
-        // Legacy family name — kept so the header/nav components keep compiling,
-        // but it now points at the same face as `sans`.
+        // Reserved for the header/nav and homepage category cards.
         hanken: [
-          "var(--font-ui, var(--font-inter))",
-          "system-ui",
+          "var(--font-ui, var(--font-hanken))",
+          "Helvetica Neue",
+          "Helvetica",
+          "Arial",
           "-apple-system",
           "BlinkMacSystemFont",
           "Segoe UI",
