@@ -30,9 +30,8 @@ export default function HeroCopy({
         initial={reducedMotion ? false : { opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: EASE_OUT, delay: 0.1 }}
-        className="bs-rhode-hero__eyebrow"
+        className="bs-rhode-hero__eyebrow font-normal"
       >
-        <span className="yco-accent-dot" aria-hidden />
         {eyebrow}
       </motion.p>
 

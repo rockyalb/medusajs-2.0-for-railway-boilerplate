@@ -1,5 +1,4 @@
 import { getProductOfTheMonth } from "@lib/data/products"
-import { getProductPrice } from "@lib/util/get-product-price"
 import { getHomepageSettings } from "@lib/data/homepage"
 import PotmBanner from "./banner"
 
@@ -16,7 +15,6 @@ export default async function ProductOfTheMonth({
     return null
   }
 
-  const { cheapestPrice } = getProductPrice({ product })
   const metadata = (product.metadata || {}) as Record<string, unknown>
   const whyChosen =
     typeof metadata.product_of_the_month_reason === "string"
@@ -34,12 +32,6 @@ export default async function ProductOfTheMonth({
       homepageDescription={settings.product_id === product.id ? settings.description : null}
       handle={product.handle}
       image={product.thumbnail || product.images?.[0]?.url || ""}
-      price={cheapestPrice?.calculated_price ?? null}
-      originalPrice={
-        cheapestPrice?.price_type === "sale"
-          ? cheapestPrice.original_price
-          : null
-      }
     />
   )
 }

@@ -12,8 +12,6 @@ type PotmBannerProps = {
   whyChosen: string | null
   handle: string
   image: string
-  price: string | null
-  originalPrice: string | null
 }
 
 /** Full-width band on the animated logo-pastel wash. The product card
@@ -26,8 +24,6 @@ export default function PotmBanner({
   whyChosen,
   handle,
   image,
-  price,
-  originalPrice,
 }: PotmBannerProps) {
   const reducedMotion = useReducedMotion()
   const customDescription = homepageDescription?.trim()
@@ -51,7 +47,7 @@ export default function PotmBanner({
             <p className="mb-3 hidden items-center gap-2 font-sans text-xs font-bold uppercase tracking-[0.14em] small:flex">
               Produkti i muajit
             </p>
-            <h2 className="rhode-display font-hanken text-4xl md:text-5xl">
+            <h2 className="rhode-display font-hanken text-2xl md:text-5xl">
               {title}
             </h2>
             {productCopy && (
@@ -65,16 +61,6 @@ export default function PotmBanner({
                   {productCopy}
                 </p>
               </div>
-            )}
-            {price && (
-              <p className="mt-5 font-sans text-lg font-bold">
-                {price}
-                {originalPrice && (
-                  <span className="ml-3 text-sm font-normal text-yco-charcoal/60 line-through">
-                    {originalPrice}
-                  </span>
-                )}
-              </p>
             )}
             <div className="mt-7">
               <LocalizedClientLink

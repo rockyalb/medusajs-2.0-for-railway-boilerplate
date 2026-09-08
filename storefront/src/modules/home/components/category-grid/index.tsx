@@ -108,31 +108,6 @@ export default function CategoryGrid({
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         className="max-w-6xl mx-auto"
       >
-        <div className="mb-4 flex items-end justify-between gap-4 small:mb-5">
-          <h2 className="rhode-display text-2xl md:text-3xl">
-            Kategoritë
-          </h2>
-          {categories.length > 1 && (
-            <span className="mb-0.5 flex shrink-0 items-center font-hanken text-[10px] font-semibold uppercase tracking-[0.14em] text-yco-charcoal/60">
-              <svg
-                aria-hidden="true"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-              >
-                <path
-                  d="M5 12h13m-5-5 5 5-5 5"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-          )}
-        </div>
-
         <div
           ref={emblaRef}
           className="-mx-6 cursor-grab overflow-hidden px-6 pb-3 active:cursor-grabbing small:mx-0 small:px-0"
@@ -161,7 +136,7 @@ export default function CategoryGrid({
                       draggable={false}
                       onClick={handleCategoryClick}
                     >
-                      <div className="aspect-[4/3] w-full overflow-hidden bg-white/55">
+                      <div className="aspect-[4/5] w-full overflow-hidden bg-white/55">
                         {image ? (
                           <img
                             src={image}
@@ -178,7 +153,7 @@ export default function CategoryGrid({
                       </div>
 
                       <div className="flex items-center justify-between gap-3 px-4 py-3">
-                        <div className="font-hanken text-sm font-bold text-yco-charcoal">
+                        <div className="font-hanken text-sm font-normal text-yco-charcoal">
                           {category.name}
                         </div>
                         <span className="rhode-round-btn rhode-round-btn--accent shrink-0">

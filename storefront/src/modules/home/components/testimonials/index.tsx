@@ -152,7 +152,7 @@ export default async function Testimonials() {
       <div className="mx-auto max-w-6xl">
         <Reveal className="mb-6 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="yco-section-title rhode-display font-hanken text-3xl md:text-4xl">Yco + you</h2>
+            <h2 className="yco-section-title rhode-display font-hanken text-3xl md:text-4xl">YCO+YOU</h2>
           </div>
           <div className="flex items-center gap-3 self-start sm:self-auto">
             {SOCIAL_LINKS.map((social) => (

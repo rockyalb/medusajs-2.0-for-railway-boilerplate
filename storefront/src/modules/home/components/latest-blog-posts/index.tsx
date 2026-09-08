@@ -27,7 +27,7 @@ export default function LatestBlogPosts({ posts }: LatestBlogPostsProps) {
         <div className="flex flex-col gap-5 small:flex-row small:items-end small:justify-between">
           <div className="font-hanken">
             <h2 className="yco-section-title rhode-display text-3xl md:text-4xl">
-              Më të fundit nga blogu
+              Blog
             </h2>
           </div>
           <LocalizedClientLink

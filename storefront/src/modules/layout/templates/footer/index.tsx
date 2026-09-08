@@ -1,6 +1,3 @@
-import { getCategoriesList } from "@lib/data/categories"
-import { getCollectionsList } from "@lib/data/collections"
-
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 const colHeading =
@@ -9,9 +6,6 @@ const colLink =
   "font-sans text-yco-charcoal-muted text-sm hover:text-yco-charcoal transition-colors duration-300 inline-block"
 
 export default async function Footer() {
-  const { collections } = await getCollectionsList(0, 6)
-  const { product_categories } = await getCategoriesList(0, 6)
-
   return (
     <footer className="bg-yco-panel w-full">
       <div className="content-container">
@@ -54,7 +48,7 @@ export default async function Footer() {
           </div>
 
           {/* Columns */}
-          <div className="grid grid-cols-2 gap-6 md:grid-cols-4 md:gap-10">
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-2 md:gap-10">
             {/* Navigate */}
             <div>
               <span className={colHeading}>Navigo</span>
@@ -81,48 +75,6 @@ export default async function Footer() {
                 </li>
               </ul>
             </div>
-
-            {/* Shop categories */}
-            {product_categories && product_categories.length > 0 && (
-              <div>
-                <span className={colHeading}>Kategoritë</span>
-                <ul className="grid grid-cols-1 gap-1" data-testid="footer-categories">
-                  {product_categories.slice(0, 6).map((c) => {
-                    if (c.parent_category) return null
-                    return (
-                      <li key={c.id}>
-                        <LocalizedClientLink
-                          className={colLink}
-                          href={`/categories/${c.handle}`}
-                          data-testid="category-link"
-                        >
-                          {c.name}
-                        </LocalizedClientLink>
-                      </li>
-                    )
-                  })}
-                </ul>
-              </div>
-            )}
-
-            {/* Collections / brands */}
-            {collections && collections.length > 0 && (
-              <div>
-                <span className={colHeading}>Brendet</span>
-                <ul className="grid grid-cols-1 gap-1">
-                  {collections.slice(0, 6).map((c) => (
-                    <li key={c.id}>
-                      <LocalizedClientLink
-                        className={colLink}
-                        href={`/collections/${c.handle}`}
-                      >
-                        {c.title}
-                      </LocalizedClientLink>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
 
             {/* Support */}
             <div>

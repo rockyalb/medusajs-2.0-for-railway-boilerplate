@@ -17,7 +17,7 @@ export default function HereWeFloSection() {
 
         <div className="flex min-w-0 flex-1 flex-col justify-center px-4 py-3 small:px-10 small:py-6">
           <h2 className="rhode-display text-base leading-tight small:text-3xl medium:text-4xl">
-            Kujdesi për ciklin Hipoalergjike Here We Flo
+            Kujdesi për ciklin Here We Flo
           </h2>
           <p className="mt-2 max-w-md font-sans text-[11px] leading-snug text-yco-charcoal-muted small:mt-4 small:text-sm small:leading-relaxed">
             Brandi i pacipë, i pa turp, natyral &amp; organik për momentet më te
@@ -25,7 +25,7 @@ export default function HereWeFloSection() {
           </p>
           <LocalizedClientLink
             href="/collections/here-we-flo"
-            className="yco-btn yco-btn--blue mt-3 w-fit small:mt-6"
+            className="yco-btn yco-btn--blue mt-3 w-fit font-normal small:mt-6"
           >
             Më shumë
             <svg
