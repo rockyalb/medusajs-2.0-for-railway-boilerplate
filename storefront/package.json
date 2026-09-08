@@ -39,6 +39,7 @@
     "embla-carousel-react": "^8.6.0",
     "embla-carousel-wheel-gestures": "^8.1.0",
     "lodash": "^4.18.1",
+    "lucide-react": "^1.43.0",
     "medusajs-launch-utils": "0.0.18",
     "motion": "^12.40.0",
     "next": "^16.2.7",
