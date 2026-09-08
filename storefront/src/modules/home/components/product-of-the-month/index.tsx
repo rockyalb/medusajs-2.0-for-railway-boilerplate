@@ -1,28 +1,16 @@
 import { getProductOfTheMonth } from "@lib/data/products"
 import { getProductPrice } from "@lib/util/get-product-price"
+import { getHomepageSettings } from "@lib/data/homepage"
 import PotmBanner from "./banner"
-
-const ALBANIAN_MONTHS = [
-  "Janar",
-  "Shkurt",
-  "Mars",
-  "Prill",
-  "Maj",
-  "Qershor",
-  "Korrik",
-  "Gusht",
-  "Shtator",
-  "Tetor",
-  "Nëntor",
-  "Dhjetor",
-]
 
 export default async function ProductOfTheMonth({
   countryCode,
 }: {
   countryCode: string
 }) {
-  const product = await getProductOfTheMonth(countryCode)
+  const homepage = await getHomepageSettings()
+  const settings = homepage.product_of_the_month
+  const product = await getProductOfTheMonth(countryCode, settings.product_id)
 
   if (!product) {
     return null
@@ -43,6 +31,7 @@ export default async function ProductOfTheMonth({
       subtitle={product.subtitle ?? null}
       description={product.description ?? null}
       whyChosen={whyChosen}
+      homepageDescription={settings.product_id === product.id ? settings.description : null}
       handle={product.handle}
       image={product.thumbnail || product.images?.[0]?.url || ""}
       price={cheapestPrice?.calculated_price ?? null}
@@ -51,7 +40,6 @@ export default async function ProductOfTheMonth({
           ? cheapestPrice.original_price
           : null
       }
-      monthLabel={ALBANIAN_MONTHS[new Date().getUTCMonth()]}
     />
   )
 }

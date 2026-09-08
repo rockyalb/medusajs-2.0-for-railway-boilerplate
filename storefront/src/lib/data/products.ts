@@ -209,12 +209,25 @@ export const getBestsellerProducts = cache(async function (
 })
 
 export const getProductOfTheMonth = cache(async function (
-  countryCode: string
+  countryCode: string,
+  selectedProductId?: string | null
 ) {
   const region = await getRegion(countryCode)
 
   if (!region) {
     return null
+  }
+
+  if (selectedProductId) {
+    const { products: selectedProducts } = await sdk.store.product.list(
+      {
+        id: [selectedProductId],
+        region_id: region.id,
+        fields: "id,title,handle,subtitle,description,thumbnail,*images,+metadata,*variants.calculated_price",
+      },
+      { next: { tags: ["products", "homepage"] } }
+    )
+    if (selectedProducts[0]) return selectedProducts[0]
   }
 
   const { products } = await sdk.store.product.list(

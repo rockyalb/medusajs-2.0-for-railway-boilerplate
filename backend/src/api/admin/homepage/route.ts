@@ -11,6 +11,7 @@ import {
   upsertHomepageSetting,
 } from "../../../lib/homepage-settings"
 import { expireStorefrontHomepageCache } from "../../../lib/storefront-cache"
+import { updateHomepageProductOfTheMonthWorkflow } from "../../../workflows/update-homepage-product-of-the-month"
 import { AdminUpdateHomepageType } from "./validators"
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
@@ -21,7 +22,7 @@ export async function POST(
   req: MedusaRequest<AdminUpdateHomepageType>,
   res: MedusaResponse
 ) {
-  const { hero, category_cards, bestsellers } = req.validatedBody
+  const { hero, category_cards, bestsellers, product_of_the_month } = req.validatedBody
 
   if (hero) {
     await upsertHomepageSetting(req.scope, HOMEPAGE_HERO_KEY, {
@@ -41,6 +42,15 @@ export async function POST(
   if (bestsellers) {
     await upsertHomepageSetting(req.scope, HOMEPAGE_BESTSELLERS_KEY, {
       product_ids: Array.from(new Set(bestsellers.product_ids)),
+    })
+  }
+
+  if (product_of_the_month) {
+    await updateHomepageProductOfTheMonthWorkflow(req.scope).run({
+      input: {
+        product_id: product_of_the_month.product_id ?? null,
+        description: product_of_the_month.description ?? null,
+      },
     })
   }
 

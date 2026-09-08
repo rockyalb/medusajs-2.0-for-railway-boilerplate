@@ -8,12 +8,12 @@ type PotmBannerProps = {
   title: string
   subtitle: string | null
   description: string | null
+  homepageDescription: string | null
   whyChosen: string | null
   handle: string
   image: string
   price: string | null
   originalPrice: string | null
-  monthLabel: string
 }
 
 /** Full-width band on the animated logo-pastel wash. The product card
@@ -22,30 +22,22 @@ export default function PotmBanner({
   title,
   subtitle,
   description,
+  homepageDescription,
   whyChosen,
   handle,
   image,
   price,
   originalPrice,
-  monthLabel,
 }: PotmBannerProps) {
   const reducedMotion = useReducedMotion()
-  const productCopy = whyChosen || description || subtitle
+  const customDescription = homepageDescription?.trim()
+  const productCopy = customDescription || whyChosen || description || subtitle
 
   return (
     <section className="px-3 py-3 small:px-7 small:py-4">
       <div className="yco-potm relative overflow-hidden rounded-rounded">
         <p className="relative flex items-center gap-2 px-7 pt-7 font-sans text-xs font-bold uppercase tracking-[0.14em] text-yco-charcoal small:hidden">
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            aria-hidden
-          >
-            <path d="M12 0c.9 6.6 4.5 10.2 12 12-7.5 1.8-11.1 5.4-12 12-.9-6.6-4.5-10.2-12-12 7.5-1.8 11.1-5.4 12-12Z" />
-          </svg>
-          Produkti i muajit — {monthLabel}
+          Produkti i muajit
         </p>
 
         <div className="relative grid min-h-[460px] grid-cols-1 items-center gap-0 small:min-h-[680px] small:grid-cols-[0.82fr_1.18fr]">
@@ -57,23 +49,14 @@ export default function PotmBanner({
             className="order-2 max-w-xl p-7 pt-2 text-yco-charcoal small:order-1 small:p-14"
           >
             <p className="mb-3 hidden items-center gap-2 font-sans text-xs font-bold uppercase tracking-[0.14em] small:flex">
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden
-              >
-                <path d="M12 0c.9 6.6 4.5 10.2 12 12-7.5 1.8-11.1 5.4-12 12-.9-6.6-4.5-10.2-12-12 7.5-1.8 11.1-5.4 12-12Z" />
-              </svg>
-              Produkti i muajit — {monthLabel}
+              Produkti i muajit
             </p>
             <h2 className="rhode-display font-hanken text-4xl md:text-5xl">
               {title}
             </h2>
             {productCopy && (
               <div className="mt-4 max-w-md">
-                {whyChosen && (
+                {!customDescription && whyChosen && (
                   <p className="font-sans text-[10px] font-bold uppercase tracking-[0.16em] text-yco-charcoal-muted">
                     Pse u zgjodh produkti i muajit
                   </p>
@@ -118,7 +101,7 @@ export default function PotmBanner({
                 damping: 13,
                 mass: 1.1,
               }}
-              className="relative flex h-full w-full max-w-[360px] items-center justify-center small:max-w-none"
+              className="relative flex h-full w-full items-center justify-center"
             >
               <motion.div
                 animate={reducedMotion ? undefined : { y: [0, -10, 0] }}
@@ -130,18 +113,15 @@ export default function PotmBanner({
                 }}
                 className="relative flex h-full w-full items-center justify-center"
               >
-                <span className="absolute left-4 top-2 z-[2] rounded-circle bg-yco-charcoal px-4 py-1.5 font-sans text-[10px] font-bold uppercase tracking-[0.12em] text-white small:left-8 small:top-8">
-                  {monthLabel}
-                </span>
                 {image ? (
                   <img
                     src={image}
                     alt={title}
-                    className="max-h-[330px] w-full object-contain small:max-h-[600px]"
+                    className="aspect-[3/4] w-full object-cover small:aspect-auto small:max-h-[600px] small:object-contain"
                     loading="lazy"
                   />
                 ) : (
-                  <div className="h-[330px] w-full rounded-rounded bg-white/30 small:h-[600px]" />
+                  <div className="aspect-[3/4] w-full rounded-rounded bg-white/30 small:aspect-auto small:h-[600px]" />
                 )}
               </motion.div>
             </motion.div>

@@ -1,21 +1,12 @@
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
-/** Brand feature for Here We Flo: the campaign photo on the left, the old
- * ycorganics.com copy on the right, in our own type and button styles.
- *
- * Height note: the panel is capped near a third of the viewport at every
- * width, so the section reads as a band between the brand rail and the trust
- * badges rather than a second hero.
- *
- * The photo is a 4:5 portrait and must never be cropped, so its box carries
- * that exact ratio: on desktop the box takes the panel height and derives its
- * width, on mobile it takes a share of the width and derives its height. The
- * ratio matches the file, so `object-cover` has nothing to trim. */
+/** Stack the full 4:5 campaign photo above the copy on mobile.
+ * Desktop keeps the compact, height-capped image-and-copy band. */
 export default function HereWeFloSection() {
   return (
     <section className="yco-section bg-white/40 px-3 py-3 small:px-7 small:py-4">
-      <div className="flex h-[29vh] min-h-[196px] max-h-[290px] overflow-hidden rounded-rounded bg-[#f3e3f4] small:h-[28vh] small:min-h-[224px] small:max-h-[340px]">
-        <div className="aspect-[4/5] w-[44%] shrink-0 self-center small:h-full small:w-auto small:self-stretch">
+      <div className="flex flex-col overflow-hidden rounded-rounded bg-[#f3e3f4] small:h-[28vh] small:min-h-[224px] small:max-h-[340px] small:flex-row">
+        <div className="aspect-[4/5] w-full shrink-0 small:h-full small:w-auto small:self-stretch">
           <img
             src="/cms/2024/04/here-we-flo-pads.webp"
             alt="Peceta dhe liners Flo për ndjeshmëri, të certifikuara OEKO-TEX"

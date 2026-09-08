@@ -5,6 +5,7 @@
 @layer base {
   html {
     overflow-x: clip;
+    background-color: #fbfaf7;
   }
 
   html,
@@ -821,6 +822,26 @@
     height: 100lvh;
     transform: translateZ(0);
     backface-visibility: hidden;
+  }
+
+  /* Safari's floating toolbar can clip viewport-fixed backgrounds at its
+     top edge. Paint the mobile wash on the document instead, so content and
+     its background continue together underneath the browser controls. */
+  @media (max-width: 1023px) {
+    body {
+      background-image: linear-gradient(
+        115deg,
+        #daefe4,
+        #f8d8d1 26%,
+        #d6e3f9 52%,
+        #f6e6d9 76%,
+        #daefe4
+      );
+    }
+
+    .yco-ambient {
+      display: none;
+    }
   }
 
   .yco-ambient__aurora {

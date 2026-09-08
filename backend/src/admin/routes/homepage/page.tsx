@@ -26,6 +26,7 @@ import {
   useState,
 } from "react"
 import { sdk } from "../../lib/client"
+import ProductOfTheMonthSection, { ProductOfTheMonthSettings } from "./product-of-the-month"
 
 type HeroSettings = {
   image_url: string | null
@@ -37,6 +38,7 @@ type HeroSettings = {
 }
 
 type HomepageSettings = {
+  product_of_the_month?: ProductOfTheMonthSettings
   hero: HeroSettings
   category_cards: { images: Record<string, string> }
   bestsellers: { product_ids: string[] }
@@ -903,6 +905,7 @@ const HomepagePage = () => {
       ) : (
         <>
           <HeroSection hero={homepage.hero} onSaved={setHomepage} />
+          <ProductOfTheMonthSection settings={homepage.product_of_the_month} onSaved={fetchSettings} />
           <CategoryCardsSection
             images={homepage.category_cards.images}
             onSaved={setHomepage}

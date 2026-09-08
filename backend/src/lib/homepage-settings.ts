@@ -1,6 +1,7 @@
 import { MedusaContainer } from "@medusajs/framework/types"
 import { HOMEPAGE_SETTINGS_MODULE } from "../modules/homepage-settings"
 
+export const HOMEPAGE_PRODUCT_OF_THE_MONTH_KEY = "product_of_the_month"
 export const HOMEPAGE_HERO_KEY = "hero"
 export const HOMEPAGE_CATEGORY_CARDS_KEY = "category_cards"
 export const HOMEPAGE_BESTSELLERS_KEY = "bestsellers"
@@ -25,12 +26,14 @@ export type HomepageBestsellersSettings = {
 }
 
 export type HomepageSettings = {
+  product_of_the_month: { product_id: string | null; description: string | null }
   hero: HomepageHeroSettings
   category_cards: HomepageCategoryCardsSettings
   bestsellers: HomepageBestsellersSettings
 }
 
 export const EMPTY_HOMEPAGE_SETTINGS: HomepageSettings = {
+  product_of_the_month: { product_id: null, description: null },
   hero: {
     image_url: null,
     image_alt: null,
@@ -51,6 +54,7 @@ export const getHomepageSettings = async (
   ) as any
   const settings = await homepageSettingsService.listHomepageSettings({
     key: [
+      HOMEPAGE_PRODUCT_OF_THE_MONTH_KEY,
       HOMEPAGE_HERO_KEY,
       HOMEPAGE_CATEGORY_CARDS_KEY,
       HOMEPAGE_BESTSELLERS_KEY,
@@ -65,6 +69,10 @@ export const getHomepageSettings = async (
   )
 
   return {
+    product_of_the_month: {
+      ...EMPTY_HOMEPAGE_SETTINGS.product_of_the_month,
+      ...((valueByKey[HOMEPAGE_PRODUCT_OF_THE_MONTH_KEY] as object) ?? {}),
+    },
     hero: {
       ...EMPTY_HOMEPAGE_SETTINGS.hero,
       ...((valueByKey[HOMEPAGE_HERO_KEY] as object) ?? {}),
