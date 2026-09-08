@@ -1,6 +1,9 @@
 /** Candidate typefaces for the pre-launch font comparison. Plain data so the
  * client-side switcher can import it without pulling in next/font. Every
- * entry maps to a font loaded in `@lib/fonts` under the same CSS variable. */
+ * entry maps to a font loaded in `@lib/fonts` under the same CSS variable.
+ *
+ * `inter` is the shipped default for both slots, so the lab writes no CSS
+ * override until you pick something else, and Reset returns to Inter. */
 export type FontOption = {
   id: string
   label: string
@@ -11,16 +14,22 @@ export type FontOption = {
 
 export const FONT_OPTIONS: FontOption[] = [
   {
+    id: "inter",
+    label: "Inter",
+    cssVar: "--font-inter",
+    note: "Current site font. Neutral UI grotesque, the beauty-DTC default.",
+  },
+  {
     id: "fredoka",
     label: "Fredoka",
     cssVar: "--font-fredoka",
-    note: "Current brand font. Rounded, playful, a bit toy-like at small sizes.",
+    note: "Former brand font. Rounded, playful, a bit toy-like at small sizes.",
   },
   {
     id: "hanken",
     label: "Hanken Grotesk",
     cssVar: "--font-hanken",
-    note: "Current nav font. Neutral grotesque, very legible.",
+    note: "Former nav font. Neutral grotesque, very legible.",
   },
   {
     id: "nunito",
@@ -114,6 +123,6 @@ export const FONT_OPTIONS: FontOption[] = [
   },
 ]
 
-export const DEFAULT_BRAND_FONT = "fredoka"
-export const DEFAULT_UI_FONT = "hanken"
+export const DEFAULT_BRAND_FONT = "inter"
+export const DEFAULT_UI_FONT = "inter"
 export const FONT_LAB_STORAGE_KEY = "yco-font-lab"

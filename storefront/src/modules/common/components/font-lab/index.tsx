@@ -30,9 +30,9 @@ function optionById(id: string): FontOption | undefined {
   return FONT_OPTIONS.find((option) => option.id === id)
 }
 
-/* Tailwind's `sans` family reads `--font-brand` (falls back to Fredoka) and
-   `hanken` reads `--font-ui` (falls back to Hanken Grotesk), so pointing those
-   two variables at another loaded face restyles the whole page. */
+/* Tailwind's `sans`/`serif` families read `--font-brand` and `hanken` reads
+   `--font-ui`; both fall back to Inter, so pointing those two variables at
+   another loaded face restyles the whole page. */
 function applySelection(selection: Selection) {
   const root = document.documentElement
   const brand = optionById(selection.brand)
@@ -193,7 +193,7 @@ export default function FontLab() {
               }))
             }
           />
-          Use the brand font everywhere (replaces Hanken too)
+          Use the brand font everywhere (nav/UI included)
         </label>
 
         <ul className="yco-font-lab__list" role="listbox" aria-label="Typefaces">
