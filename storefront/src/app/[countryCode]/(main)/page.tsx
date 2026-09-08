@@ -135,7 +135,7 @@ export default async function Home({
         <section className="yco-section bg-white/40 px-6 pt-8 small:pt-10">
           <Reveal className="font-hanken max-w-6xl mx-auto mb-5 small:mb-6">
             <h2 className="yco-section-title rhode-display text-3xl md:text-4xl">
-              Bestsellers
+              Most Loved
             </h2>
           </Reveal>
           <FeaturedProducts products={bestsellerProducts} region={region} />

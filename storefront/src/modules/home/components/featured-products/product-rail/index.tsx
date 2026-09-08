@@ -124,7 +124,7 @@ export default function ProductRail({
         ref={emblaRef}
         className="-mx-6 overflow-hidden px-6 pb-3 md:-mx-8 md:px-8"
         role="region"
-        aria-label="Bestsellers"
+        aria-label="Most Loved"
       >
         <div className="flex gap-3">
           {showcaseProducts.map((product, productIndex) => (
