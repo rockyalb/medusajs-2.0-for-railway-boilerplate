@@ -14,13 +14,13 @@ export const FONT_OPTIONS: FontOption[] = [
     id: "fredoka",
     label: "Fredoka",
     cssVar: "--font-fredoka",
-    note: "Current brand font. Rounded, playful, a bit toy-like at small sizes.",
+    note: "Former brand font. Rounded, playful, a bit toy-like at small sizes.",
   },
   {
     id: "hanken",
     label: "Hanken Grotesk",
     cssVar: "--font-hanken",
-    note: "Current nav font. Neutral grotesque, very legible.",
+    note: "Former nav font. Neutral grotesque, very legible.",
   },
   {
     id: "nunito",
@@ -104,16 +104,20 @@ export const FONT_OPTIONS: FontOption[] = [
     id: "baloo",
     label: "Baloo 2",
     cssVar: "--font-baloo",
-    note: "Chunky rounded display. Closest in spirit to Fredoka, more refined.",
+    note: "Current heading font. Chunky rounded display, refined at large sizes.",
   },
   {
     id: "comfortaa",
     label: "Comfortaa",
     cssVar: "--font-comfortaa",
-    note: "Very round and soft. Organic feel, weaker for long text.",
+    note: "Current body & nav font. Very round and soft, organic feel.",
   },
 ]
 
-export const DEFAULT_BRAND_FONT = "fredoka"
-export const DEFAULT_UI_FONT = "hanken"
-export const FONT_LAB_STORAGE_KEY = "yco-font-lab"
+export const DEFAULT_HEADING_FONT = "baloo"
+export const DEFAULT_BRAND_FONT = "comfortaa"
+export const DEFAULT_UI_FONT = "comfortaa"
+/* Bumped with the Baloo 2 + Comfortaa switch. The old key holds selections
+   made against the retired Fredoka / Hanken defaults, and those would be
+   replayed as explicit overrides and quietly undo the new pairing. */
+export const FONT_LAB_STORAGE_KEY = "yco-font-lab-v2"

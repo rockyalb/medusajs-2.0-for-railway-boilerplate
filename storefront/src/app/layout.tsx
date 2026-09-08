@@ -1,5 +1,5 @@
 import { getBaseURL } from "@lib/util/env"
-import { fontLabVariables, fredoka, hankenGrotesk } from "@lib/fonts"
+import { baloo2, comfortaa, fontLabVariables } from "@lib/fonts"
 import { Metadata } from "next"
 import MetaPixel from "@modules/analytics/components/meta-pixel"
 import AmbientBackground from "@modules/home/components/ambient-background"
@@ -10,16 +10,19 @@ export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
 }
 
-/* Pre-launch font comparison tool. Shown everywhere until launch; set
-   NEXT_PUBLIC_FONT_LAB=false (or delete the component) to hide it. */
-const showFontLab = process.env.NEXT_PUBLIC_FONT_LAB !== "false"
+/* Font comparison tool. Opt-in: set NEXT_PUBLIC_FONT_LAB=true on a preview
+   deploy or in local dev to get it. Off everywhere else, which also keeps the
+   candidate typefaces out of the production bundle — see below. */
+const showFontLab = process.env.NEXT_PUBLIC_FONT_LAB === "true"
 
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
       data-mode="light"
-      className={`${hankenGrotesk.variable} ${fredoka.variable} ${fontLabVariables}`}
+      className={`${baloo2.variable} ${comfortaa.variable}${
+        showFontLab ? ` ${fontLabVariables}` : ""
+      }`}
     >
       <body>
         <AmbientBackground />

@@ -109,12 +109,22 @@ module.exports = {
       fontSize: {
         "3xl": "2rem",
       },
+      // Two faces: Baloo 2 sets headings, Comfortaa carries body copy and the
+      // header/nav. The font lab still overrides `--font-heading` (display) and
+      // `--font-brand` / `--font-ui` (text), so any pairing stays switchable.
       fontFamily: {
-        // Site-wide default. Kept out of the header/nav and the homepage
-        // category cards, which intentionally stay on the grotesque (see
-        // the `hanken` family below).
+        // Headings. Applied to h1–h3 from the base layer in globals.css, so
+        // components get it without adding a class.
+        display: [
+          "var(--font-heading, var(--font-baloo))",
+          "Helvetica Neue",
+          "Helvetica",
+          "Arial",
+          "sans-serif",
+        ],
+        // Body copy and everything not otherwise specified.
         sans: [
-          "var(--font-brand, var(--font-fredoka))",
+          "var(--font-brand, var(--font-comfortaa))",
           "Helvetica Neue",
           "Helvetica",
           "Arial",
@@ -124,16 +134,17 @@ module.exports = {
           "Roboto",
           "sans-serif",
         ],
+        // Legacy name used on editorial headings — follows the display face.
         serif: [
-          "var(--font-brand, var(--font-fredoka))",
+          "var(--font-heading, var(--font-baloo))",
           "Helvetica Neue",
           "Helvetica",
           "Arial",
           "sans-serif",
         ],
-        // Reserved for the header/nav and homepage category cards.
+        // Header/nav and the homepage category cards.
         hanken: [
-          "var(--font-ui, var(--font-hanken))",
+          "var(--font-ui, var(--font-comfortaa))",
           "Helvetica Neue",
           "Helvetica",
           "Arial",

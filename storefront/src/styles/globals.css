@@ -18,6 +18,16 @@
     font-feature-settings: "ss01";
     overflow-x: clip;
   }
+
+  /* Baloo 2 on every heading without touching each component. This targets the
+     elements themselves, so a `font-hanken` / `font-sans` class on an ancestor
+     does not leak in — only a font utility placed directly on the heading
+     overrides it, which is the intended escape hatch. */
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+  }
 }
 
 @layer components {

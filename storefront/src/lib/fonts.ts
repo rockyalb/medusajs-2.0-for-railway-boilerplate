@@ -18,10 +18,32 @@ import {
   Urbanist,
 } from "next/font/google"
 
+/* ── Shipped pairing ──────────────────────────────────────────────────────
+   Baloo 2 for headings, Comfortaa for body and nav/UI. Both are variable
+   fonts, so each is one file across its whole weight range. */
+
+/** Display face: h1–h3 and anything using the `display`/`serif` families. */
+export const baloo2 = Baloo_2({
+  subsets: ["latin"],
+  variable: "--font-baloo",
+  display: "swap",
+})
+
+/** Text face: body copy (`sans`) and the header/nav (`hanken`). */
+export const comfortaa = Comfortaa({
+  subsets: ["latin"],
+  variable: "--font-comfortaa",
+  display: "swap",
+})
+
+/* The previous pairing. Reachable only through the font lab now, so
+   `preload: false` keeps them off the critical path — the browser fetches
+   them the moment something is rendered in them and not before. */
 export const hankenGrotesk = Hanken_Grotesk({
   subsets: ["latin"],
   variable: "--font-hanken",
   display: "swap",
+  preload: false,
   weight: ["300", "400", "500", "600", "700"],
 })
 
@@ -29,6 +51,7 @@ export const fredoka = Fredoka({
   subsets: ["latin"],
   variable: "--font-fredoka",
   display: "swap",
+  preload: false,
   weight: ["300", "400", "500", "600", "700"],
 })
 
@@ -50,8 +73,8 @@ const albertSans = Albert_Sans({ subsets: ["latin"], variable: "--font-albert-sa
 const onest = Onest({ subsets: ["latin"], variable: "--font-onest", display: "swap" })
 const lexend = Lexend({ subsets: ["latin"], variable: "--font-lexend", display: "swap" })
 const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap" })
-const baloo = Baloo_2({ subsets: ["latin"], variable: "--font-baloo", display: "swap" })
-const comfortaa = Comfortaa({ subsets: ["latin"], variable: "--font-comfortaa", display: "swap" })
+/* Baloo 2 and Comfortaa are declared above as the shipped pairing; the lab
+   references their variables directly rather than loading them twice. */
 /* Poppins is a static family, so it needs explicit weights. */
 const poppins = Poppins({
   subsets: ["latin"],
@@ -60,7 +83,8 @@ const poppins = Poppins({
   weight: ["300", "400", "500", "600", "700"],
 })
 
-/** Class names that expose every candidate's CSS variable on <html>. */
+/** Class names that expose every candidate's CSS variable on <html>. Applied
+ * only when the lab is actually rendered, so production ships two faces. */
 export const fontLabVariables = [
   nunito,
   quicksand,
@@ -74,8 +98,8 @@ export const fontLabVariables = [
   onest,
   lexend,
   sora,
-  baloo,
-  comfortaa,
+  fredoka,
+  hankenGrotesk,
   poppins,
 ]
   .map((font) => font.variable)

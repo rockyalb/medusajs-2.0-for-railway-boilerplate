@@ -4,21 +4,24 @@ import { useEffect, useState } from "react"
 import { clx } from "@medusajs/ui"
 import {
   DEFAULT_BRAND_FONT,
+  DEFAULT_HEADING_FONT,
   DEFAULT_UI_FONT,
   FONT_LAB_STORAGE_KEY,
   FONT_OPTIONS,
   type FontOption,
 } from "@lib/font-lab-options"
 
-type Slot = "brand" | "ui"
+type Slot = "heading" | "brand" | "ui"
 
 type Selection = {
+  heading: string
   brand: string
   ui: string
   linked: boolean
 }
 
 const DEFAULT_SELECTION: Selection = {
+  heading: DEFAULT_HEADING_FONT,
   brand: DEFAULT_BRAND_FONT,
   ui: DEFAULT_UI_FONT,
   linked: false,
@@ -30,24 +33,30 @@ function optionById(id: string): FontOption | undefined {
   return FONT_OPTIONS.find((option) => option.id === id)
 }
 
-/* Tailwind's `sans` family reads `--font-brand` (falls back to Fredoka) and
-   `hanken` reads `--font-ui` (falls back to Hanken Grotesk), so pointing those
-   two variables at another loaded face restyles the whole page. */
+/* Tailwind's `display`/`serif` families read `--font-heading` (falls back to
+   Baloo 2), `sans` reads `--font-brand` and `hanken` reads `--font-ui` (both
+   fall back to Comfortaa), so pointing these three variables at another loaded
+   face restyles the whole page. A slot left on its default writes nothing, so
+   the shipped pairing stays in force. */
 function applySelection(selection: Selection) {
   const root = document.documentElement
-  const brand = optionById(selection.brand)
-  const ui = optionById(selection.linked ? selection.brand : selection.ui)
 
-  if (brand && brand.id !== DEFAULT_BRAND_FONT) {
-    root.style.setProperty("--font-brand", `var(${brand.cssVar})`)
-  } else {
-    root.style.removeProperty("--font-brand")
-  }
+  const slots: [string, FontOption | undefined, string][] = [
+    ["--font-heading", optionById(selection.heading), DEFAULT_HEADING_FONT],
+    ["--font-brand", optionById(selection.brand), DEFAULT_BRAND_FONT],
+    [
+      "--font-ui",
+      optionById(selection.linked ? selection.brand : selection.ui),
+      DEFAULT_UI_FONT,
+    ],
+  ]
 
-  if (ui && ui.id !== DEFAULT_UI_FONT) {
-    root.style.setProperty("--font-ui", `var(${ui.cssVar})`)
-  } else {
-    root.style.removeProperty("--font-ui")
+  for (const [cssVar, option, defaultId] of slots) {
+    if (option && option.id !== defaultId) {
+      root.style.setProperty(cssVar, `var(${option.cssVar})`)
+    } else {
+      root.style.removeProperty(cssVar)
+    }
   }
 }
 
@@ -57,6 +66,9 @@ function readStored(): Selection {
     if (!raw) return DEFAULT_SELECTION
     const parsed = JSON.parse(raw) as Partial<Selection>
     return {
+      heading: optionById(parsed.heading ?? "")
+        ? parsed.heading!
+        : DEFAULT_HEADING_FONT,
       brand: optionById(parsed.brand ?? "") ? parsed.brand! : DEFAULT_BRAND_FONT,
       ui: optionById(parsed.ui ?? "") ? parsed.ui! : DEFAULT_UI_FONT,
       linked: Boolean(parsed.linked),
@@ -66,10 +78,10 @@ function readStored(): Selection {
   }
 }
 
-/** Floating pre-launch tool for comparing typefaces on the live pages.
- * Renders only when `NEXT_PUBLIC_FONT_LAB=true` (or in development). The
- * choice persists per browser via localStorage and never touches the
- * server-rendered markup, so it is safe to leave on a preview deploy. */
+/** Floating tool for comparing typefaces on the live pages. Opt-in: the root
+ * layout renders it only when `NEXT_PUBLIC_FONT_LAB=true`, so it is off in
+ * production. The choice persists per browser via localStorage and never
+ * touches the server-rendered markup, so it is safe on a preview deploy. */
 export default function FontLab() {
   const [open, setOpen] = useState(false)
   const [slot, setSlot] = useState<Slot>("brand")
@@ -105,19 +117,19 @@ export default function FontLab() {
     return () => window.removeEventListener("keydown", onKey)
   }, [open])
 
-  const activeId = slot === "brand" ? selection.brand : selection.ui
+  const activeId = selection[slot]
+  const headingLabel = optionById(selection.heading)?.label ?? "—"
   const brandLabel = optionById(selection.brand)?.label ?? "—"
   const uiLabel =
     optionById(selection.linked ? selection.brand : selection.ui)?.label ?? "—"
   const isDefault =
+    selection.heading === DEFAULT_HEADING_FONT &&
     selection.brand === DEFAULT_BRAND_FONT &&
     selection.ui === DEFAULT_UI_FONT &&
     !selection.linked
 
   const choose = (id: string) => {
-    setSelection((current) =>
-      slot === "brand" ? { ...current, brand: id } : { ...current, ui: id }
-    )
+    setSelection((current) => ({ ...current, [slot]: id }))
   }
 
   return (
@@ -147,7 +159,8 @@ export default function FontLab() {
           <div>
             <p className="yco-font-lab__title">Font lab</p>
             <p className="yco-font-lab__sub">
-              Brand: <b>{brandLabel}</b> · Nav/UI: <b>{uiLabel}</b>
+              Headings: <b>{headingLabel}</b> · Body: <b>{brandLabel}</b> ·
+              Nav/UI: <b>{uiLabel}</b>
             </p>
           </div>
           <button
@@ -164,11 +177,20 @@ export default function FontLab() {
           <button
             type="button"
             role="tab"
+            aria-selected={slot === "heading"}
+            onClick={() => setSlot("heading")}
+            className="yco-font-lab__tab"
+          >
+            Headings
+          </button>
+          <button
+            type="button"
+            role="tab"
             aria-selected={slot === "brand"}
             onClick={() => setSlot("brand")}
             className="yco-font-lab__tab"
           >
-            Brand (headings + body)
+            Body
           </button>
           <button
             type="button"
@@ -193,7 +215,7 @@ export default function FontLab() {
               }))
             }
           />
-          Use the brand font everywhere (replaces Hanken too)
+          Use the body font for nav/UI too
         </label>
 
         <ul className="yco-font-lab__list" role="listbox" aria-label="Typefaces">
