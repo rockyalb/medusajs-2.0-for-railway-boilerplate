@@ -1,7 +1,6 @@
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
-import Wrapper from "@modules/checkout/components/payment-wrapper"
 import CheckoutForm from "@modules/checkout/templates/checkout-form"
 import CheckoutSummary from "@modules/checkout/templates/checkout-summary"
 import { enrichLineItems, retrieveCart } from "@lib/data/cart"
@@ -39,9 +38,7 @@ export default async function Checkout({
 
   return (
     <div className="content-container grid grid-cols-1 gap-8 py-10 small:grid-cols-[1fr_416px] small:gap-10 small:py-12">
-      <Wrapper cart={cart}>
-        <CheckoutForm cart={cart} customer={customer} />
-      </Wrapper>
+      <CheckoutForm cart={cart} customer={customer} />
       <CheckoutSummary cart={cart} customer={customer} />
     </div>
   )

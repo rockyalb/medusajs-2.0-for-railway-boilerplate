@@ -421,7 +421,7 @@ export async function placeOrder() {
     redirect(`/order/confirmed/${cartRes?.order.id}`)
   }
 
-  return cartRes.cart
+  throw new Error(cartRes.error?.message || "Porosia nuk u përfundua. Ju lutemi provoni përsëri.")
 }
 
 async function attachMetaTrackingToCart(cartId: string) {
