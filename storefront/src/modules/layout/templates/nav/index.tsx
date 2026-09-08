@@ -6,7 +6,8 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import CartButton from "@modules/layout/components/cart-button"
 import {
   BagIcon,
-  headerChipClass,
+  cartButtonClass,
+  cartLabelClass,
 } from "@modules/layout/components/header-controls"
 import NavClient from "./nav-client"
 
@@ -45,12 +46,12 @@ export default async function Nav() {
         <Suspense
           fallback={
             <LocalizedClientLink
-              className={`${headerChipClass} small:h-full small:w-auto small:rounded-none small:border-0 small:bg-transparent small:px-2 small:shadow-none small:hover:bg-transparent small:hover:text-yco-coral small:active:scale-100 small:font-hanken small:text-xs small:font-bold small:uppercase small:tracking-[0.14em]`}
+              className={cartButtonClass}
               href="/cart"
               aria-label="Hap shportën (0 artikuj)"
               data-testid="nav-cart-link"
             >
-              <span className="hidden small:inline">Shporta (0)</span>
+              <span className={cartLabelClass}>Shporta (0)</span>
               <span className="small:hidden">
                 <BagIcon />
               </span>

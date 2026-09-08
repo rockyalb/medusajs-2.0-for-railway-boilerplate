@@ -17,7 +17,8 @@ import Thumbnail from "@modules/products/components/thumbnail"
 import {
   BagIcon,
   CartBadge,
-  headerChipClass,
+  cartButtonClass,
+  cartLabelClass,
 } from "@modules/layout/components/header-controls"
 
 const DropdownItem = ({
@@ -316,11 +317,9 @@ const CartDropdown = ({
           onClick={() => setOpen(true)}
           aria-label={`Hap shportën (${totalItems} artikuj)`}
           data-testid="nav-cart-link"
-          className={`${headerChipClass} small:h-full small:w-auto small:rounded-none small:border-0 small:bg-transparent small:px-2 small:shadow-none small:hover:bg-transparent small:hover:text-yco-coral small:active:scale-100`}
+          className={cartButtonClass}
         >
-          <span className="hidden font-hanken text-xs font-bold uppercase tracking-[0.14em] transition-colors duration-300 small:inline-block">
-            Shporta ({totalItems})
-          </span>
+          <span className={cartLabelClass}>Shporta ({totalItems})</span>
           <span className="small:hidden">
             <BagIcon />
           </span>
