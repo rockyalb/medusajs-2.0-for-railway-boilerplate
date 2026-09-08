@@ -411,7 +411,7 @@ export default function NavClient({
         <div className="overflow-hidden">
           <AnnouncementBar />
         </div>
-        <nav className="content-container flex items-center justify-between w-full h-20">
+        <nav className="content-container flex h-12 w-full items-center justify-between small:h-14">
           <div className="flex-1 basis-0 h-full flex items-center gap-x-7">
             <div className="h-full small:hidden flex items-center">
               <Hamburger
@@ -429,7 +429,7 @@ export default function NavClient({
                 <img
                   src="/image2vector.svg"
                   alt="yco"
-                  className="h-12 w-auto"
+                  className="h-10 w-auto"
                 />
               </LocalizedClientLink>
               <button
@@ -467,7 +467,7 @@ export default function NavClient({
               onClick={closeMobile}
               onMouseEnter={closeShop}
             >
-              <img src="/image2vector.svg" alt="yco" className="h-10 w-auto" />
+              <img src="/image2vector.svg" alt="yco" className="h-9 w-auto" />
             </LocalizedClientLink>
           </div>
 
@@ -520,7 +520,7 @@ export default function NavClient({
             onMouseEnter={() => setShopOpen(true)}
           >
             <div className="overflow-hidden border-b border-yco-cream-dark bg-yco-panel shadow-[0_32px_60px_-36px_rgba(47,45,41,0.45)]">
-              <div className="content-container max-h-[calc(100vh-8rem)] overflow-y-auto py-8">
+              <div className="content-container max-h-[calc(100vh-5rem)] overflow-y-auto py-8">
                 <div className="mb-8 flex flex-wrap justify-center gap-x-8 gap-y-2">
                   {categories.length > 0 && (
                     <button

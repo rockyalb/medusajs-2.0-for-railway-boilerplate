@@ -25,9 +25,9 @@ export default function AnnouncementBar() {
           {loop.map((message, i) => (
             <span
               key={i}
-              className="flex items-center font-sans text-[11px] font-bold uppercase tracking-[0.18em] text-yco-charcoal-muted"
+              className="flex items-center font-sans text-[10px] font-bold uppercase leading-none tracking-[0.2em] text-yco-charcoal-muted"
             >
-              <span className="px-8 py-2.5">{message}</span>
+              <span className="px-8 py-[5px]">{message}</span>
               <span aria-hidden className="h-1 w-1 rounded-full bg-current" />
             </span>
           ))}
@@ -38,7 +38,7 @@ export default function AnnouncementBar() {
         type="button"
         onClick={() => setPaused((p) => !p)}
         aria-label={paused ? "Luaj njoftimet" : "Ndalo njoftimet"}
-        className="absolute right-3 grid h-6 w-6 place-items-center text-yco-charcoal-muted hover:text-yco-charcoal transition-colors"
+        className="absolute right-3 grid h-5 w-5 place-items-center text-yco-charcoal-muted hover:text-yco-charcoal transition-colors"
       >
         {paused ? (
           <svg width="11" height="11" viewBox="0 0 12 12" fill="currentColor">

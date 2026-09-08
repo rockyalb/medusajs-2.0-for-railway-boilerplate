@@ -9,8 +9,14 @@ type EditorialTile = {
 }
 
 /* Photography carries the section, so the tiles link out by category rather
-   than product. Order matches the campaign shoot: body, face, hair, men. */
+   than product. Order: men, body, face, hair. */
 const TILES: EditorialTile[] = [
+  {
+    label: "Men care",
+    href: "/categories/men-care",
+    image: "/categories/men-care.webp",
+    alt: "Profili i një burri me lëkurë të lagur pas dushit",
+  },
   {
     label: "Body care",
     href: "/categories/body-care",
@@ -28,12 +34,6 @@ const TILES: EditorialTile[] = [
     href: "/categories/hair-care",
     image: "/categories/hair-care.webp",
     alt: "Flokë të gjatë kafe të mbajtur me një drejtues",
-  },
-  {
-    label: "Men care",
-    href: "/categories/men-care",
-    image: "/categories/men-care.webp",
-    alt: "Profili i një burri me lëkurë të lagur pas dushit",
   },
 ]
 
