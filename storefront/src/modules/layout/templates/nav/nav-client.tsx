@@ -411,7 +411,9 @@ export default function NavClient({
         <div className="overflow-hidden">
           <AnnouncementBar />
         </div>
-        <nav className="content-container flex h-12 w-full items-center justify-between small:h-14">
+        {/* Mobile ran 8px shorter than desktop and read cramped against the
+            announcement bar; both are 56px now. */}
+        <nav className="content-container flex h-14 w-full items-center justify-between">
           <div className="flex-1 basis-0 h-full flex items-center gap-x-7">
             <div className="h-full small:hidden flex items-center">
               <Hamburger
