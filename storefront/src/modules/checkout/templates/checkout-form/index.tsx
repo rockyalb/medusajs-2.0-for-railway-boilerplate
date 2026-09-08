@@ -1,3 +1,4 @@
+import CheckoutSummary from "@modules/checkout/templates/checkout-summary"
 import ContinuousCheckout from "@modules/checkout/components/continuous-checkout"
 import { getLoyaltyRewardSetting } from "@lib/data/loyalty"
 import { HttpTypes } from "@medusajs/types"
@@ -28,7 +29,9 @@ export default async function CheckoutForm({
           endDate={loyaltyRewardSetting.end_date}
         />
 
-        <ContinuousCheckout key={cart.id} cart={cart} customer={customer} />
+        <ContinuousCheckout key={cart.id} cart={cart} customer={customer}>
+          <CheckoutSummary cart={cart} customer={customer} />
+        </ContinuousCheckout>
       </div>
     </div>
   )

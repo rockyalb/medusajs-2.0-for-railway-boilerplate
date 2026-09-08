@@ -1,30 +1,26 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useId, useRef, useState } from "react"
 import { HttpTypes } from "@medusajs/types"
 import { Button, Heading } from "@medusajs/ui"
 import { completeCodCheckout, prepareCheckout } from "@lib/data/checkout"
-import { convertToLocale } from "@lib/util/money"
-import compareAddresses from "@lib/util/compare-addresses"
+import CartTotals from "@modules/common/components/cart-totals"
 import ShippingAddress from "../shipping-address"
-import BillingAddress from "../billing_address"
 
 const serialize = (form: FormData) => JSON.stringify(Array.from(form.entries()))
 
 export default function ContinuousCheckout({
   cart,
   customer,
+  children,
 }: {
   cart: HttpTypes.StoreCart
   customer: HttpTypes.StoreCustomer | null
+  children: React.ReactNode
 }) {
   // Server refreshes must never replace an address the customer is still typing.
   const [initialCart] = useState(cart)
-  const [sameAsBilling, setSameAsBilling] = useState(
-    !cart.billing_address ||
-      !cart.shipping_address ||
-      compareAddresses(cart.shipping_address, cart.billing_address)
-  )
+  const formId = useId()
   const formRef = useRef<HTMLFormElement>(null)
   const revision = useRef(0)
   const queue = useRef<Promise<void>>(Promise.resolve())
@@ -131,86 +127,59 @@ export default function ContinuousCheckout({
     }
   }
 
-  const price = (amount: number) =>
-    convertToLocale({
-      amount,
-      currency_code: quote?.cart.currency_code ?? cart.currency_code,
-    })
-
   return (
-    <form
-      ref={formRef}
-      onChange={markDirty}
-      onSubmit={handleSubmit}
+    <div
       className="bg-white rounded-large border border-yco-cream-dark p-5 small:p-8"
       data-testid="continuous-checkout"
     >
-      <fieldset disabled={submitting} className="min-w-0">
-        <Heading level="h2" className="text-3xl-regular mb-6">
-          Të dhënat tuaja
-        </Heading>
-        <ShippingAddress
-          cart={initialCart}
-          customer={customer}
-          checked={sameAsBilling}
-          onChange={() => {
-            setSameAsBilling((value) => !value)
-            markDirty()
-          }}
-          onValuesChange={markDirty}
-        />
-        {!sameAsBilling && (
-          <div className="mt-8">
-            <Heading level="h2" className="text-2xl-regular mb-5">
-              Adresa e faturimit
-            </Heading>
-            <BillingAddress cart={initialCart} />
-          </div>
-        )}
-      </fieldset>
+      <form
+        id={formId}
+        ref={formRef}
+        onChange={markDirty}
+        onSubmit={handleSubmit}
+      >
+        <fieldset disabled={submitting} className="min-w-0">
+          <Heading level="h2" className="text-3xl-regular mb-5">
+            Të dhënat tuaja
+          </Heading>
+          <ShippingAddress
+            cart={initialCart}
+            customer={customer}
+            checked
+            onChange={() => {}}
+            onValuesChange={markDirty}
+            compact
+          />
+        </fieldset>
+      </form>
 
-      <div className="border-t border-yco-cream-dark mt-6 pt-6 space-y-4">
-        <div
-          className="flex justify-between gap-4"
-          aria-live="polite"
-          aria-busy={updating}
+      <section
+        className="mt-8 border-t border-yco-cream-dark pt-6"
+        aria-label="Përmbledhja e porosisë"
+      >
+        <fieldset disabled={submitting} className="min-w-0">
+          {children}
+        </fieldset>
+        <div className="mt-5" aria-live="polite" aria-busy={updating}>
+          <CartTotals
+            totals={quote?.cart ?? cart}
+            pendingLabel={
+              !quote
+                ? updating
+                  ? "Duke përditësuar…"
+                  : error
+                  ? "Dërgesa nuk u llogarit"
+                  : "Plotësoni qytetin"
+                : undefined
+            }
+          />
+        </div>
+        <p
+          className="text-sm text-yco-charcoal-muted mb-5"
+          data-testid="payment-method-summary"
         >
-          <span>Dërgesa</span>
-          <span className="text-right text-sm" data-testid="automatic-shipping">
-            {updating
-              ? "Duke përditësuar…"
-              : quote
-              ? price(quote.cart.shipping_total ?? 0)
-              : error
-              ? "Dërgesa nuk u llogarit"
-              : "Plotësoni qytetin dhe shtetin"}
-          </span>
-        </div>
-        <div className="flex justify-between gap-4">
-          <span>Pagesa</span>
-          <span className="text-right" data-testid="payment-method-summary">
-            Në dorëzim (COD)
-          </span>
-        </div>
-        <p className="text-sm text-yco-charcoal-muted">
-          Paguani kur porosia dorëzohet. Dërgesa llogaritet automatikisht sipas
-          adresës suaj.
+          Pagesa në dorëzim (COD)
         </p>
-      </div>
-
-      <div className="mt-8 border-t border-yco-cream-dark pt-6">
-        <div
-          className="flex justify-between items-baseline gap-4 mb-5"
-          aria-live="polite"
-        >
-          <span className="font-semibold">Totali për pagesë</span>
-          <span
-            className="text-xl font-semibold"
-            data-testid="checkout-final-total"
-          >
-            {quote ? price(quote.cart.total ?? 0) : "Duke pritur dërgesën"}
-          </span>
-        </div>
         <p className="text-sm text-yco-charcoal-muted mb-5">
           Duke klikuar “Përfundo porosinë”, pranoni kushtet e përdorimit,
           kushtet e shitjes, politikën e kthimeve dhe politikën e privatësisë.
@@ -235,6 +204,7 @@ export default function ContinuousCheckout({
           </div>
         )}
         <Button
+          form={formId}
           type="submit"
           disabled={!quote || updating || submitting}
           isLoading={submitting}
@@ -243,7 +213,7 @@ export default function ContinuousCheckout({
         >
           Përfundo porosinë
         </Button>
-      </div>
-    </form>
+      </section>
+    </div>
   )
 }

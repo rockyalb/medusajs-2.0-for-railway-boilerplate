@@ -13,12 +13,14 @@ const ShippingAddress = ({
   checked,
   onChange,
   onValuesChange,
+  compact = false,
 }: {
   customer: HttpTypes.StoreCustomer | null
   cart: HttpTypes.StoreCart | null
   checked: boolean
   onChange: () => void
   onValuesChange?: () => void
+  compact?: boolean
 }) => {
   const [formData, setFormData] = useState<Record<string, any>>({})
 
@@ -31,9 +33,13 @@ const ShippingAddress = ({
   const addressesInRegion = useMemo(
     () =>
       customer?.addresses.filter(
-        (a) => a.country_code && countriesInRegion?.includes(a.country_code)
+        (a) =>
+          a.country_code &&
+          (compact
+            ? a.country_code === "al"
+            : countriesInRegion?.includes(a.country_code))
       ),
-    [customer?.addresses, countriesInRegion]
+    [customer?.addresses, countriesInRegion, compact]
   )
 
   const defaultCountry =
@@ -110,7 +116,7 @@ const ShippingAddress = ({
           />
         </Container>
       )}
-      <div className="grid grid-cols-1 small:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 gap-4">
         <Input
           label="Emri"
           name="shipping_address.first_name"
@@ -129,6 +135,8 @@ const ShippingAddress = ({
           required
           data-testid="shipping-last-name-input"
         />
+      </div>
+      <div className="grid grid-cols-1 small:grid-cols-2 gap-4 mt-4">
         <Input
           label="Adresa"
           name="shipping_address.address_1"
@@ -155,26 +163,38 @@ const ShippingAddress = ({
           required
           data-testid="shipping-city-input"
         />
-        <CountrySelect
-          name="shipping_address.country_code"
-          autoComplete="country"
-          region={cart?.region}
-          value={formData["shipping_address.country_code"] ?? ""}
-          onChange={handleChange}
-          required
-          data-testid="shipping-country-select"
-        />
+        {compact ? (
+          <input
+            type="hidden"
+            name="shipping_address.country_code"
+            value="al"
+          />
+        ) : (
+          <CountrySelect
+            name="shipping_address.country_code"
+            autoComplete="country"
+            region={cart?.region}
+            value={formData["shipping_address.country_code"] ?? ""}
+            onChange={handleChange}
+            required
+            data-testid="shipping-country-select"
+          />
+        )}
       </div>
-      <div className="my-8">
-        <Checkbox
-          label="Adresa e faturimit është e njëjtë me adresën e dërgesës"
-          name="same_as_billing"
-          checked={checked}
-          onChange={onChange}
-          data-testid="billing-address-checkbox"
-        />
-      </div>
-      <div className="grid grid-cols-1 small:grid-cols-2 gap-4 mb-4">
+      {compact ? (
+        <input type="hidden" name="same_as_billing" value="on" />
+      ) : (
+        <div className="my-8">
+          <Checkbox
+            label="Adresa e faturimit është e njëjtë me adresën e dërgesës"
+            name="same_as_billing"
+            checked={checked}
+            onChange={onChange}
+            data-testid="billing-address-checkbox"
+          />
+        </div>
+      )}
+      <div className="grid grid-cols-1 small:grid-cols-2 gap-4 mt-4">
         <Input
           label="Email"
           name="email"

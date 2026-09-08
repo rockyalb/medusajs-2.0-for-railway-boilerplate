@@ -232,3 +232,70 @@ test("checkout does not require a postal code", async () => {
     redirect: true,
   })
 })
+
+test("Tirane, Tiranë and Tirana share the lower delivery group in both backend hooks", () => {
+  const callbacks = []
+  const hook = {
+    hooks: { setShippingOptionsContext: (fn) => callbacks.push(fn) },
+  }
+  const source = fs.readFileSync(
+    path.join(
+      __dirname,
+      "../../backend/src/workflows/hooks/shipping-options-context.ts"
+    ),
+    "utf8"
+  )
+  const output = ts.transpileModule(source, {
+    compilerOptions: {
+      module: ts.ModuleKind.CommonJS,
+      target: ts.ScriptTarget.ES2022,
+    },
+  }).outputText
+  const module = { exports: {} }
+  new Function("require", "module", "exports", output)(
+    (name) => {
+      if (name === "@medusajs/medusa/core-flows")
+        return {
+          listShippingOptionsForCartWorkflow: hook,
+          listShippingOptionsForCartWithPricingWorkflow: hook,
+        }
+      if (name === "@medusajs/framework/workflows-sdk")
+        return {
+          StepResponse: class {
+            constructor(data) {
+              this.data = data
+            }
+          },
+        }
+      throw new Error(`Unexpected dependency: ${name}`)
+    },
+    module,
+    module.exports
+  )
+  assert.equal(callbacks.length, 2)
+  for (const callback of callbacks) {
+    for (const city of ["Tirane", "Tiranë", "Tirana", " TIRANA ", "tiranë"]) {
+      assert.equal(
+        callback({ cart: { shipping_address: { city } } }).data
+          .delivery_city_group,
+        "tirane",
+        city
+      )
+    }
+    for (const city of [
+      "Durrës",
+      "Vlorë",
+      "Tirana e Re",
+      "",
+      null,
+      undefined,
+    ]) {
+      assert.equal(
+        callback({ cart: { shipping_address: { city } } }).data
+          .delivery_city_group,
+        "other",
+        String(city)
+      )
+    }
+  }
+})

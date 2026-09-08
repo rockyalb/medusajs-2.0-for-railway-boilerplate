@@ -4,6 +4,7 @@ import { convertToLocale } from "@lib/util/money"
 import React from "react"
 
 type CartTotalsProps = {
+  pendingLabel?: string
   totals: {
     total?: number | null
     subtotal?: number | null
@@ -15,7 +16,7 @@ type CartTotalsProps = {
   }
 }
 
-const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
+const CartTotals: React.FC<CartTotalsProps> = ({ totals, pendingLabel }) => {
   const {
     currency_code,
     total,
@@ -52,8 +53,12 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
         )}
         <div className="flex items-center justify-between">
           <span>Transporti</span>
-          <span data-testid="cart-shipping" data-value={shipping_total || 0}>
-            {convertToLocale({ amount: shipping_total ?? 0, currency_code })}
+          <span
+            data-testid="cart-shipping"
+            data-value={pendingLabel ? undefined : shipping_total || 0}
+          >
+            {pendingLabel ??
+              convertToLocale({ amount: shipping_total ?? 0, currency_code })}
           </span>
         </div>
         <div className="flex justify-between">
@@ -82,9 +87,10 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
         <span
           className="text-xl font-black"
           data-testid="cart-total"
-          data-value={total || 0}
+          data-value={pendingLabel ? undefined : total || 0}
         >
-          {convertToLocale({ amount: total ?? 0, currency_code })}
+          {pendingLabel ??
+            convertToLocale({ amount: total ?? 0, currency_code })}
         </span>
       </div>
       <div className="mt-4 h-px w-full border-b border-yco-cream-dark" />

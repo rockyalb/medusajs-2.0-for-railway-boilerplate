@@ -4,8 +4,6 @@ import { HttpTypes } from "@medusajs/types"
 import ItemsPreviewTemplate from "@modules/cart/templates/preview"
 import DiscountCode from "@modules/checkout/components/discount-code"
 import StoreCreditApply from "@modules/checkout/components/store-credit-apply"
-import CartTotals from "@modules/common/components/cart-totals"
-import Divider from "@modules/common/components/divider"
 import FreeShippingProgress from "@modules/common/components/free-shipping-progress"
 import LoyaltyCreditNotice from "@modules/common/components/loyalty-credit-notice"
 import {
@@ -70,34 +68,24 @@ const CheckoutSummary = async ({
   }
 
   return (
-    <div className="sticky top-6 flex flex-col-reverse gap-y-8 py-8 small:flex-col small:py-0">
-      <div className="flex w-full flex-col rounded-large border border-yco-cream-dark bg-white p-5 small:p-6">
-        <Divider className="my-6 small:hidden" />
-        <Heading
-          level="h2"
-          className="rhode-display flex flex-row items-baseline text-4xl"
-        >
-          Në shportën tuaj
-        </Heading>
-        <Divider className="my-6" />
-        <FreeShippingProgress
-          item_total={cart.item_total}
-          subtotal={cart.subtotal}
-          tax_total={cart.tax_total}
-          currency_code={cart.currency_code}
-          compact
-        />
-        <div className="mt-6">
-          <CartTotals totals={cart} />
-        </div>
-        {storeCreditApply}
-        {loyaltyCreditNotice}
-        <ItemsPreviewTemplate items={cart?.items} />
-        <div className="my-6">
-          <DiscountCode cart={cart} />
-        </div>
+    <>
+      <Heading level="h2" className="text-3xl-regular mb-4">
+        Në shportën tuaj
+      </Heading>
+      <ItemsPreviewTemplate items={cart?.items} />
+      <div className="my-4">
+        <DiscountCode cart={cart} />
       </div>
-    </div>
+      <FreeShippingProgress
+        item_total={cart.item_total}
+        subtotal={cart.subtotal}
+        tax_total={cart.tax_total}
+        currency_code={cart.currency_code}
+        compact
+      />
+      {storeCreditApply}
+      {loyaltyCreditNotice}
+    </>
   )
 }
 

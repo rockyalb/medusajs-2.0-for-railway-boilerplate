@@ -2,7 +2,6 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import CheckoutForm from "@modules/checkout/templates/checkout-form"
-import CheckoutSummary from "@modules/checkout/templates/checkout-summary"
 import { enrichLineItems, retrieveCart } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
 import { getCustomer } from "@lib/data/customer"
@@ -37,9 +36,8 @@ export default async function Checkout({
   const customer = await getCustomer()
 
   return (
-    <div className="content-container grid grid-cols-1 gap-8 py-10 small:grid-cols-[1fr_416px] small:gap-10 small:py-12">
+    <div className="content-container max-w-3xl py-8 small:py-12">
       <CheckoutForm cart={cart} customer={customer} />
-      <CheckoutSummary cart={cart} customer={customer} />
     </div>
   )
 }

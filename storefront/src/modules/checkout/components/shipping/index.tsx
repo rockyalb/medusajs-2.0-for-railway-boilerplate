@@ -61,16 +61,17 @@ const Shipping: React.FC<ShippingProps> = ({
       return undefined
     }
 
-    const cityGroup =
-      normalizeCity(cart.shipping_address.city) === "tirane"
-        ? "tirane"
-        : "other"
+    const cityGroup = ["tirane", "tirana"].includes(
+      normalizeCity(cart.shipping_address.city) ?? ""
+    )
+      ? "tirane"
+      : "other"
     const targetCode =
       (cart.subtotal ?? 0) >= FREE_SHIPPING_THRESHOLD_ALL
         ? "free-delivery"
         : cityGroup === "tirane"
-          ? "tirane-delivery"
-          : "standard-delivery"
+        ? "tirane-delivery"
+        : "standard-delivery"
 
     return (
       selectableShippingMethods.find(

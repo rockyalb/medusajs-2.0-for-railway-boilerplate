@@ -16,7 +16,7 @@ const getDeliveryCityContext = ({ cart }) => {
   const city = normalizeCity(cart.shipping_address?.city)
 
   return new StepResponse({
-    delivery_city_group: city === "tirane" ? "tirane" : "other",
+    delivery_city_group: city === "tirane" || city === "tirana" ? "tirane" : "other",
   })
 }
 
