@@ -293,7 +293,9 @@ export const getProductsList = cache(async function ({
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
 }> {
   const limit = queryParams?.limit || 12
-  const validPageParam = Math.max(pageParam, 1);
+  const validPageParam = Number.isFinite(pageParam)
+    ? Math.max(Math.floor(pageParam), 1)
+    : 1
   const offset = (validPageParam - 1) * limit
   const region = await getRegion(countryCode)
 
@@ -315,7 +317,7 @@ export const getProductsList = cache(async function ({
       { next: { tags: ["products"] } }
     )
     .then(({ products, count }) => {
-      const nextPage = count > offset + limit ? pageParam + 1 : null
+      const nextPage = count > offset + limit ? validPageParam + 1 : null
 
       return {
         response: {
@@ -329,11 +331,11 @@ export const getProductsList = cache(async function ({
 })
 
 /**
- * This will fetch 100 products to the Next.js cache and sort them based on the sortBy parameter.
- * It will then return the paginated products based on the page and limit parameters.
+ * Fetch only the requested page. The API count describes the same filtered catalog.
+ * Price sorting is limited to this page until the backend supports calculated-price ordering.
  */
 export const getProductsListWithSort = cache(async function ({
-  page = 0,
+  page = 1,
   queryParams,
   sortBy = "created_at",
   countryCode,
@@ -347,33 +349,23 @@ export const getProductsListWithSort = cache(async function ({
   nextPage: number | null
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
 }> {
-  const limit = queryParams?.limit || 12
-
-  const {
-    response: { products, count },
-  } = await getProductsList({
-    pageParam: 0,
+  const result = await getProductsList({
+    pageParam: page,
     queryParams: {
       ...queryParams,
-      limit: 100,
+      order: "-created_at,id",
     },
     countryCode,
   })
 
-  const sortedProducts = sortProducts(products, sortBy)
-
-  const pageParam = (page - 1) * limit
-
-  const nextPage = count > pageParam + limit ? pageParam + limit : null
-
-  const paginatedProducts = sortedProducts.slice(pageParam, pageParam + limit)
-
   return {
+    ...result,
     response: {
-      products: paginatedProducts,
-      count,
+      ...result.response,
+      products:
+        sortBy === "created_at"
+          ? result.response.products
+          : sortProducts(result.response.products, sortBy),
     },
-    nextPage,
-    queryParams,
   }
 })

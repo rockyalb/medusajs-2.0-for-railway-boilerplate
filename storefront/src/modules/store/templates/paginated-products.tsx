@@ -11,7 +11,6 @@ type PaginatedProductsParams = {
   collection_id?: string[]
   category_id?: string[]
   id?: string[]
-  order?: string
 }
 
 export default async function PaginatedProducts({
@@ -32,7 +31,7 @@ export default async function PaginatedProducts({
   countryCode: string
 }) {
   const queryParams: PaginatedProductsParams = {
-    limit: 12,
+    limit: PRODUCT_LIMIT,
   }
 
   if (collectionId) {
@@ -53,20 +52,18 @@ export default async function PaginatedProducts({
     queryParams["id"] = productsIds
   }
 
-  if (sortBy === "created_at") {
-    queryParams["order"] = "created_at"
-  }
-
   const region = await getRegion(countryCode)
 
   if (!region) {
     return null
   }
 
-  let {
+  const currentPage = Number.isFinite(page) ? Math.max(Math.floor(page), 1) : 1
+
+  const {
     response: { products, count },
   } = await getProductsListWithSort({
-    page,
+    page: currentPage,
     queryParams,
     sortBy,
     countryCode,
@@ -91,7 +88,7 @@ export default async function PaginatedProducts({
       {totalPages > 1 && (
         <Pagination
           data-testid="product-pagination"
-          page={page}
+          page={currentPage}
           totalPages={totalPages}
         />
       )}
