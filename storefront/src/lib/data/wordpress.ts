@@ -34,6 +34,13 @@ export type WordPressContentBlock =
       }[]
     }
   | {
+      type: "faq"
+      items: {
+        question: string
+        answer: WordPressContentBlock[]
+      }[]
+    }
+  | {
       type: "separator"
     }
 
@@ -197,8 +204,7 @@ function paragraphToBlocks(body: string): WordPressContentBlock[] {
   ]
 }
 
-export function htmlToBlocks(html = ""): WordPressContentBlock[] {
-  const cleaned = cleanHtml(html)
+function scanBlocks(cleaned: string): WordPressContentBlock[] {
   const blocks: WordPressContentBlock[] = []
   const blockPattern =
     /<(h[1-4]|p|ul|ol|figure)[^>]*>([\s\S]*?)<\/\1>|<hr[^>]*>|<img[^>]+>/gi
@@ -274,6 +280,116 @@ export function htmlToBlocks(html = ""): WordPressContentBlock[] {
     } else {
       blocks.push({ type: "paragraph", text })
     }
+  }
+
+  return blocks
+}
+
+/* ------------------------------------------------------------------ *
+ * Elementor toggles / accordions
+ *
+ * FAQ entries were authored with Elementor's toggle widget. It emits a
+ * wrapper div holding, per entry, a <div class="elementor-tab-title"> (the
+ * question, wrapped in an <a class="elementor-toggle-title">) followed by a
+ * sibling <div class="elementor-tab-content"> (the answer). The scanner
+ * above only looks at headings, paragraphs and lists, so every question was
+ * dropped and the answers ran together as unlabelled prose. This pass lifts
+ * each pair out as a dedicated `faq` block instead.
+ * ------------------------------------------------------------------ */
+
+// Matches a single class token, so "elementor-toggle" doesn't also hit the
+// widget wrapper's "elementor-widget-toggle".
+const classToken = (name: string) =>
+  `class=["'](?:[^"']*\\s)?${name}(?:\\s[^"']*)?["']`
+
+const TOGGLE_GROUP = `<div[^>]*${classToken(
+  "elementor-(?:toggle|accordion)"
+)}[^>]*>`
+const TAB_TITLE = `<div[^>]*${classToken("elementor-tab-title")}[^>]*>`
+const TAB_CONTENT = `<div[^>]*${classToken("elementor-tab-content")}[^>]*>`
+
+// Reads the body of a <div> whose opening tag ends at `start`, tracking
+// nesting so inner divs don't end it early.
+function readDiv(html: string, start: number) {
+  const tagPattern = /<div\b[^>]*>|<\/div\s*>/gi
+  tagPattern.lastIndex = start
+  let depth = 1
+  let match: RegExpExecArray | null
+
+  while ((match = tagPattern.exec(html))) {
+    depth += match[0].startsWith("</") ? -1 : 1
+
+    if (!depth) {
+      return { inner: html.slice(start, match.index), end: tagPattern.lastIndex }
+    }
+  }
+
+  return { inner: html.slice(start), end: html.length }
+}
+
+function toggleItems(group: string) {
+  const titlePattern = new RegExp(TAB_TITLE, "gi")
+  const contentPattern = new RegExp(TAB_CONTENT, "gi")
+  const titles: { start: number; end: number }[] = []
+  let match: RegExpExecArray | null
+
+  while ((match = titlePattern.exec(group))) {
+    titles.push({ start: match.index, end: titlePattern.lastIndex })
+  }
+
+  return titles.flatMap(({ end }, index) => {
+    const question = cleanText(readDiv(group, end).inner)
+
+    if (!question) {
+      return []
+    }
+
+    // The answer is the next content div, but only if it still belongs to
+    // this item rather than to the one after it.
+    const limit = titles[index + 1]?.start ?? group.length
+    contentPattern.lastIndex = end
+    const content = contentPattern.exec(group)
+    const answer =
+      content && content.index < limit
+        ? scanBlocks(readDiv(group, contentPattern.lastIndex).inner)
+        : []
+
+    return [{ question, answer }]
+  })
+}
+
+// Splits the document into plain-html runs and the faq blocks between them,
+// so toggle content keeps its position relative to the surrounding copy.
+function splitToggleGroups(html: string): (string | WordPressContentBlock)[] {
+  const segments: (string | WordPressContentBlock)[] = []
+  const groupPattern = new RegExp(TOGGLE_GROUP, "gi")
+  let cursor = 0
+  let match: RegExpExecArray | null
+
+  while ((match = groupPattern.exec(html))) {
+    const group = readDiv(html, groupPattern.lastIndex)
+    const items = toggleItems(group.inner)
+
+    if (items.length) {
+      segments.push(html.slice(cursor, match.index))
+      segments.push({ type: "faq", items })
+      cursor = group.end
+    }
+
+    groupPattern.lastIndex = group.end
+  }
+
+  segments.push(html.slice(cursor))
+
+  return segments
+}
+
+export function htmlToBlocks(html = ""): WordPressContentBlock[] {
+  const cleaned = cleanHtml(html)
+  const blocks: WordPressContentBlock[] = []
+
+  for (const segment of splitToggleGroups(cleaned)) {
+    blocks.push(...(typeof segment === "string" ? scanBlocks(segment) : [segment]))
   }
 
   if (!blocks.length) {

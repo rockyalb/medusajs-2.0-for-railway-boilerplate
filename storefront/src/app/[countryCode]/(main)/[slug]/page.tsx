@@ -351,6 +351,33 @@ function ContentBlocks({ blocks }: { blocks: RenderBlock[] }) {
           )
         }
 
+        if (block.type === "faq") {
+          return (
+            <div key={`faq-${index}`} className="space-y-3 pt-2">
+              {block.items.map((item, itemIndex) => (
+                <details
+                  key={`${item.question}-${itemIndex}`}
+                  className="group rounded-large border border-yco-cream-dark bg-white/60 px-5 py-4 transition-colors duration-300 open:bg-yco-panel small:px-6 small:py-5"
+                >
+                  <summary className="flex cursor-pointer list-none items-start gap-4 font-serif text-lg leading-snug text-yco-charcoal transition-colors duration-300 hover:text-yco-coral [&::-webkit-details-marker]:hidden">
+                    <span className="flex-1">{tidy(item.question)}</span>
+                    <span
+                      className="relative mt-2 h-3 w-3 shrink-0 text-yco-green"
+                      aria-hidden
+                    >
+                      <span className="absolute left-0 top-1/2 h-px w-3 -translate-y-1/2 bg-current" />
+                      <span className="absolute left-1/2 top-0 h-3 w-px -translate-x-1/2 bg-current transition-transform duration-300 group-open:scale-y-0" />
+                    </span>
+                  </summary>
+                  <div className="mt-4 border-t border-yco-cream-dark pt-4">
+                    <ContentBlocks blocks={item.answer} />
+                  </div>
+                </details>
+              ))}
+            </div>
+          )
+        }
+
         if (block.type === "heading") {
           if (block.level <= 2) {
             return (
