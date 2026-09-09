@@ -58,7 +58,7 @@ test("all 26 advertised pages are reachable with at most 12 products per request
   requests.forEach((query, i) => {
     assert.equal(query.limit, 12)
     assert.equal(query.offset, i * 12)
-    assert.equal(query.order, "-created_at,id")
+    assert.equal(query.order, "-created_at")
     assert.equal(query.region_id, "reg_test")
   })
 })

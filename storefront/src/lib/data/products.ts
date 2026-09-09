@@ -333,6 +333,8 @@ export const getProductsList = cache(async function ({
 /**
  * Fetch only the requested page. The API count describes the same filtered catalog.
  * Price sorting is limited to this page until the backend supports calculated-price ordering.
+ * `order` must stay a single field: the store API turns the whole string into one
+ * property name, so a list like "-created_at,id" makes MikroORM reject the query.
  */
 export const getProductsListWithSort = cache(async function ({
   page = 1,
@@ -353,7 +355,7 @@ export const getProductsListWithSort = cache(async function ({
     pageParam: page,
     queryParams: {
       ...queryParams,
-      order: "-created_at,id",
+      order: "-created_at",
     },
     countryCode,
   })
