@@ -13,12 +13,12 @@
     "medusa"
   ],
   "scripts": {
-    "build": "medusa build && node src/scripts/postBuild.js",
+    "build": "node src/scripts/patch-admin-dashboard.cjs && medusa build && node src/scripts/postBuild.js",
     "seed": "medusa exec ./src/scripts/seed.ts",
     "prices:all": "medusa exec ./src/scripts/set-seeded-product-prices-all.ts",
     "ib": "init-backend",
     "start": "init-backend && cd .medusa/server && medusa start --verbose",
-    "dev": "medusa develop",
+    "dev": "node src/scripts/patch-admin-dashboard.cjs && medusa develop",
     "email:dev": "email dev --dir=./src/modules/email-notifications/templates --port=3002"
   },
   "dependencies": {
