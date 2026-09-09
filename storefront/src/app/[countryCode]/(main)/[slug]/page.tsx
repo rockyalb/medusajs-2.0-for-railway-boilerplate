@@ -227,32 +227,38 @@ export default async function LegacyWordPressRoute({ params }: PageProps) {
   const { subtitle, blocks } = refineEntry(entry.title, entry.blocks)
 
   return (
-    <main className="bg-yco-cream min-h-screen">
-      <header className="border-b border-yco-cream-dark bg-yco-panel">
-        <div className="content-container py-16 small:py-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="rhode-eyebrow inline-flex items-center gap-2">
+    <main className="min-h-screen">
+      {/* The title sits on the page's own ambient wash and lines up with the
+          article column below it — no filled banner, no second title area. */}
+      <header className="content-container pt-10 small:pt-16">
+        <div className="mx-auto max-w-3xl">
+          {post && (
+            <p className="rhode-eyebrow inline-flex items-center gap-2">
               <span className="yco-accent-dot" aria-hidden />
-              {post ? "Journal" : "YCO"}
-            </span>
-            <h1 className="rhode-display mt-5 text-4xl leading-[1.05] small:text-6xl">
-              {tidy(entry.title)}
-            </h1>
-            {subtitle && (
-              <p className="mx-auto mt-6 max-w-2xl font-sans text-lg leading-relaxed text-yco-charcoal-muted small:text-xl">
-                {subtitle}
-              </p>
-            )}
-            {post && entry.date && (
-              <p className="rhode-eyebrow mt-6">
-                {formatWordPressDate(entry.date)}
-              </p>
-            )}
-          </div>
+              Journal
+            </p>
+          )}
+          <h1
+            className={`rhode-display text-[clamp(1.9rem,5.2vw,3.25rem)] leading-[1.08] ${
+              post ? "mt-4" : ""
+            }`}
+          >
+            {tidy(entry.title)}
+          </h1>
+          {subtitle && (
+            <p className="mt-4 max-w-2xl font-sans text-base leading-relaxed text-yco-charcoal-muted small:text-lg">
+              {subtitle}
+            </p>
+          )}
+          {post && entry.date && (
+            <p className="rhode-eyebrow mt-5">
+              {formatWordPressDate(entry.date)}
+            </p>
+          )}
         </div>
       </header>
 
-      <section className="content-container py-14 small:py-20">
+      <section className="content-container py-8 small:py-12">
         <article className="mx-auto max-w-3xl rounded-large border border-yco-cream-dark bg-white/80 p-7 shadow-sm backdrop-blur small:p-12">
           <ContentBlocks blocks={blocks} />
         </article>
@@ -263,20 +269,23 @@ export default async function LegacyWordPressRoute({ params }: PageProps) {
 
 function BlogIndex({ posts }: { posts: NormalizedWordPressEntry[] }) {
   return (
-    <main className="bg-yco-cream min-h-screen">
-      <header className="border-b border-yco-cream-dark bg-yco-panel">
-        <div className="content-container py-16 small:py-24">
-          <div className="mx-auto max-w-3xl text-center">
-            <span className="rhode-eyebrow inline-flex items-center gap-2">
-              <span className="yco-accent-dot" aria-hidden />
-              Journal
-            </span>
-            <h1 className="rhode-display mt-5 text-4xl small:text-6xl">Blog</h1>
-          </div>
+    <main className="min-h-screen">
+      <header className="content-container pt-10 small:pt-16">
+        <div className="max-w-3xl">
+          <p className="rhode-eyebrow inline-flex items-center gap-2">
+            <span className="yco-accent-dot" aria-hidden />
+            Journal
+          </p>
+          <h1 className="rhode-display mt-4 text-[clamp(1.9rem,5.2vw,3.25rem)] leading-[1.08]">
+            Blog
+          </h1>
+          <p className="mt-4 max-w-2xl font-sans text-base leading-relaxed text-yco-charcoal-muted small:text-lg">
+            Udhëzues, këshilla dhe histori nga bota e kujdesit organik.
+          </p>
         </div>
       </header>
 
-      <section className="content-container py-14 small:py-20">
+      <section className="content-container py-10 small:py-14">
         <div className="grid grid-cols-1 gap-5 medium:grid-cols-2">
           {posts.map((post) => {
             const image = getWordPressEntryImage(post)

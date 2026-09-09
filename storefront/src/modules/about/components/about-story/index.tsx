@@ -64,8 +64,8 @@ export default function AboutStory() {
   const reducedMotion = useReducedMotion()
 
   return (
-    <main className="overflow-hidden bg-yco-cream text-yco-charcoal">
-      <section className="relative border-b border-yco-cream-dark bg-yco-panel">
+    <main className="overflow-hidden text-yco-charcoal">
+      <section className="relative border-b border-yco-cream-dark bg-yco-panel/70">
         <div className="content-container grid grid-cols-1 small:min-h-[680px] small:grid-cols-12">
           <div className="relative z-10 flex flex-col justify-center py-16 small:col-span-5 small:py-24">
             <motion.p

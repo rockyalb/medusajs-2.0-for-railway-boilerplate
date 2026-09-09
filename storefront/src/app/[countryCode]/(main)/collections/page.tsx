@@ -21,19 +21,19 @@ export default async function CollectionsPage({
   )
 
   return (
-    <main className="bg-yco-cream min-h-screen">
-      <section className="content-container py-14 small:py-20">
+    <main className="min-h-screen">
+      <section className="content-container py-10 small:py-16">
         <div className="max-w-3xl">
           <span className="rhode-eyebrow">Brendet</span>
-          <h1 className="rhode-display mt-3 text-5xl small:text-6xl">
+          <h1 className="rhode-display mt-3 text-[clamp(1.9rem,5.2vw,3.25rem)] leading-[1.08]">
             blini sipas brendit
           </h1>
-          <p className="mt-5 max-w-2xl font-sans text-sm leading-6 text-yco-charcoal-muted">
+          <p className="mt-4 max-w-2xl font-sans text-base leading-relaxed text-yco-charcoal-muted">
             Shfletoni koleksionet tona sipas brendit.
           </p>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-4 small:grid-cols-2 medium:grid-cols-3">
+        <div className="mt-10 grid grid-cols-1 gap-4 small:grid-cols-2 medium:grid-cols-3">
           {collections.map((collection) => {
             const logo = collection.handle ? BRAND_LOGOS[collection.handle] : undefined
 
