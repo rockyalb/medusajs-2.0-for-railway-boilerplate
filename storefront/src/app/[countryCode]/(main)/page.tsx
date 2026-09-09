@@ -1,5 +1,3 @@
-import { Metadata } from "next"
-
 import Hero from "@modules/home/components/hero"
 import CategoryGrid from "@modules/home/components/category-grid"
 import FeaturedBrands from "@modules/home/components/featured-brands"
@@ -23,12 +21,6 @@ import {
 import { getRegion } from "@lib/data/regions"
 import { listWordPressPosts } from "@lib/data/wordpress"
 import { HttpTypes } from "@medusajs/types"
-
-export const metadata: Metadata = {
-  title: "YCO — Beauty essentials",
-  description:
-    "A clean, editorial storefront for daily skin, body, and beauty essentials.",
-}
 
 const normalizedCategoryName = (name: string) => name.toLowerCase()
 
