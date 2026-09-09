@@ -5,6 +5,8 @@ import { getRegion } from "./regions"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import { sortProducts } from "@lib/util/sort-products"
 
+const publicCacheOptions = { cache: "force-cache" as const, next: { tags: ["products"], revalidate: 60 } }
+
 export const getProductsById = cache(async function ({
   ids,
   regionId,
@@ -274,7 +276,7 @@ export const getProductByHandle = cache(async function (
         fields:
           "*variants.calculated_price,+variants.inventory_quantity,+metadata",
       },
-      { next: { tags: ["products"] } }
+      publicCacheOptions
     )
     .then(({ products }) => products[0])
 })

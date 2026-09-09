@@ -9,7 +9,7 @@ import QuantityStepper from "@modules/common/components/quantity-stepper"
 import OptionSelect from "@modules/products/components/product-actions/option-select"
 
 import ProductPrice from "../product-price"
-import { addToCart } from "@lib/data/cart"
+import { addToCart } from "@lib/data/cart-client"
 import { HttpTypes } from "@medusajs/types"
 import { buildMetaContents, trackMetaEvent } from "@lib/meta-pixel"
 

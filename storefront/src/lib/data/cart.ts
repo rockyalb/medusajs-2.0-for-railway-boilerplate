@@ -28,7 +28,7 @@ export async function retrieveCart() {
     .retrieve(
       cartId,
       {},
-      { next: { tags: ["cart"] }, ...(await getAuthHeaders()) }
+      { cache: "no-store", ...(await getAuthHeaders()) }
     )
     .then(({ cart }) => cart)
     .catch(() => {

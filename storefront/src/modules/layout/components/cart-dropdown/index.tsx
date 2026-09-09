@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import { lockPageScroll } from "@lib/util/lock-page-scroll"
 
-import { deleteLineItem, updateLineItem } from "@lib/data/cart"
+import { deleteLineItem, updateLineItem } from "@lib/data/cart-client"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
 import FreeShippingProgress from "@modules/common/components/free-shipping-progress"
@@ -158,8 +158,16 @@ const DropdownItem = ({
 
 const CartDropdown = ({
   cart: cartState,
+  loaded = true,
+  error = false,
+  openVersion = 0,
+  onRefresh,
 }: {
   cart?: HttpTypes.StoreCart | null
+  loaded?: boolean
+  error?: boolean
+  openVersion?: number
+  onRefresh?: () => void
 }) => {
   const [open, setOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -167,21 +175,21 @@ const CartDropdown = ({
   const totalItems =
     cartState?.items?.reduce((acc, item) => acc + item.quantity, 0) || 0
   const subtotal = cartState?.subtotal ?? 0
-  const itemRef = useRef<number>(totalItems || 0)
+  const openRef = useRef(openVersion)
   const pathname = usePathname()
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // Auto-open the drawer when an item is added (unless we're on the cart page).
+  // Opening is tied to a successful add, not loading a returning shopper's cart.
   useEffect(() => {
-    if (itemRef.current !== totalItems && !pathname.includes("/cart")) {
+    if (openRef.current !== openVersion && !pathname.includes("/cart")) {
       setOpen(true)
     }
-    itemRef.current = totalItems
+    openRef.current = openVersion
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [totalItems])
+  }, [openVersion])
 
   // Lock body scroll + close on Escape while the drawer is open.
   useEffect(() => {
@@ -239,7 +247,11 @@ const CartDropdown = ({
           </button>
         </div>
 
-        {cartState && cartState.items?.length ? (
+        {!loaded ? (
+          <div className="flex flex-1 items-center justify-center px-6 text-sm" role="status">
+            {error ? <button type="button" onClick={onRefresh}>Provo përsëri</button> : "Duke ngarkuar shportën…"}
+          </div>
+        ) : cartState && cartState.items?.length ? (
           <>
             <div className="shrink-0 border-b border-yco-cream-dark px-6 py-5">
               <FreeShippingProgress
@@ -250,7 +262,7 @@ const CartDropdown = ({
             </div>
 
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 py-6 flex flex-col content-start gap-y-5 no-scrollbar">
-              {cartState.items
+              {[...cartState.items]
                 .sort((a, b) =>
                   (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
                 )
@@ -314,7 +326,7 @@ const CartDropdown = ({
       <div className="h-full flex items-center">
         <button
           type="button"
-          onClick={() => setOpen(true)}
+          onClick={() => { setOpen(true); onRefresh?.() }}
           aria-label={`Hap shportën (${totalItems} artikuj)`}
           data-testid="nav-cart-link"
           className={cartButtonClass}

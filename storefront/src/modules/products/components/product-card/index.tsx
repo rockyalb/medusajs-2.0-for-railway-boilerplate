@@ -5,7 +5,7 @@ import Image from "next/image"
 import { useParams } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 
-import { addToCart } from "@lib/data/cart"
+import { addToCart } from "@lib/data/cart-client"
 import { buildMetaContents, trackMetaEvent } from "@lib/meta-pixel"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
@@ -32,14 +32,31 @@ export default function ProductCard({
   product,
   priority = false,
   featured = false,
+  imageSizes,
 }: {
   product: ProductCardData
   priority?: boolean
   featured?: boolean
+  /** Override the responsive slot size when the card lives in a custom grid. */
+  imageSizes?: string
 }) {
   const countryCode = useParams().countryCode as string
   const [isAdding, setIsAdding] = useState(false)
   const [justAdded, setJustAdded] = useState(false)
+  const [shouldLoadHoverImage, setShouldLoadHoverImage] = useState(false)
+  const resolvedImageSizes =
+    imageSizes ?? "(max-width: 576px) 70vw, (max-width: 1024px) 42vw, 300px"
+
+  const handleMouseEnter = () => {
+    if (
+      !product.hoverImage ||
+      !window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    ) {
+      return
+    }
+
+    setShouldLoadHoverImage(true)
+  }
 
   // Titles wrap onto two rows; only the rare title that overflows even two
   // rows switches into the sliding-marquee mode, which needs a measurement.
@@ -153,6 +170,7 @@ export default function ProductCard({
 
   return (
     <article
+      onMouseEnter={handleMouseEnter}
       className="group flex h-full flex-col overflow-hidden rounded-large border border-yco-cream-dark bg-white/75 shadow-[0_1px_2px_rgba(36,33,30,0.04)] transition-[transform,border-color,box-shadow] duration-300 ease-out hover:-translate-y-0.5 hover:border-yco-charcoal/25 hover:shadow-[0_4px_8px_rgba(47,45,41,0.08)] motion-reduce:transform-none motion-reduce:transition-none"
       data-testid="product-wrapper"
     >
@@ -176,19 +194,20 @@ export default function ProductCard({
                   alt={product.title}
                   fill
                   draggable={false}
-                  sizes="(max-width: 576px) 70vw, (max-width: 1024px) 42vw, 300px"
+                  sizes={resolvedImageSizes}
                   className={`object-cover transition-all duration-700 ease-out group-hover:scale-[1.035] motion-reduce:transform-none motion-reduce:transition-none ${
                     product.hoverImage ? "group-hover:opacity-0" : ""
                   }`}
                   priority={priority}
                 />
-                {product.hoverImage && (
+                {shouldLoadHoverImage && product.hoverImage && (
                   <Image
                     src={product.hoverImage}
                     alt=""
                     fill
                     draggable={false}
-                    sizes="(max-width: 576px) 70vw, (max-width: 1024px) 42vw, 300px"
+                    sizes={resolvedImageSizes}
+                    loading="lazy"
                     className="scale-[1.035] object-cover opacity-0 transition-opacity duration-700 ease-out group-hover:opacity-100 motion-reduce:transform-none motion-reduce:transition-none"
                   />
                 )}
