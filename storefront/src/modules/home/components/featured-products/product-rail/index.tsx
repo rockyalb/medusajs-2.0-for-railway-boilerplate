@@ -83,7 +83,7 @@ export default function ProductRail({
   // Prices are already on the products (fetched with *variants.calculated_price),
   // so the cards receive plain serializable data — no per-card refetch.
   const showcaseProducts: ProductCardData[] = products
-    .slice(0, 8)
+    .slice(0, 12)
     .map((product) => {
       const { cheapestPrice } = getProductPrice({ product })
       const gallery = (product.images ?? []).map((image) => image.url)

@@ -325,19 +325,28 @@ function MobileBrandPanel({
   onNavigate: () => void
 }) {
   return (
-    <ul className="space-y-0 border-t border-yco-cream-dark pt-2">
-      {collections.map((collection) => (
-        <li key={collection.id}>
-          <LocalizedClientLink
-            href={`/collections/${collection.handle}`}
-            onClick={onNavigate}
-            className="flex min-h-10 items-center rounded-base px-3 py-1.5 font-hanken text-sm text-yco-charcoal-muted transition-colors hover:bg-yco-panel hover:text-yco-charcoal"
-          >
-            {collection.title}
-          </LocalizedClientLink>
-        </li>
-      ))}
-    </ul>
+    <div className="border-t border-yco-cream-dark pt-2">
+      <LocalizedClientLink
+        href="/collections"
+        onClick={onNavigate}
+        className="yco-btn yco-btn--ink mb-2 min-h-11 w-full px-4 text-[0.7rem]"
+      >
+        Të gjitha brendet
+      </LocalizedClientLink>
+      <ul className="space-y-0">
+        {collections.map((collection) => (
+          <li key={collection.id}>
+            <LocalizedClientLink
+              href={`/collections/${collection.handle}`}
+              onClick={onNavigate}
+              className="flex min-h-10 items-center rounded-base px-3 py-1.5 font-hanken text-sm text-yco-charcoal-muted transition-colors hover:bg-yco-panel hover:text-yco-charcoal"
+            >
+              {collection.title}
+            </LocalizedClientLink>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
@@ -686,7 +695,6 @@ export default function NavClient({
           <ul className="border-t border-yco-cream-dark">
             {[
               { label: "Produktet", href: "/store" },
-              { label: "Të gjitha brendet", href: "/collections" },
               ...secondaryLinks,
               { label: "Llogaria", href: "/account" },
             ].map((link) => (
