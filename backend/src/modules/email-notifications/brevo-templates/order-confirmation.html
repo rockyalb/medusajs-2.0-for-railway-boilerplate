@@ -239,8 +239,8 @@
               {% for item in params.items %}
               <tr>
                 <td>
-                  <span class="item-title">{{ item.title }}</span><br>
-                  <span class="muted">{{ item.product_title }}</span>
+                  <span class="item-title">{{ item.product_title }}</span>
+                  {% if item.variant_title %}<br><span class="muted">{{ item.variant_title }}</span>{% endif %}
                 </td>
                 <td class="right">{{ item.quantity }}</td>
                 <td class="right">{{ item.unit_price }} {{ params.currency_code }}</td>
