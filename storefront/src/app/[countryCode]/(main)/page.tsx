@@ -123,8 +123,6 @@ export default async function Home({
   return (
     <div className="relative">
       <Hero settings={homepageSettings.hero} />
-      <CategoryGrid categories={categoryCards} />
-
       {bestsellerProducts.length > 0 && region && (
         <section className="yco-section bg-white/40 px-6 pt-8 small:pt-10">
           <Reveal className="font-hanken max-w-6xl mx-auto mb-5 small:mb-6">
@@ -141,6 +139,8 @@ export default async function Home({
           <OffersSection countryCode={countryCode} />
         </Suspense>
       )}
+
+      <CategoryGrid categories={categoryCards} />
 
       <FeaturedBrands collections={collectionResponse ?? []} />
       <HereWeFloSection />
