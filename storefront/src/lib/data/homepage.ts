@@ -11,13 +11,18 @@ export type HomepageHeroSettings = {
 }
 
 export type HomepageSettings = {
-  product_of_the_month: { product_id: string | null; description: string | null }
+  navigation: { show_discounts: boolean }
+  product_of_the_month: {
+    product_id: string | null
+    description: string | null
+  }
   hero: HomepageHeroSettings
   category_cards: { images: Record<string, string> }
   bestsellers: { product_ids: string[] }
 }
 
 export const EMPTY_HOMEPAGE_SETTINGS: HomepageSettings = {
+  navigation: { show_discounts: true },
   product_of_the_month: { product_id: null, description: null },
   hero: {
     image_url: null,
@@ -37,7 +42,14 @@ export const getHomepageSettings = cache(async function () {
       next: { tags: ["homepage"] },
     })
     .then(({ homepage }) => ({
-      product_of_the_month: { ...EMPTY_HOMEPAGE_SETTINGS.product_of_the_month, ...(homepage?.product_of_the_month ?? {}) },
+      navigation: {
+        ...EMPTY_HOMEPAGE_SETTINGS.navigation,
+        ...(homepage?.navigation ?? {}),
+      },
+      product_of_the_month: {
+        ...EMPTY_HOMEPAGE_SETTINGS.product_of_the_month,
+        ...(homepage?.product_of_the_month ?? {}),
+      },
       hero: { ...EMPTY_HOMEPAGE_SETTINGS.hero, ...(homepage?.hero ?? {}) },
       category_cards: {
         images: homepage?.category_cards?.images ?? {},

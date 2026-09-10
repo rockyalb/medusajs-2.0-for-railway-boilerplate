@@ -11,9 +11,13 @@ import type { ProductCardData } from "../product-card"
  * response instead of asking ProductPreview to retrieve every product again.
  */
 export function getProductCardData(
-  product: HttpTypes.StoreProduct
+  product: HttpTypes.StoreProduct,
+  priceVariantId?: string
 ): ProductCardData {
-  const { cheapestPrice } = getProductPrice({ product })
+  const prices = getProductPrice({ product, variantId: priceVariantId })
+  const cheapestPrice = priceVariantId
+    ? prices.variantPrice
+    : prices.cheapestPrice
   const gallery = (product.images ?? []).map((image) => image.url)
   const thumbnail = product.thumbnail || gallery[0] || null
   const hoverImage = gallery.find((url) => url && url !== thumbnail) ?? null
@@ -38,6 +42,10 @@ export function getProductCardData(
     price: cheapestPrice?.calculated_price ?? null,
     originalPrice: cheapestPrice?.original_price ?? null,
     isSale: cheapestPrice?.price_type === "sale",
+    discountPercentage:
+      cheapestPrice?.price_type === "sale"
+        ? cheapestPrice.percentage_diff
+        : null,
     variantId: quickAddVariant?.id ?? null,
     inStock,
     priceAmount: cheapestPrice?.calculated_price_number ?? null,

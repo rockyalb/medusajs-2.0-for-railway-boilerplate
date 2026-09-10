@@ -1,6 +1,14 @@
 import { defineRouteConfig } from "@medusajs/admin-sdk"
 import { Buildings, Link } from "@medusajs/icons"
-import { Button, Container, Heading, Input, Label, Text, toast } from "@medusajs/ui"
+import {
+  Button,
+  Container,
+  Heading,
+  Input,
+  Label,
+  Text,
+  toast,
+} from "@medusajs/ui"
 
 const getFeedUrl = () => {
   const baseUrl = window.location.origin.replace(/\/+$/, "")
@@ -45,6 +53,9 @@ const MetaCatalogPage = () => {
             Every published variant is exported. Collection and category names
             are included in product_type so product sets can be filtered in
             Meta. Variants without managed inventory are always marked in stock.
+            Prices use the storefront region and currency. Active discounts
+            include the original price and sale_price; scheduled and expired
+            offers are handled by Medusa pricing when the feed refreshes.
           </Text>
         </div>
 
@@ -53,9 +64,9 @@ const MetaCatalogPage = () => {
             Internal labels
           </Text>
           <Text size="small" leading="compact" className="text-ui-fg-subtle">
-            Open a product and edit its Meta custom labels. The five values are
-            exported as custom_label_0 through custom_label_4 for additional
-            product-set filters.
+            Open a product and edit its Meta custom labels 0–3 for additional
+            product-set filters. Custom label 4 is automatic: filter it by
+            on_sale for discounted variants or regular_price for other variants.
           </Text>
         </div>
       </div>

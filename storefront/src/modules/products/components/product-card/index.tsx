@@ -18,6 +18,7 @@ export type ProductCardData = {
   price: string | null
   originalPrice: string | null
   isSale: boolean
+  discountPercentage: string | null
   /** Quick-add target; null when the product needs option selection first. */
   variantId: string | null
   inStock: boolean
@@ -131,16 +132,16 @@ export default function ProductCard({
   }
 
   const priceContent = product.price ? (
-    <span className="min-w-0 text-left font-hanken leading-none">
+    <span className="flex min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1 text-left font-hanken leading-none">
       <span
-        className="block truncate text-xs font-bold tracking-tight"
+        className="whitespace-nowrap text-xs font-bold tracking-tight"
         data-testid="price"
       >
         {product.price}
       </span>
       {product.isSale && product.originalPrice && (
         <span
-          className="mt-1 block truncate text-[10px] font-medium text-yco-charcoal-muted line-through"
+          className="whitespace-nowrap text-[10px] font-medium text-yco-charcoal-muted line-through"
           data-testid="original-price"
         >
           {product.originalPrice}
@@ -219,8 +220,11 @@ export default function ProductCard({
             )}
 
             {product.isSale && (
-              <span className="absolute left-3 top-3 rounded-circle bg-pastel-coral-soft px-3 py-1 font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-pastel-coral-ink">
-                Sale
+              <span
+                className="absolute left-3 top-3 rounded-circle bg-pastel-coral px-3 py-1.5 font-hanken text-base font-extrabold leading-tight text-yco-charcoal"
+                aria-label={`${product.discountPercentage}% zbritje`}
+              >
+                -{product.discountPercentage}%
               </span>
             )}
           </div>

@@ -111,6 +111,10 @@ export default function ProductRail({
         price: cheapestPrice?.calculated_price ?? null,
         originalPrice: cheapestPrice?.original_price ?? null,
         isSale: cheapestPrice?.price_type === "sale",
+        discountPercentage:
+          cheapestPrice?.price_type === "sale"
+            ? cheapestPrice.percentage_diff
+            : null,
         variantId: quickAddVariant?.id ?? null,
         inStock,
         priceAmount: cheapestPrice?.calculated_price_number ?? null,

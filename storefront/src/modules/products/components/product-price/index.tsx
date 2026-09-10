@@ -56,7 +56,10 @@ export default function ProductPrice({
           >
             {selectedPrice.original_price}
           </span>
-          <span className="rounded-circle bg-pastel-coral-soft px-2 py-0.5 font-sans text-[10px] font-bold text-pastel-coral-ink">
+          <span
+            className="inline-flex shrink-0 items-center rounded-circle bg-pastel-coral px-3 py-1.5 font-hanken text-base font-extrabold leading-tight text-yco-charcoal"
+            aria-label={`${selectedPrice.percentage_diff}% zbritje`}
+          >
             -{selectedPrice.percentage_diff}%
           </span>
         </>

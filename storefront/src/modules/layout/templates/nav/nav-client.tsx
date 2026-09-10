@@ -355,11 +355,13 @@ export default function NavClient({
   collections,
   cartButton,
   searchEnabled,
+  showDiscounts = true,
 }: {
   categories: SimpleCategory[]
   collections: SimpleCollection[]
   cartButton: ReactNode
   searchEnabled?: boolean
+  showDiscounts?: boolean
 }) {
   const [shopOpen, setShopOpen] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -430,7 +432,7 @@ export default function NavClient({
                 onClick={() => setMobileOpen((o) => !o)}
               />
             </div>
-            <div className="hidden small:flex items-center gap-x-7 h-full">
+            <div className="hidden small:flex items-center gap-x-3 large:gap-x-7 h-full">
               <LocalizedClientLink
                 href="/"
                 className="mr-3 hover:opacity-80 transition-opacity duration-300"
@@ -467,6 +469,15 @@ export default function NavClient({
               >
                 Rreth nesh
               </LocalizedClientLink>
+              {showDiscounts && (
+                <LocalizedClientLink
+                  className={navLink}
+                  href="/discounts"
+                  onMouseEnter={closeShop}
+                >
+                  Zbritje
+                </LocalizedClientLink>
+              )}
             </div>
           </div>
 
@@ -695,6 +706,9 @@ export default function NavClient({
           <ul className="border-t border-yco-cream-dark">
             {[
               { label: "Produktet", href: "/store" },
+              ...(showDiscounts
+                ? [{ label: "Zbritje", href: "/discounts" }]
+                : []),
               ...secondaryLinks,
               { label: "Llogaria", href: "/account" },
             ].map((link) => (

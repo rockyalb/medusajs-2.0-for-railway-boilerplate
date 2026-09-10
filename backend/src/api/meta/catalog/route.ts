@@ -1,4 +1,6 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+import { MedusaError, QueryContext } from "@medusajs/framework/utils"
+import { getCatalogPrice } from "../../../lib/meta-catalog-price"
 
 type FeedMetadata = Record<string, unknown>
 
@@ -20,14 +22,9 @@ const getStorefrontUrl = () => {
 }
 
 const getCountryCode = () =>
-  (process.env.META_CATALOG_COUNTRY_CODE ||
-    process.env.DEFAULT_REGION ||
-    "al")
+  (process.env.META_CATALOG_COUNTRY_CODE || process.env.DEFAULT_REGION || "al")
     .trim()
     .toLowerCase()
-
-const getRequestedCurrency = () =>
-  (process.env.META_CATALOG_CURRENCY || "eur").trim().toLowerCase()
 
 const metadataValue = (metadata: FeedMetadata, key: string) => {
   const value = metadata[key]
@@ -37,16 +34,6 @@ const metadataValue = (metadata: FeedMetadata, key: string) => {
   }
 
   return Array.isArray(value) ? value.join(", ") : String(value)
-}
-
-const selectPrice = (prices: any[], requestedCurrency: string) => {
-  return (
-    prices.find(
-      (price) => price.currency_code?.toLowerCase() === requestedCurrency
-    ) ||
-    prices.find((price) => price.currency_code?.toLowerCase() === "all") ||
-    prices[0]
-  )
 }
 
 const getAvailability = (variant: any) => {
@@ -69,7 +56,18 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const query = req.scope.resolve("query")
   const storefrontUrl = getStorefrontUrl()
   const countryCode = getCountryCode()
-  const requestedCurrency = getRequestedCurrency()
+  const { data: regions } = await query.graph({
+    entity: "region",
+    fields: ["id", "currency_code", "countries.iso_2"],
+  })
+  const region = regions.find((candidate: any) =>
+    candidate.countries?.some((country: any) => country.iso_2 === countryCode)
+  )
+  if (!region)
+    throw new MedusaError(
+      MedusaError.Types.INVALID_DATA,
+      `No region configured for catalog country ${countryCode}`
+    )
   const products: any[] = []
   const pageSize = 500
   let skip = 0
@@ -95,11 +93,18 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
         "variants.manage_inventory",
         "variants.allow_backorder",
         "variants.inventory_quantity",
-        "variants.prices.amount",
-        "variants.prices.currency_code",
+        "variants.calculated_price.*",
       ],
       filters: {
         status: "published",
+      },
+      context: {
+        variants: {
+          calculated_price: QueryContext({
+            region_id: region.id,
+            currency_code: region.currency_code,
+          }),
+        },
       },
       pagination: {
         take: pageSize,
@@ -110,6 +115,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       },
     })
 
+    if (!data.length) break
     products.push(...data)
     total = metadata?.count ?? data.length
     skip += data.length
@@ -120,10 +126,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     const categoryNames = (product.categories || [])
       .map((category: any) => category.name)
       .filter(Boolean)
-    const productType = [
-      product.collection?.title,
-      ...categoryNames,
-    ]
+    const productType = [product.collection?.title, ...categoryNames]
       .filter(Boolean)
       .join(" > ")
     const link = `${storefrontUrl}/${countryCode}/products/${encodeURIComponent(
@@ -132,16 +135,12 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     const imageUrl = product.thumbnail || product.images?.[0]?.url
 
     return (product.variants || []).flatMap((variant: any) => {
-      const price = selectPrice(variant.prices || [], requestedCurrency)
+      const price = getCatalogPrice(variant.calculated_price)
 
-      if (!price || typeof price.amount !== "number" || !imageUrl) {
+      if (!price || !imageUrl) {
         return []
       }
 
-      const currency =
-        price.currency_code?.toLowerCase() === "all"
-          ? requestedCurrency
-          : price.currency_code?.toLowerCase()
       const title =
         product.variants.length > 1 && variant.title
           ? `${product.title} - ${variant.title}`
@@ -159,18 +158,23 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
           ),
           renderElement("availability", getAvailability(variant)),
           renderElement("condition", "new"),
-          renderElement("price", `${price.amount} ${currency.toUpperCase()}`),
+          renderElement("price", price.price),
+          renderElement("sale_price", price.salePrice),
           renderElement("link", link),
           renderElement("image_link", imageUrl),
           renderElement("brand", metadataValue(metadata, "brand") || "YCO"),
           renderElement("mpn", variant.sku),
           renderElement("identifier_exists", variant.sku ? "yes" : "no"),
           renderElement("product_type", productType),
-          ...[0, 1, 2, 3, 4].map((index) =>
+          ...[0, 1, 2, 3].map((index) =>
             renderElement(
               `custom_label_${index}`,
               metadataValue(metadata, `meta_custom_label_${index}`)
             )
+          ),
+          renderElement(
+            "custom_label_4",
+            price.salePrice ? "on_sale" : "regular_price"
           ),
           "</item>",
         ].join(""),

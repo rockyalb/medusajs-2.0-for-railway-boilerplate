@@ -26,7 +26,6 @@ type MetadataField = {
     | "meta_custom_label_1"
     | "meta_custom_label_2"
     | "meta_custom_label_3"
-    | "meta_custom_label_4"
   label: string
   aliases?: string[]
   rows?: number
@@ -71,11 +70,6 @@ const fields: MetadataField[] = [
   {
     key: "meta_custom_label_3",
     label: "Meta custom label 3",
-    rows: 2,
-  },
-  {
-    key: "meta_custom_label_4",
-    label: "Meta custom label 4",
     rows: 2,
   },
 ]
