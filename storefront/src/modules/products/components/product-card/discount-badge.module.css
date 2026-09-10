@@ -14,36 +14,20 @@
   background-color: #fc8c84;
   background-image:
     linear-gradient(145deg, rgba(255, 255, 255, 0.2), transparent 48%),
-    linear-gradient(140deg, #fc8c84 0%, #fc8c84 58%, #e0726a 100%);
+    linear-gradient(112deg, #fc8c84 0%, #84c3ac 48%, #7ca4eb 78%, #fc8c84 100%);
+  background-size: 100% 100%, 260% 100%;
+  background-position: 0 0, 0% 50%;
   box-shadow:
     0 4px 9px -5px rgba(47, 45, 41, 0.62),
+    0 0 8px -1px rgba(252, 140, 132, 0.38),
+    0 0 7px -1px rgba(132, 195, 172, 0.2),
+    0 0 7px -1px rgba(124, 164, 235, 0.18),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
   font-family: var(--font-ui, var(--font-comfortaa)), sans-serif;
   font-size: 1rem;
   font-weight: 800;
   line-height: 1.25;
-}
-
-.badge::before {
-  position: absolute;
-  z-index: 0;
-  top: -80%;
-  bottom: -80%;
-  left: -34%;
-  width: 38%;
-  pointer-events: none;
-  content: "";
-  background: linear-gradient(
-    105deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0) 25%,
-    rgba(255, 255, 255, 0.58) 50%,
-    rgba(255, 255, 255, 0) 75%,
-    transparent 100%
-  );
-  opacity: 0;
-  transform: translate3d(-260%, 0, 0) rotate(24deg);
-  animation: badge-sheen 8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  animation: badge-color-shift 12s ease-in-out infinite alternate;
 }
 
 .badge::after {
@@ -66,33 +50,19 @@
   white-space: nowrap;
 }
 
-@keyframes badge-sheen {
-  0%,
-  72% {
-    opacity: 0;
-    transform: translate3d(-260%, 0, 0) rotate(24deg);
+@keyframes badge-color-shift {
+  from {
+    background-position: 0 0, 0% 50%;
   }
 
-  79% {
-    opacity: 0.64;
-  }
-
-  87% {
-    opacity: 0.38;
-    transform: translate3d(250%, 0, 0) rotate(24deg);
-  }
-
-  92%,
-  100% {
-    opacity: 0;
-    transform: translate3d(250%, 0, 0) rotate(24deg);
+  to {
+    background-position: 0 0, 100% 50%;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .badge::before {
-    opacity: 0.2;
-    transform: translate3d(85%, 0, 0) rotate(24deg);
+  .badge {
+    background-position: 0 0, 50% 50%;
     animation: none;
   }
 }
