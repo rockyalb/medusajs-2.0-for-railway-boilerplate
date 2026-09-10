@@ -7,22 +7,23 @@
   min-height: 2rem;
   align-items: center;
   overflow: hidden;
-  border: 1px solid #c85850;
+  border: 1.5px solid rgba(255, 255, 255, 0.94);
   border-radius: 9999px;
   padding: 0.375rem 0.75rem;
-  color: #2f2d29;
-  background-color: #fc8c84;
+  color: #fff;
+  background-color: #ae58ef;
   background-image:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.2), transparent 48%),
-    linear-gradient(112deg, #fc8c84 0%, #84c3ac 48%, #7ca4eb 78%, #fc8c84 100%);
-  background-size: 100% 100%, 260% 100%;
+    linear-gradient(145deg, rgba(255, 255, 255, 0.32), transparent 46%),
+    linear-gradient(110deg, #ff83cd 0%, #dc63f0 22%, #a45df4 42%, #7996ff 60%, #55e2ff 78%, #ee78e3 100%);
+  background-size: 100% 100%, 150% 100%;
   background-position: 0 0, 0% 50%;
   box-shadow:
-    0 4px 9px -5px rgba(47, 45, 41, 0.62),
-    0 0 8px -1px rgba(252, 140, 132, 0.38),
-    0 0 7px -1px rgba(132, 195, 172, 0.2),
-    0 0 7px -1px rgba(124, 164, 235, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    0 0 3px rgba(255, 255, 255, 0.95),
+    -4px 2px 12px rgba(255, 105, 211, 0.64),
+    4px 2px 12px rgba(75, 209, 255, 0.62),
+    0 4px 16px rgba(165, 91, 244, 0.42),
+    inset 0 1px 3px rgba(255, 255, 255, 0.8),
+    inset 0 -1px 2px rgba(255, 255, 255, 0.35);
   font-family: var(--font-ui, var(--font-comfortaa)), sans-serif;
   font-size: 1rem;
   font-weight: 800;
@@ -48,6 +49,8 @@
   position: relative;
   z-index: 1;
   white-space: nowrap;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(86, 35, 151, 0.38);
 }
 
 @keyframes badge-color-shift {
