@@ -53,6 +53,22 @@
   text-shadow: 0 1px 3px rgba(86, 35, 151, 0.38);
 }
 
+.galleryBadge {
+  top: 1rem;
+  left: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 1.125rem;
+}
+
+@media (min-width: 1024px) {
+  .galleryBadge {
+    top: clamp(1.25rem, 2vw, 2rem);
+    left: clamp(1.25rem, 2vw, 2rem);
+    padding: clamp(0.625rem, 0.8vw, 1rem) clamp(1.25rem, 1.6vw, 2rem);
+    font-size: clamp(1.375rem, 2vw, 2.25rem);
+  }
+}
+
 @keyframes badge-color-shift {
   from {
     background-position: 0 0, 0% 50%;

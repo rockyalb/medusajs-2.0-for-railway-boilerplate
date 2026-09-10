@@ -9,7 +9,7 @@ import { addToCart } from "@lib/data/cart-client"
 import { buildMetaContents, trackMetaEvent } from "@lib/meta-pixel"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
-import discountBadgeStyles from "./discount-badge.module.css"
+import DiscountBadge from "./discount-badge"
 
 export type ProductCardData = {
   id: string
@@ -221,15 +221,8 @@ export default function ProductCard({
               </div>
             )}
 
-            {product.isSale && (
-              <span
-                className={discountBadgeStyles.badge}
-                aria-label={`${product.discountPercentage}% zbritje`}
-              >
-                <span className={discountBadgeStyles.label}>
-                  -{product.discountPercentage}%
-                </span>
-              </span>
+            {product.isSale && product.discountPercentage && (
+              <DiscountBadge percentage={product.discountPercentage} />
             )}
           </div>
         </LocalizedClientLink>

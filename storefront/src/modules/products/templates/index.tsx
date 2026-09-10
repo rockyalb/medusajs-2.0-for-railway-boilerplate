@@ -40,7 +40,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
       />
       <ProductScrollStage>
         <div className="order-1 min-w-0 small:h-full small:min-h-0">
-          <ImageGallery images={product?.images || []} />
+          <ImageGallery images={product?.images || []} productId={product.id} />
         </div>
 
         <div

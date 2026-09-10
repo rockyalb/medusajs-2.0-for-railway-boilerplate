@@ -8,6 +8,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 
 type ImageGalleryProps = {
   images: HttpTypes.StoreProductImage[]
+  productId: string
 }
 
 // Keep displayed and background images on the same responsive cache entries.
@@ -21,7 +22,7 @@ type IdleCapableWindow = Window & {
   cancelIdleCallback?: (id: number) => void
 }
 
-const ImageGallery = ({ images }: ImageGalleryProps) => {
+const ImageGallery = ({ images, productId }: ImageGalleryProps) => {
   const [activeIndex, setActiveIndex] = useState(0)
   const [mobileIndex, setMobileIndex] = useState(0)
   const [settledFirstUrl, setSettledFirstUrl] = useState<string>()
@@ -147,6 +148,10 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
 
   return (
     <div className="relative h-full min-h-0">
+      <div
+        id={`product-image-discount-${productId}`}
+        className="pointer-events-none absolute inset-0 z-[3]"
+      />
       <div
         ref={emblaRef}
         className="overflow-hidden small:hidden"
