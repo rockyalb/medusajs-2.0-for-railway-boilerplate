@@ -5,11 +5,13 @@ import HereWeFloSection from "@modules/home/components/here-we-flo"
 import EditorialTiles from "@modules/home/components/editorial-tiles"
 import ProductOfTheMonth from "@modules/home/components/product-of-the-month"
 import FeaturedProducts from "@modules/home/components/featured-products"
+import OffersSection from "@modules/home/components/offers"
 import LatestBlogPosts from "@modules/home/components/latest-blog-posts"
 import Newsletter from "@modules/home/components/newsletter"
 import Testimonials from "@modules/home/components/testimonials"
 import TrustBadges from "@modules/home/components/trust-badges"
 import { Reveal } from "@modules/common/components/motion"
+import { Suspense } from "react"
 import { getCategoriesList } from "@lib/data/categories"
 import { getCollectionsWithPreviewProducts } from "@lib/data/collections"
 import { getHomepageSettings } from "@lib/data/homepage"
@@ -132,6 +134,12 @@ export default async function Home({
           </Reveal>
           <FeaturedProducts products={bestsellerProducts} region={region} />
         </section>
+      )}
+
+      {homepageSettings.navigation.show_discounts && (
+        <Suspense fallback={null}>
+          <OffersSection countryCode={countryCode} />
+        </Suspense>
       )}
 
       <FeaturedBrands collections={collectionResponse ?? []} />

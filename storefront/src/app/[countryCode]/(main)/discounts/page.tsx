@@ -11,8 +11,8 @@ import RefinementList from "@modules/store/components/refinement-list"
 import type { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 
 export const metadata: Metadata = {
-  title: "Zbritje",
-  description: "Zbuloni produktet me zbritje dhe ofertat aktuale në YCO.",
+  title: "Oferta",
+  description: "Zbulo ofertat aktuale dhe produktet me zbritje në YCO.",
 }
 
 async function DiscountProducts({
@@ -29,7 +29,7 @@ async function DiscountProducts({
     return (
       <div className="py-12 text-center text-yco-charcoal">
         <p className="mb-6 font-hanken text-lg">
-          Për momentin nuk ka produkte me zbritje.
+          Për momentin nuk ka oferta aktive.
         </p>
         <LocalizedClientLink href="/store" className="yco-btn yco-btn--ink">
           Shiko të gjitha produktet
@@ -80,7 +80,7 @@ export default async function DiscountsPage({
   return (
     <div className="content-container px-4 py-6 small:px-6">
       <div className="mb-8 flex items-center gap-4">
-        <h1 className="min-w-0 flex-1 text-2xl-semi">Zbritje</h1>
+        <h1 className="min-w-0 flex-1 text-2xl-semi">Oferta</h1>
         <Suspense fallback={null}>
           <RefinementList sortBy={sortBy} variant="inline" />
         </Suspense>

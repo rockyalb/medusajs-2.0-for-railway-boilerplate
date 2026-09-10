@@ -475,7 +475,7 @@ export default function NavClient({
                   href="/discounts"
                   onMouseEnter={closeShop}
                 >
-                  Zbritje
+                  Oferta
                 </LocalizedClientLink>
               )}
             </div>
@@ -707,7 +707,7 @@ export default function NavClient({
             {[
               { label: "Produktet", href: "/store" },
               ...(showDiscounts
-                ? [{ label: "Zbritje", href: "/discounts" }]
+                ? [{ label: "Oferta", href: "/discounts" }]
                 : []),
               ...secondaryLinks,
               { label: "Llogaria", href: "/account" },

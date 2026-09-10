@@ -5,10 +5,11 @@ import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures"
 import { useCallback, useEffect, useMemo, useState } from "react"
 import type { HttpTypes } from "@medusajs/types"
 
-import { getProductPrice } from "@lib/util/get-product-price"
+import { getDiscountedVariant } from "@lib/util/discounts"
 import ProductCard, {
   type ProductCardData,
 } from "@modules/products/components/product-card"
+import { getProductCardData } from "@modules/products/components/product-preview/product-card-data"
 
 const ArrowIcon = ({ direction }: { direction: "left" | "right" }) => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -24,9 +25,13 @@ const ArrowIcon = ({ direction }: { direction: "left" | "right" }) => (
 
 export default function ProductRail({
   products,
+  discountedOnly = false,
+  ariaLabel = "Most Loved",
 }: {
   products: HttpTypes.StoreProduct[]
-  region: HttpTypes.StoreRegion
+  region?: HttpTypes.StoreRegion
+  discountedOnly?: boolean
+  ariaLabel?: string
 }) {
   const wheelGestures = useMemo(
     () => [WheelGesturesPlugin({ forceWheelAxis: "x" })],
@@ -81,46 +86,17 @@ export default function ProductRail({
   }
 
   // Prices are already on the products (fetched with *variants.calculated_price),
-  // so the cards receive plain serializable data — no per-card refetch.
+  // so the cards receive plain serializable data — no per-card refetch. Offers
+  // select the live discounted variant for display while the mapper keeps all
+  // original variants available for quick-add safety.
   const showcaseProducts: ProductCardData[] = products
     .slice(0, 12)
-    .map((product) => {
-      const { cheapestPrice } = getProductPrice({ product })
-      const gallery = (product.images ?? []).map((image) => image.url)
-      const hoverImage =
-        gallery.find((url) => url && url !== product.thumbnail) ?? null
-
-      // Quick add only works without option selection, so it targets the sole
-      // variant; the homepage fetch omits inventory, so treat missing
-      // quantities as in stock and let the cart API be the backstop.
-      const variants = product.variants ?? []
-      const quickAddVariant = variants.length === 1 ? variants[0] : null
-      const inStock = quickAddVariant
-        ? !quickAddVariant.manage_inventory ||
-          !!quickAddVariant.allow_backorder ||
-          quickAddVariant.inventory_quantity == null ||
-          quickAddVariant.inventory_quantity > 0
-        : true
-
-      return {
-        id: product.id!,
-        handle: product.handle!,
-        title: product.title,
-        thumbnail: product.thumbnail || gallery[0] || null,
-        hoverImage,
-        price: cheapestPrice?.calculated_price ?? null,
-        originalPrice: cheapestPrice?.original_price ?? null,
-        isSale: cheapestPrice?.price_type === "sale",
-        discountPercentage:
-          cheapestPrice?.price_type === "sale"
-            ? cheapestPrice.percentage_diff
-            : null,
-        variantId: quickAddVariant?.id ?? null,
-        inStock,
-        priceAmount: cheapestPrice?.calculated_price_number ?? null,
-        currencyCode: cheapestPrice?.currency_code ?? null,
-      }
-    })
+    .map((product) =>
+      getProductCardData(
+        product,
+        discountedOnly ? getDiscountedVariant(product)?.id : undefined
+      )
+    )
 
   return (
     <div className="relative mx-auto max-w-6xl pb-8 small:pb-10">
@@ -128,7 +104,7 @@ export default function ProductRail({
         ref={emblaRef}
         className="-mx-6 overflow-hidden px-6 pb-3 md:-mx-8 md:px-8"
         role="region"
-        aria-label="Most Loved"
+        aria-label={ariaLabel}
       >
         <div className="flex gap-3">
           {showcaseProducts.map((product, productIndex) => (

@@ -31,13 +31,15 @@ export default function NavigationSection({
           body: { navigation: { show_discounts: enabled } },
         }
       )
-      if (result.revalidated) toast.success("Navigation saved")
+      if (result.revalidated) toast.success("Offer visibility saved")
       else
-        toast.warning("Navigation saved. Storefront cache refresh is pending.")
+        toast.warning(
+          "Offer visibility saved. Storefront cache refresh is pending."
+        )
       onSaved()
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Failed to save navigation"
+        error instanceof Error ? error.message : "Failed to save offer visibility"
       )
     } finally {
       setPending(false)
@@ -47,9 +49,11 @@ export default function NavigationSection({
   return (
     <Container className="divide-y p-0">
       <div className="px-6 py-4">
-        <Heading level="h2">Navigation</Heading>
+        <Heading level="h2">Oferta</Heading>
         <Text size="small" className="text-ui-fg-subtle">
-          Show or hide the Zbritje link in desktop and mobile navigation.
+          Show or hide the Oferta link in desktop and mobile navigation and
+          the homepage offers carousel. The carousel appears when discounted
+          products are available.
         </Text>
       </div>
       <div className="flex flex-col gap-4 px-6 py-4">
@@ -60,7 +64,9 @@ export default function NavigationSection({
             onCheckedChange={setEnabled}
             disabled={pending}
           />
-          <Label htmlFor="show-discounts">Show discounts link</Label>
+          <Label htmlFor="show-discounts">
+            Show offers link and homepage section
+          </Label>
         </div>
         <div>
           <Button
@@ -69,7 +75,7 @@ export default function NavigationSection({
             disabled={pending}
             isLoading={pending}
           >
-            Save navigation
+            Save offer visibility
           </Button>
         </div>
       </div>
