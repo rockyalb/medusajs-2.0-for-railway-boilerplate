@@ -35,7 +35,7 @@
   font-size: 1rem;
   font-weight: 800;
   line-height: 1.25;
-  animation: badge-color-shift 12s ease-in-out infinite alternate;
+  animation: badge-color-shift 6s ease-in-out infinite alternate;
 }
 
 .badge::after {
