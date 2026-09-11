@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react"
 import { HttpTypes } from "@medusajs/types"
 import { Button, Heading } from "@medusajs/ui"
+import { unstable_rethrow } from "next/navigation"
 import { completeCodCheckout, prepareCheckout } from "@lib/data/checkout"
 import CartTotals from "@modules/common/components/cart-totals"
 import ShippingAddress from "../shipping-address"
@@ -119,7 +120,10 @@ export default function ContinuousCheckout({
       })
       if (result.cart) setQuote({ cart: result.cart, values: serialize(data) })
       setError(result.error ?? null)
-    } catch {
+    } catch (error) {
+      // A successful Server Action redirect rejects its client-side promise.
+      // Preserve that framework signal so it cannot flash as a checkout error.
+      unstable_rethrow(error)
       setError("Porosia nuk u përfundua. Ju lutemi provoni përsëri.")
     } finally {
       submittingRef.current = false
