@@ -442,6 +442,8 @@ export default function NavClient({
                 <img
                   src="/image2vector.svg"
                   alt="yco"
+                  width={40}
+                  height={40}
                   className="h-10 w-auto"
                 />
               </LocalizedClientLink>
@@ -489,7 +491,13 @@ export default function NavClient({
               onClick={closeMobile}
               onMouseEnter={closeShop}
             >
-              <img src="/image2vector.svg" alt="yco" className="h-9 w-auto" />
+              <img
+                src="/image2vector.svg"
+                alt="yco"
+                width={36}
+                height={36}
+                className="h-9 w-auto"
+              />
             </LocalizedClientLink>
           </div>
 
@@ -613,7 +621,13 @@ export default function NavClient({
               className="hover:opacity-80 transition-opacity duration-300"
               onClick={closeMobile}
             >
-              <img src="/image2vector.svg" alt="yco" className="h-10 w-auto" />
+              <img
+                src="/image2vector.svg"
+                alt="yco"
+                width={40}
+                height={40}
+                className="h-10 w-auto"
+              />
             </LocalizedClientLink>
             <button
               type="button"

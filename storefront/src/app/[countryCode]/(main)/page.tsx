@@ -74,13 +74,6 @@ export default async function Home({
   ])
 
   const curatedBestsellerIds = homepageSettings.bestsellers.product_ids
-  const curatedBestsellers = await getCuratedBestsellerProducts(
-    countryCode,
-    curatedBestsellerIds
-  )
-  const bestsellerProducts = curatedBestsellers.length
-    ? curatedBestsellers
-    : await getBestsellerProducts(countryCode)
 
   const topCategories = (
     (categoryResponse.product_categories ??
@@ -92,7 +85,18 @@ export default async function Home({
     ...(category.category_children?.map((child) => child.id) ?? []),
   ])
   const categoryIds = categoryIdGroups.flat()
-  const productsByCategoryId = await getMenuProductsByCategoryIds(categoryIds)
+
+  // The bestseller lookup only depends on homepage settings and the category
+  // products only on the category list, so run them side by side instead of
+  // as two extra serial round trips before the first byte.
+  const [curatedBestsellers, productsByCategoryId] = await Promise.all([
+    getCuratedBestsellerProducts(countryCode, curatedBestsellerIds),
+    getMenuProductsByCategoryIds(categoryIds),
+  ])
+  const bestsellerProducts = curatedBestsellers.length
+    ? curatedBestsellers
+    : await getBestsellerProducts(countryCode)
+
   const categoryCards = orderedTopCategories
     .map((category) => {
       const categoryProducts = [
@@ -108,7 +112,13 @@ export default async function Home({
       )
 
       return {
-        category,
+        // Only what the client card needs; the full category object was
+        // being serialized into the RSC payload for every card.
+        category: {
+          id: category.id,
+          name: category.name,
+          handle: category.handle,
+        },
         image: homepageSettings.category_cards.images[category.id] || null,
         products: uniqueProducts.map((product) => ({
           id: product.id,

@@ -1,21 +1,37 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import useEmblaCarousel from "embla-carousel-react"
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures"
 import { motion, useReducedMotion } from "motion/react"
 import { useMemo, useRef } from "react"
-import type { HttpTypes } from "@medusajs/types"
 import type { MouseEvent, PointerEvent } from "react"
+import { isOptimizableImageUrl } from "@lib/util/image-host"
 import type { CategoryProduct } from "./category-product-slider"
 
-type CategoryCard = {
-  category: HttpTypes.StoreProductCategory
+/**
+ * Only the fields the card renders. The full StoreProductCategory (metadata,
+ * timestamps, children…) used to be serialized into the RSC payload for every
+ * card, which bloated the HTML document.
+ */
+export type CategoryCardCategory = {
+  id: string
+  name: string
+  handle: string
+}
+
+export type CategoryCard = {
+  category: CategoryCardCategory
   products: CategoryProduct[]
   image?: string | null
 }
 
 const DRAG_THRESHOLD = 14
+
+/* Cards are `w-[78vw] max-w-[25rem]` on phones and 30% of a 72rem container
+   on `small:` and up. */
+const CARD_IMAGE_SIZES = "(max-width: 1023px) 78vw, 346px"
 
 const CATEGORY_CARD_ACCENT_CLASS = "yco-accent--rhode"
 
@@ -121,7 +137,7 @@ export default function CategoryGrid({
         >
           <div className="flex gap-3 pr-8 small:pr-12">
             {categories.map(
-              ({ category, products, image: imageOverride }, index) => {
+              ({ category, products, image: imageOverride }) => {
                 const image = imageOverride || products[0]?.image
 
                 return (
@@ -136,13 +152,22 @@ export default function CategoryGrid({
                       draggable={false}
                       onClick={handleCategoryClick}
                     >
-                      <div className="aspect-[4/5] w-full overflow-hidden bg-white/55">
+                      <div className="relative aspect-[4/5] w-full overflow-hidden bg-white/55">
                         {image ? (
-                          <img
+                          /* This slider sits below the fold. Every card is
+                             lazy: React 19 SSR hoists a <link rel=preload>
+                             for any eager <img>, and the first two cards'
+                             ~430 KiB PNGs were competing with the hero for
+                             bandwidth during LCP. */
+                          <Image
                             src={image}
                             alt={products[0]?.title || category.name}
-                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                            loading={index > 1 ? "lazy" : undefined}
+                            fill
+                            sizes={CARD_IMAGE_SIZES}
+                            loading="lazy"
+                            fetchPriority="low"
+                            unoptimized={!isOptimizableImageUrl(image)}
+                            className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
                             draggable={false}
                           />
                         ) : (

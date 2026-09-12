@@ -217,6 +217,10 @@ class MinioFileProviderService extends AbstractFileProviderService {
         content.length,
         {
           'Content-Type': file.mimeType,
+          // Keys are ULID-suffixed so an object never changes once written;
+          // let browsers and CDNs keep it. Bucket responses previously
+          // carried no Cache-Control at all.
+          'Cache-Control': 'public, max-age=31536000, immutable',
           'x-amz-meta-original-filename': file.filename,
           'x-amz-acl': 'public-read'
         }

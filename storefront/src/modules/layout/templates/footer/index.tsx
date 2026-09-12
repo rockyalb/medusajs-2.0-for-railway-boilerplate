@@ -21,6 +21,9 @@ export default async function Footer() {
               <img
                 src="/image2vector.svg"
                 alt="YCO"
+                width={48}
+                height={48}
+                loading="lazy"
                 className="h-12 w-auto"
               />
             </LocalizedClientLink>

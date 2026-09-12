@@ -39,7 +39,11 @@ export const EMPTY_HOMEPAGE_SETTINGS: HomepageSettings = {
 export const getHomepageSettings = cache(async function () {
   return sdk.client
     .fetch<{ homepage: HomepageSettings }>("/store/homepage", {
-      next: { tags: ["homepage"] },
+      // Without `force-cache` Next 15+ treats this as no-store, so every
+      // page view waited on the backend. /api/revalidate busts the tag when
+      // the admin saves homepage settings.
+      cache: "force-cache",
+      next: { tags: ["homepage"], revalidate: 300 },
     })
     .then(({ homepage }) => ({
       navigation: {

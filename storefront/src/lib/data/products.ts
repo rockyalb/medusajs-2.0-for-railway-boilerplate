@@ -7,6 +7,15 @@ import { sortProducts } from "@lib/util/sort-products"
 
 const publicCacheOptions = { cache: "force-cache" as const, next: { tags: ["products"], revalidate: 60 } }
 
+// Homepage sections (bestsellers, product of the month). In Next 15+ a fetch
+// with only `next.tags` is uncached, so these hit Medusa on every page view
+// and sat on the critical path of the document's TTFB. The "homepage" tag is
+// busted by /api/revalidate when settings change; "products" on catalog edits.
+const homepageCacheOptions = {
+  cache: "force-cache" as const,
+  next: { tags: ["homepage", "products"], revalidate: 300 },
+}
+
 export const getProductsById = cache(async function ({
   ids,
   regionId,
@@ -40,7 +49,7 @@ export const getMenuProductsByCategoryIds = cache(async function (
           category_id: [categoryId],
           fields: "id,title,handle,thumbnail,*images",
         },
-        { next: { tags: ["products"] } }
+        publicCacheOptions
       )
 
       return [
@@ -71,7 +80,7 @@ export const getProductCountsByCategoryGroups = cache(async function (
           category_id: uniqueCategoryIds,
           fields: "id",
         },
-        { next: { tags: ["products"] } }
+        publicCacheOptions
       )
 
       return [groupKey, count] as const
@@ -94,7 +103,7 @@ export const getMenuProductsByCollectionIds = cache(async function (
           collection_id: [collectionId],
           fields: "id,title,handle,thumbnail,*images",
         },
-        { next: { tags: ["products"] } }
+        publicCacheOptions
       )
 
       return [
@@ -145,7 +154,7 @@ export const getCuratedBestsellerProducts = cache(async function (
       fields:
         "id,title,handle,subtitle,description,thumbnail,*images,*tags,*variants.calculated_price",
     },
-    { next: { tags: ["homepage", "products"] } }
+    homepageCacheOptions
   )
 
   const productsById = new Map(products.map((product) => [product.id, product]))
@@ -172,7 +181,7 @@ export const getBestsellerProducts = cache(async function (
       fields:
         "id,title,handle,subtitle,description,thumbnail,*images,*tags,*variants.calculated_price",
     },
-    { next: { tags: ["products"] } }
+    homepageCacheOptions
   )
 
   const scoredProducts = products.map((product) => {
@@ -227,7 +236,7 @@ export const getProductOfTheMonth = cache(async function (
         region_id: region.id,
         fields: "id,title,handle,subtitle,description,thumbnail,*images,+metadata,*variants.calculated_price",
       },
-      { next: { tags: ["products", "homepage"] } }
+      homepageCacheOptions
     )
     if (selectedProducts[0]) return selectedProducts[0]
   }
@@ -239,7 +248,7 @@ export const getProductOfTheMonth = cache(async function (
       fields:
         "id,title,handle,subtitle,description,thumbnail,*images,+metadata,*variants.calculated_price",
     },
-    { next: { tags: ["products"] } }
+    homepageCacheOptions
   )
 
   const candidates = products.filter(
