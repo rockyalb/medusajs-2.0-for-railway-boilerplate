@@ -4,6 +4,13 @@ import { getProductsList } from "./products"
 import { HttpTypes } from "@medusajs/types"
 
 const publicCacheOptions = { cache: "force-cache" as const, next: { tags: ["collections"], revalidate: 3600 } }
+// Preview products shown on the homepage brand tiles. Uncached, this was one
+// live Medusa call per collection on every homepage request and one of the
+// things that kept the route from being served as ISR.
+const previewProductCacheOptions = {
+  cache: "force-cache" as const,
+  next: { tags: ["products", "collections"], revalidate: 300 },
+}
 
 export const retrieveCollection = cache(async function (id: string) {
   return sdk.store.collection
@@ -82,7 +89,7 @@ export const getCollectionsWithPreviewProducts = cache(
             limit: 1,
             fields: "id,title,handle,thumbnail,*images,collection_id",
           },
-          { next: { tags: ["products"] } }
+          previewProductCacheOptions
         )
 
         return {

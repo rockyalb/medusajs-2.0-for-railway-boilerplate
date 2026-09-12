@@ -24,6 +24,19 @@ import { getRegion } from "@lib/data/regions"
 import { listWordPressPosts } from "@lib/data/wordpress"
 import { HttpTypes } from "@medusajs/types"
 
+/**
+ * The homepage is the same for every visitor (the cart button hydrates on the
+ * client), so serve it as ISR: rendered once, re-rendered in the background
+ * every 5 minutes or immediately via /api/revalidate ("homepage" tag). Every
+ * fetch in this tree must stay cacheable, otherwise Next silently falls back
+ * to rendering on each request.
+ */
+export const revalidate = 300
+
+export async function generateStaticParams() {
+  return [{ countryCode: "al" }]
+}
+
 const normalizedCategoryName = (name: string) => name.toLowerCase()
 
 const isSkinCareCategory = (category: HttpTypes.StoreProductCategory) =>

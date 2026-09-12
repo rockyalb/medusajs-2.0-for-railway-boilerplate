@@ -78,6 +78,10 @@ export const getDiscountedProducts = cache(async function ({
     )
     .map(({ id }) => id)
   if (!ids.length) return { products: [], count: 0, page: currentPage }
+  // Cached for the same 60s window as the index above. An explicit no-store
+  // here forced every route rendering this section (including the homepage)
+  // to be dynamic, which is a far bigger cost than an offer lingering for
+  // up to a minute. Catalog edits bust the "products" tag immediately.
   const { products } = await sdk.store.product.list(
     {
       id: ids,
@@ -85,11 +89,11 @@ export const getDiscountedProducts = cache(async function ({
       region_id: region.id,
       fields: "*variants.calculated_price,+variants.inventory_quantity",
     },
-    { cache: "no-store" }
+    { cache: "force-cache", next: { revalidate: 60, tags: ["products"] } }
   )
   const byId = new Map(products.map((product) => [product.id, product]))
   return {
-    // Recheck live prices so an offer that expired since the snapshot is hidden.
+    // Recheck prices so an offer that expired since the snapshot is hidden.
     products: ids
       .map((id) => byId.get(id))
       .filter(
