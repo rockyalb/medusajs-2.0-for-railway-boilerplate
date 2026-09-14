@@ -46,6 +46,7 @@ export default function ProductCard({
 }) {
   const countryCode = useParams().countryCode as string
   const [isAdding, setIsAdding] = useState(false)
+  const [addError, setAddError] = useState<string | null>(null)
   const [justAdded, setJustAdded] = useState(false)
   const [shouldLoadHoverImage, setShouldLoadHoverImage] = useState(false)
   const resolvedImageSizes =
@@ -104,6 +105,7 @@ export default function ProductCard({
     }
 
     setIsAdding(true)
+    setAddError(null)
 
     try {
       await addToCart({
@@ -137,6 +139,8 @@ export default function ProductCard({
 
       setJustAdded(true)
       setTimeout(() => setJustAdded(false), 2000)
+    } catch {
+      setAddError("Produkti nuk u shtua. Rifreskoni faqen dhe provoni përsëri.")
     } finally {
       setIsAdding(false)
     }
@@ -268,6 +272,11 @@ export default function ProductCard({
           </h3>
         </LocalizedClientLink>
 
+        {addError && (
+          <p role="alert" className="text-small-regular text-rose-500">
+            {addError}
+          </p>
+        )}
         {product.variantId ? (
           <button
             type="button"

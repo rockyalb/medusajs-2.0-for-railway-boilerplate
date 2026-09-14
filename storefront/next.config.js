@@ -6,6 +6,10 @@ checkEnvVariables()
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
+  // Detect clients from earlier Railway builds during navigation.
+  deploymentId: process.env.RAILWAY_DEPLOYMENT_ID || process.env.RAILWAY_GIT_COMMIT_SHA,
+  // Bound how long an edge cache may serve old ISR HTML while revalidating.
+  expireTime: 3600,
   reactStrictMode: true,
   typescript: {
     ignoreBuildErrors: true,

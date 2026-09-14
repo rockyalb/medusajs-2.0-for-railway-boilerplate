@@ -29,7 +29,8 @@ export async function getLoyaltyRewardSetting() {
     .fetch<{ reward_setting: LoyaltyRewardSetting }>(
       "/store/loyalty/reward-settings",
       {
-        next: { tags: ["loyalty-reward-setting"] },
+        cache: "force-cache",
+        next: { tags: ["loyalty-reward-setting"], revalidate: 60 },
       }
     )
     .then(({ reward_setting }) => reward_setting)

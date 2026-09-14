@@ -39,6 +39,11 @@ function fixture() {
       products: products.slice(query.offset, query.offset + query.limit), count: products.length,
     }
   } } } }
+  sdk.client = { fetch: (url, options) => {
+    assert.equal(url, "/store/products")
+    assert.equal(options.cache, options.query.id ? "force-cache" : "no-store")
+    return sdk.store.product.list(options.query)
+  } }
   const data = load("src/lib/data/discounts.ts", {
     "server-only": {}, "@lib/config": { sdk }, "@lib/data/regions": { getRegion: async () => ({ id: "al-region" }) },
     "@lib/util/discounts": discountUtils, "react": { cache: fn => fn },

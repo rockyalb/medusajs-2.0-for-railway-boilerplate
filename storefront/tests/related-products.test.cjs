@@ -54,6 +54,11 @@ function loadRelatedProducts(catalog) {
     },
   }
 
+  mocks["@lib/config"].sdk.client = { fetch: (url, options) => {
+    assert.equal(url, "/store/products")
+    const { query, ...cacheOptions } = options
+    return mocks["@lib/config"].sdk.store.product.list(query, cacheOptions)
+  } }
   new Function("require", "module", "exports", code)(
     (id) => {
       if (!(id in mocks)) throw new Error(`Unexpected import: ${id}`)

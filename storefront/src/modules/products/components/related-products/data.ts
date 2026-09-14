@@ -47,10 +47,7 @@ function normalizeLimit(limit: number | undefined) {
     return RELATED_PRODUCTS_PAGE_SIZE
   }
 
-  return Math.min(
-    Math.max(Math.floor(limit!), 1),
-    RELATED_PRODUCTS_PAGE_SIZE
-  )
+  return Math.min(Math.max(Math.floor(limit!), 1), RELATED_PRODUCTS_PAGE_SIZE)
 }
 
 /**
@@ -88,9 +85,15 @@ export async function getRelatedProductsPage({
     cache: "force-cache" as const,
     next: { tags: ["products", "related-products"], revalidate: 60 },
   }
-  const { products, count } = await sdk.store.product.list(query, requestOptions)
+  const { products, count } =
+    await sdk.client.fetch<HttpTypes.StoreProductListResponse>(
+      "/store/products",
+      { query, ...requestOptions }
+    )
 
-  const filteredProducts = products.filter((product) => product.id !== productId)
+  const filteredProducts = products.filter(
+    (product) => product.id !== productId
+  )
   const nextOffset = count > offset + limit ? offset + limit : null
 
   return {

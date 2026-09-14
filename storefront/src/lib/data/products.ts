@@ -5,7 +5,10 @@ import { getRegion } from "./regions"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import { sortProducts } from "@lib/util/sort-products"
 
-const publicCacheOptions = { cache: "force-cache" as const, next: { tags: ["products"], revalidate: 60 } }
+const publicCacheOptions = {
+  cache: "force-cache" as const,
+  next: { tags: ["products"], revalidate: 60 },
+}
 
 // Homepage sections (bestsellers, product of the month). In Next 15+ a fetch
 // with only `next.tags` is uncached, so these hit Medusa on every page view
@@ -23,15 +26,15 @@ export const getProductsById = cache(async function ({
   ids: string[]
   regionId: string
 }) {
-  return sdk.store.product
-    .list(
-      {
+  return sdk.client
+    .fetch<HttpTypes.StoreProductListResponse>("/store/products", {
+      query: {
         id: ids,
         region_id: regionId,
         fields: "*variants.calculated_price,+variants.inventory_quantity",
       },
-      { next: { tags: ["products"] } }
-    )
+      ...publicCacheOptions,
+    })
     .then(({ products }) => products)
 })
 
@@ -43,19 +46,20 @@ export const getMenuProductsByCategoryIds = cache(async function (
 
   const entries = await Promise.all(
     uniqueCategoryIds.map(async (categoryId) => {
-      const { products } = await sdk.store.product.list(
-        {
-          limit,
-          category_id: [categoryId],
-          fields: "id,title,handle,thumbnail,*images",
-        },
-        publicCacheOptions
-      )
+      const { products } =
+        await sdk.client.fetch<HttpTypes.StoreProductListResponse>(
+          "/store/products",
+          {
+            query: {
+              limit,
+              category_id: [categoryId],
+              fields: "id,title,handle,thumbnail,*images",
+            },
+            ...publicCacheOptions,
+          }
+        )
 
-      return [
-        categoryId,
-        products,
-      ] as const
+      return [categoryId, products] as const
     })
   )
 
@@ -74,14 +78,18 @@ export const getProductCountsByCategoryGroups = cache(async function (
         return ["", 0] as const
       }
 
-      const { count } = await sdk.store.product.list(
-        {
-          limit: 1,
-          category_id: uniqueCategoryIds,
-          fields: "id",
-        },
-        publicCacheOptions
-      )
+      const { count } =
+        await sdk.client.fetch<HttpTypes.StoreProductListResponse>(
+          "/store/products",
+          {
+            query: {
+              limit: 1,
+              category_id: uniqueCategoryIds,
+              fields: "id",
+            },
+            ...publicCacheOptions,
+          }
+        )
 
       return [groupKey, count] as const
     })
@@ -97,19 +105,20 @@ export const getMenuProductsByCollectionIds = cache(async function (
 
   const entries = await Promise.all(
     uniqueCollectionIds.map(async (collectionId) => {
-      const { products } = await sdk.store.product.list(
-        {
-          limit: 1,
-          collection_id: [collectionId],
-          fields: "id,title,handle,thumbnail,*images",
-        },
-        publicCacheOptions
-      )
+      const { products } =
+        await sdk.client.fetch<HttpTypes.StoreProductListResponse>(
+          "/store/products",
+          {
+            query: {
+              limit: 1,
+              collection_id: [collectionId],
+              fields: "id,title,handle,thumbnail,*images",
+            },
+            ...publicCacheOptions,
+          }
+        )
 
-      return [
-        collectionId,
-        products,
-      ] as const
+      return [collectionId, products] as const
     })
   )
 
@@ -146,16 +155,20 @@ export const getCuratedBestsellerProducts = cache(async function (
     return []
   }
 
-  const { products } = await sdk.store.product.list(
-    {
-      id: productIds,
-      limit: productIds.length,
-      region_id: region.id,
-      fields:
-        "id,title,handle,subtitle,description,thumbnail,*images,*tags,*variants.calculated_price",
-    },
-    homepageCacheOptions
-  )
+  const { products } =
+    await sdk.client.fetch<HttpTypes.StoreProductListResponse>(
+      "/store/products",
+      {
+        query: {
+          id: productIds,
+          limit: productIds.length,
+          region_id: region.id,
+          fields:
+            "id,title,handle,subtitle,description,thumbnail,*images,*tags,*variants.calculated_price",
+        },
+        ...homepageCacheOptions,
+      }
+    )
 
   const productsById = new Map(products.map((product) => [product.id, product]))
 
@@ -174,15 +187,19 @@ export const getBestsellerProducts = cache(async function (
     return []
   }
 
-  const { products } = await sdk.store.product.list(
-    {
-      limit: 100,
-      region_id: region.id,
-      fields:
-        "id,title,handle,subtitle,description,thumbnail,*images,*tags,*variants.calculated_price",
-    },
-    homepageCacheOptions
-  )
+  const { products } =
+    await sdk.client.fetch<HttpTypes.StoreProductListResponse>(
+      "/store/products",
+      {
+        query: {
+          limit: 100,
+          region_id: region.id,
+          fields:
+            "id,title,handle,subtitle,description,thumbnail,*images,*tags,*variants.calculated_price",
+        },
+        ...homepageCacheOptions,
+      }
+    )
 
   const scoredProducts = products.map((product) => {
     const searchable = [
@@ -213,7 +230,9 @@ export const getBestsellerProducts = cache(async function (
 
   const fallbackProducts = products.filter(
     (product) =>
-      !curatedProducts.some((curatedProduct) => curatedProduct.id === product.id)
+      !curatedProducts.some(
+        (curatedProduct) => curatedProduct.id === product.id
+      )
   )
 
   return [...curatedProducts, ...fallbackProducts].slice(0, limit)
@@ -230,26 +249,35 @@ export const getProductOfTheMonth = cache(async function (
   }
 
   if (selectedProductId) {
-    const { products: selectedProducts } = await sdk.store.product.list(
-      {
-        id: [selectedProductId],
-        region_id: region.id,
-        fields: "id,title,handle,subtitle,description,thumbnail,*images,+metadata,*variants.calculated_price",
-      },
-      homepageCacheOptions
-    )
+    const { products: selectedProducts } =
+      await sdk.client.fetch<HttpTypes.StoreProductListResponse>(
+        "/store/products",
+        {
+          query: {
+            id: [selectedProductId],
+            region_id: region.id,
+            fields:
+              "id,title,handle,subtitle,description,thumbnail,*images,+metadata,*variants.calculated_price",
+          },
+          ...homepageCacheOptions,
+        }
+      )
     if (selectedProducts[0]) return selectedProducts[0]
   }
 
-  const { products } = await sdk.store.product.list(
-    {
-      limit: 100,
-      region_id: region.id,
-      fields:
-        "id,title,handle,subtitle,description,thumbnail,*images,+metadata,*variants.calculated_price",
-    },
-    homepageCacheOptions
-  )
+  const { products } =
+    await sdk.client.fetch<HttpTypes.StoreProductListResponse>(
+      "/store/products",
+      {
+        query: {
+          limit: 100,
+          region_id: region.id,
+          fields:
+            "id,title,handle,subtitle,description,thumbnail,*images,+metadata,*variants.calculated_price",
+        },
+        ...homepageCacheOptions,
+      }
+    )
 
   const candidates = products.filter(
     (product) =>
@@ -277,16 +305,16 @@ export const getProductByHandle = cache(async function (
   handle: string,
   regionId: string
 ) {
-  return sdk.store.product
-    .list(
-      {
+  return sdk.client
+    .fetch<HttpTypes.StoreProductListResponse>("/store/products", {
+      query: {
         handle,
         region_id: regionId,
         fields:
           "*variants.calculated_price,+variants.inventory_quantity,+metadata",
       },
-      publicCacheOptions
-    )
+      ...publicCacheOptions,
+    })
     .then(({ products }) => products[0])
 })
 
@@ -316,17 +344,17 @@ export const getProductsList = cache(async function ({
       nextPage: null,
     }
   }
-  return sdk.store.product
-    .list(
-      {
+  return sdk.client
+    .fetch<HttpTypes.StoreProductListResponse>("/store/products", {
+      query: {
         limit,
         offset,
         region_id: region.id,
         fields: "*variants.calculated_price",
         ...queryParams,
       },
-      { next: { tags: ["products"] } }
-    )
+      ...publicCacheOptions,
+    })
     .then(({ products, count }) => {
       const nextPage = count > offset + limit ? validPageParam + 1 : null
 

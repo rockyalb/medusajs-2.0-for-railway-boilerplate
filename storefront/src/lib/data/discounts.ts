@@ -20,15 +20,18 @@ const getDiscountIndex = unstable_cache(
     let offset = 0
     let count = Infinity
     while (offset < count) {
-      const result = await sdk.store.product.list(
+      const result = await sdk.client.fetch<HttpTypes.StoreProductListResponse>(
+        "/store/products",
         {
-          region_id: regionId,
-          fields: "id,*variants.calculated_price",
-          order: "-created_at",
-          limit,
-          offset,
-        },
-        { cache: "no-store" }
+          query: {
+            region_id: regionId,
+            fields: "id,*variants.calculated_price",
+            order: "-created_at",
+            limit,
+            offset,
+          },
+          cache: "no-store",
+        }
       )
       count = result.count
       if (!result.products.length) break
@@ -82,15 +85,20 @@ export const getDiscountedProducts = cache(async function ({
   // here forced every route rendering this section (including the homepage)
   // to be dynamic, which is a far bigger cost than an offer lingering for
   // up to a minute. Catalog edits bust the "products" tag immediately.
-  const { products } = await sdk.store.product.list(
-    {
-      id: ids,
-      limit: DISCOUNTS_PAGE_SIZE,
-      region_id: region.id,
-      fields: "*variants.calculated_price,+variants.inventory_quantity",
-    },
-    { cache: "force-cache", next: { revalidate: 60, tags: ["products"] } }
-  )
+  const { products } =
+    await sdk.client.fetch<HttpTypes.StoreProductListResponse>(
+      "/store/products",
+      {
+        query: {
+          id: ids,
+          limit: DISCOUNTS_PAGE_SIZE,
+          region_id: region.id,
+          fields: "*variants.calculated_price,+variants.inventory_quantity",
+        },
+        cache: "force-cache",
+        next: { revalidate: 60, tags: ["products"] },
+      }
+    )
   const byId = new Map(products.map((product) => [product.id, product]))
   return {
     // Recheck prices so an offer that expired since the snapshot is hidden.

@@ -72,10 +72,11 @@ async function prepare(form: FormData, final = false) {
   )
 
   // Eligibility (including city and free-delivery rules) belongs to Medusa.
-  const { shipping_options } = await sdk.store.fulfillment.listCartOptions(
-    { cart_id: cartId },
-    { ...headers, cache: "no-store" }
-  )
+  const { shipping_options } =
+    await sdk.client.fetch<HttpTypes.StoreShippingOptionListResponse>(
+      "/store/shipping-options",
+      { query: { cart_id: cartId }, cache: "no-store", headers: { ...headers } }
+    )
   const options = shipping_options
     .filter(
       (option) =>
@@ -105,10 +106,15 @@ async function prepare(form: FormData, final = false) {
 
   if (final) {
     if (!cart.region_id) throw new Error("Rajoni i shportës nuk u gjet.")
-    const { payment_providers } = await sdk.store.payment.listPaymentProviders(
-      { region_id: cart.region_id },
-      { ...headers, cache: "no-store" }
-    )
+    const { payment_providers } =
+      await sdk.client.fetch<HttpTypes.StorePaymentProviderListResponse>(
+        "/store/payment-providers",
+        {
+          query: { region_id: cart.region_id },
+          cache: "no-store",
+          headers: { ...headers },
+        }
+      )
     if (!payment_providers.some((provider) => provider.id === COD_PROVIDER)) {
       throw new Error(
         "Pagesa në dorëzim nuk është e disponueshme. Ju lutemi provoni përsëri më vonë."
@@ -120,10 +126,9 @@ async function prepare(form: FormData, final = false) {
       {},
       headers
     )
-    const refreshed = await sdk.store.cart.retrieve(
-      cartId,
-      {},
-      { ...headers, cache: "no-store" }
+    const refreshed = await sdk.client.fetch<HttpTypes.StoreCartResponse>(
+      `/store/carts/${cartId}`,
+      { query: {}, cache: "no-store", headers: { ...headers } }
     )
     cart = refreshed.cart
   }

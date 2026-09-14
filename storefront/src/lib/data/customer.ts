@@ -3,7 +3,7 @@
 import { sdk } from "@lib/config"
 import medusaError from "@lib/util/medusa-error"
 import { HttpTypes } from "@medusajs/types"
-import { revalidateTag } from "next/cache"
+import { updateTag } from "next/cache"
 import { redirect } from "next/navigation"
 import { cache } from "react"
 import { transferCartToCustomer } from "./cart"
@@ -22,8 +22,12 @@ const getAuthTokenValue = (token: unknown) => {
 }
 
 export const getCustomer = cache(async function () {
-  return await sdk.store.customer
-    .retrieve({}, { next: { tags: ["customer"] }, ...(await getAuthHeaders()) })
+  return await sdk.client
+    .fetch<HttpTypes.StoreCustomerResponse>("/store/customers/me", {
+      query: {},
+      cache: "no-store",
+      headers: { ...(await getAuthHeaders()) },
+    })
     .then(({ customer }) => customer)
     .catch(() => null)
 })
@@ -36,7 +40,7 @@ export const updateCustomer = cache(async function (
     .then(({ customer }) => customer)
     .catch(medusaError)
 
-  revalidateTag("customer")
+  updateTag("customer")
   return updateRes
 })
 
@@ -75,7 +79,7 @@ export async function signup(_currentState: unknown, formData: FormData) {
     await setAuthToken(authToken)
     await transferCartToCustomer(undefined, authHeaders)
 
-    revalidateTag("customer")
+    updateTag("customer")
     return null
   } catch (error: any) {
     return error.toString()
@@ -97,7 +101,7 @@ export async function login(_currentState: unknown, formData: FormData) {
     await setAuthToken(authToken)
     await transferCartToCustomer(undefined, authHeaders)
 
-    revalidateTag("customer")
+    updateTag("customer")
     return null
   } catch (error: any) {
     return error.toString()
@@ -107,8 +111,8 @@ export async function login(_currentState: unknown, formData: FormData) {
 export async function signout() {
   await sdk.auth.logout()
   await removeAuthToken()
-  revalidateTag("auth")
-  revalidateTag("customer")
+  updateTag("auth")
+  updateTag("customer")
   redirect("/account")
 }
 
@@ -132,7 +136,7 @@ export const addCustomerAddress = async (
   return sdk.store.customer
     .createAddress(address, {}, await getAuthHeaders())
     .then(({ customer }) => {
-      revalidateTag("customer")
+      updateTag("customer")
       return { success: true, error: null }
     })
     .catch((err) => {
@@ -146,7 +150,7 @@ export const deleteCustomerAddress = async (
   await sdk.store.customer
     .deleteAddress(addressId, await getAuthHeaders())
     .then(() => {
-      revalidateTag("customer")
+      updateTag("customer")
       return { success: true, error: null }
     })
     .catch((err) => {
@@ -176,7 +180,7 @@ export const updateCustomerAddress = async (
   return sdk.store.customer
     .updateAddress(addressId, address, {}, await getAuthHeaders())
     .then(() => {
-      revalidateTag("customer")
+      updateTag("customer")
       return { success: true, error: null }
     })
     .catch((err) => {

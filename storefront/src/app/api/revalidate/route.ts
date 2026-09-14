@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
   const paths = body.paths?.length ? body.paths : ["/[countryCode]"]
 
   for (const tag of tags) {
-    revalidateTag(tag, "max")
+    revalidateTag(tag, { expire: 0 })
   }
 
   for (const path of paths) {

@@ -1,7 +1,11 @@
+import { HttpTypes } from "@medusajs/types"
 import { sdk } from "@lib/config"
 import { cache } from "react"
 
-const publicCacheOptions = { cache: "force-cache" as const, next: { tags: ["categories"], revalidate: 3600 } }
+const publicCacheOptions = {
+  cache: "force-cache" as const,
+  next: { tags: ["categories"], revalidate: 3600 },
+}
 
 type CategoryWithChildren = {
   handle?: string
@@ -41,8 +45,11 @@ const removeSeedCategories = <T extends CategoryWithChildren>(
     }))
 
 export const listCategories = cache(async function () {
-  return sdk.store.category
-    .list({ fields: "+category_children" }, publicCacheOptions)
+  return sdk.client
+    .fetch<HttpTypes.StoreProductCategoryListResponse>(
+      "/store/product-categories",
+      { query: { fields: "+category_children" }, ...publicCacheOptions }
+    )
     .then(({ product_categories }) => removeSeedCategories(product_categories))
 })
 
@@ -50,12 +57,10 @@ export const getCategoriesList = cache(async function (
   offset: number = 0,
   limit: number = 100
 ) {
-  return sdk.store.category
-    .list(
-      // TODO: Look into fixing the type
-      // @ts-ignore
-      { limit, offset },
-      publicCacheOptions
+  return sdk.client
+    .fetch<HttpTypes.StoreProductCategoryListResponse>(
+      "/store/product-categories",
+      { query: { limit, offset }, ...publicCacheOptions }
     )
     .then((response) => ({
       ...response,
@@ -66,12 +71,13 @@ export const getCategoriesList = cache(async function (
 export const getCategoryByHandle = cache(async function (
   categoryHandle: string[]
 ) {
-  return sdk.store.category
-    .list(
-      // TODO: Look into fixing the type
-      // @ts-ignore
-      { handle: categoryHandle, fields: "+category_children" },
-      publicCacheOptions
+  return sdk.client
+    .fetch<HttpTypes.StoreProductCategoryListResponse>(
+      "/store/product-categories",
+      {
+        query: { handle: categoryHandle, fields: "+category_children" },
+        ...publicCacheOptions,
+      }
     )
     .then((response) => ({
       ...response,
