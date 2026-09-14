@@ -26,6 +26,37 @@ export function trackPostHogEvent(
   posthog.capture(eventName, payload)
 }
 
+const ONCE_STORAGE_PREFIX = "yco_posthog_once:"
+
+/**
+ * Capture an event at most once per key on this browser. Used for conversions
+ * that render on a page the shopper can reload or revisit — the confirmation
+ * page — where a plain capture would count the same order more than once.
+ */
+export function trackPostHogEventOnce(
+  dedupeKey: string,
+  eventName: string,
+  payload?: Record<string, unknown>
+) {
+  if (!ready()) {
+    return
+  }
+
+  const storageKey = `${ONCE_STORAGE_PREFIX}${dedupeKey}`
+
+  try {
+    if (window.localStorage.getItem(storageKey)) {
+      return
+    }
+    window.localStorage.setItem(storageKey, "1")
+  } catch {
+    // Storage can be unavailable (private mode, blocked site data). Capturing a
+    // possible duplicate is better than dropping the conversion entirely.
+  }
+
+  posthog.capture(eventName, payload)
+}
+
 export function identifyPostHogCustomer(
   customerId: string,
   properties?: Record<string, unknown>
