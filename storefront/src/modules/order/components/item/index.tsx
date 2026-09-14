@@ -1,9 +1,8 @@
 import { HttpTypes } from "@medusajs/types"
-import { Table, Text } from "@medusajs/ui"
+import { Text } from "@medusajs/ui"
 
 import LineItemOptions from "@modules/common/components/line-item-options"
 import LineItemPrice from "@modules/common/components/line-item-price"
-import LineItemUnitPrice from "@modules/common/components/line-item-unit-price"
 import Thumbnail from "@modules/products/components/thumbnail"
 
 type ItemProps = {
@@ -12,16 +11,17 @@ type ItemProps = {
 
 const Item = ({ item }: ItemProps) => {
   return (
-    <Table.Row className="w-full" data-testid="product-row">
-      <Table.Cell className="!pl-0 p-4 w-24">
-        <div className="flex w-16">
-          <Thumbnail thumbnail={item.thumbnail} size="square" />
-        </div>
-      </Table.Cell>
+    <li
+      className="grid w-full grid-cols-[4rem_minmax(0,1fr)] gap-x-3 gap-y-2 py-4 small:grid-cols-[6rem_minmax(0,1fr)_auto] small:gap-x-4"
+      data-testid="product-row"
+    >
+      <div className="row-span-2 flex w-16 self-center small:w-24">
+        <Thumbnail thumbnail={item.thumbnail} size="square" />
+      </div>
 
-      <Table.Cell className="text-left whitespace-normal px-2">
+      <div className="min-w-0 self-end text-left small:self-center">
         <Text
-          className="txt-medium-plus text-ui-fg-base"
+          className="txt-medium-plus break-words text-ui-fg-base"
           data-testid="product-name"
         >
           {item.title}
@@ -35,21 +35,17 @@ const Item = ({ item }: ItemProps) => {
               data-testid="product-variant"
             />
           )}
-      </Table.Cell>
+      </div>
 
-      <Table.Cell className="!pr-0 pl-2">
-        <span className="!pr-0 flex flex-col items-end h-full justify-center">
-          <span className="flex flex-wrap justify-end gap-x-1 text-xs">
-            <Text className="text-ui-fg-muted">
-              <span data-testid="product-quantity">{item.quantity}</span>x{" "}
-            </Text>
-            <LineItemUnitPrice item={item} style="tight" />
-          </span>
-
+      <div className="col-start-2 flex min-w-0 items-end justify-between gap-3 small:col-start-3 small:row-start-1 small:row-span-2 small:flex-col small:items-end small:justify-center">
+        <Text className="shrink-0 text-sm text-ui-fg-muted">
+          <span data-testid="product-quantity">{item.quantity}</span>x
+        </Text>
+        <span className="min-w-0 text-right tabular-nums">
           <LineItemPrice item={item} style="tight" />
         </span>
-      </Table.Cell>
-    </Table.Row>
+      </div>
+    </li>
   )
 }
 

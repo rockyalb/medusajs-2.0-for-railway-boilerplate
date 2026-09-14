@@ -44,8 +44,8 @@ export default async function orderPlacedHandler({
           shipping_postal_code: shippingAddress.postal_code,
           shipping_country_code: shippingAddress.country_code,
           items: order.items.map((item) => ({
-            title: item.title,
-            product_title: item.product_title,
+            product_title: item.product_title ?? item.title,
+            variant_title: item.variant_title,
             quantity: item.quantity,
             unit_price: item.unit_price,
           })),

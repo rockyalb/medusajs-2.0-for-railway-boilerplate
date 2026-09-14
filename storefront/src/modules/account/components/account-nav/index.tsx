@@ -11,6 +11,7 @@ import Package from "@modules/common/icons/package"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { HttpTypes } from "@medusajs/types"
 import { signout } from "@lib/data/customer"
+import { resetPostHog } from "@lib/posthog"
 
 const AccountNav = ({
   customer,
@@ -20,6 +21,9 @@ const AccountNav = ({
   const route = usePathname()
 
   const handleLogout = async () => {
+    // Drop the identified person before the session ends so a later anonymous
+    // visitor on the same browser is not attributed to this customer.
+    resetPostHog()
     await signout()
   }
 

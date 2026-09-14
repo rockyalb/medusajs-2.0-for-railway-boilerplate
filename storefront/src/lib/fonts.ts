@@ -58,21 +58,22 @@ export const fredoka = Fredoka({
 /* ── Font lab candidates ──────────────────────────────────────────────────
    Loaded only so the pre-launch font switcher can swap them in. Browsers
    download a face only once text is rendered in it, so the unused ones cost
-   a few @font-face rules and nothing more. Delete this block (and the
+   a few @font-face rules and nothing more. `preload: false` keeps every
+   candidate off the initial document's critical path. Delete this block (and the
    matching entries in `font-lab-options.ts`) once a font is chosen. All of
    these are variable fonts, so no weight list is needed. */
-const nunito = Nunito({ subsets: ["latin"], variable: "--font-nunito", display: "swap" })
-const quicksand = Quicksand({ subsets: ["latin"], variable: "--font-quicksand", display: "swap" })
-const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit", display: "swap" })
-const plusJakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-plus-jakarta", display: "swap" })
-const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans", display: "swap" })
-const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" })
-const figtree = Figtree({ subsets: ["latin"], variable: "--font-figtree", display: "swap" })
-const urbanist = Urbanist({ subsets: ["latin"], variable: "--font-urbanist", display: "swap" })
-const albertSans = Albert_Sans({ subsets: ["latin"], variable: "--font-albert-sans", display: "swap" })
-const onest = Onest({ subsets: ["latin"], variable: "--font-onest", display: "swap" })
-const lexend = Lexend({ subsets: ["latin"], variable: "--font-lexend", display: "swap" })
-const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap" })
+const nunito = Nunito({ subsets: ["latin"], variable: "--font-nunito", display: "swap", preload: false })
+const quicksand = Quicksand({ subsets: ["latin"], variable: "--font-quicksand", display: "swap", preload: false })
+const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit", display: "swap", preload: false })
+const plusJakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-plus-jakarta", display: "swap", preload: false })
+const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans", display: "swap", preload: false })
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap", preload: false })
+const figtree = Figtree({ subsets: ["latin"], variable: "--font-figtree", display: "swap", preload: false })
+const urbanist = Urbanist({ subsets: ["latin"], variable: "--font-urbanist", display: "swap", preload: false })
+const albertSans = Albert_Sans({ subsets: ["latin"], variable: "--font-albert-sans", display: "swap", preload: false })
+const onest = Onest({ subsets: ["latin"], variable: "--font-onest", display: "swap", preload: false })
+const lexend = Lexend({ subsets: ["latin"], variable: "--font-lexend", display: "swap", preload: false })
+const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap", preload: false })
 /* Baloo 2 and Comfortaa are declared above as the shipped pairing; the lab
    references their variables directly rather than loading them twice. */
 /* Poppins is a static family, so it needs explicit weights. */
@@ -80,6 +81,7 @@ const poppins = Poppins({
   subsets: ["latin"],
   variable: "--font-poppins",
   display: "swap",
+  preload: false,
   weight: ["300", "400", "500", "600", "700"],
 })
 

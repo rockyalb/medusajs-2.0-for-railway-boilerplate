@@ -1,4 +1,5 @@
 import { getCustomer } from "@lib/data/customer"
+import PostHogIdentify from "@modules/analytics/components/posthog-identify"
 import AccountLayout from "@modules/account/templates/account-layout"
 
 export default async function AccountPageLayout({
@@ -11,8 +12,11 @@ export default async function AccountPageLayout({
   const customer = await getCustomer().catch(() => null)
 
   return (
-    <AccountLayout customer={customer}>
-      {customer ? dashboard : login}
-    </AccountLayout>
+    <>
+      <PostHogIdentify customer={customer} />
+      <AccountLayout customer={customer}>
+        {customer ? dashboard : login}
+      </AccountLayout>
+    </>
   )
 }

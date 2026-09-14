@@ -1,4 +1,9 @@
+"use client"
+
 import { clx } from "@medusajs/ui"
+import { useEffect, useState } from "react"
+import { createPortal } from "react-dom"
+import DiscountBadge from "../product-card/discount-badge"
 import { getProductPrice } from "@lib/util/get-product-price"
 import { HttpTypes } from "@medusajs/types"
 
@@ -11,6 +16,11 @@ export default function ProductPrice({
   variant?: HttpTypes.StoreProductVariant
   compact?: boolean
 }) {
+  const [badgeTarget, setBadgeTarget] = useState<HTMLElement | null>(null)
+  useEffect(() => {
+    setBadgeTarget(document.getElementById(`product-image-discount-${product.id}`))
+  }, [product.id])
+
   const { cheapestPrice, variantPrice } = getProductPrice({
     product,
     variantId: variant?.id,
@@ -56,9 +66,10 @@ export default function ProductPrice({
           >
             {selectedPrice.original_price}
           </span>
-          <span className="rounded-circle bg-pastel-coral-soft px-2 py-0.5 font-sans text-[10px] font-bold text-pastel-coral-ink">
-            -{selectedPrice.percentage_diff}%
-          </span>
+          {badgeTarget && createPortal(
+            <DiscountBadge percentage={selectedPrice.percentage_diff} gallery />,
+            badgeTarget
+          )}
         </>
       )}
     </div>

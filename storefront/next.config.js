@@ -13,9 +13,18 @@ const nextConfig = {
   images: {
     // Uses Next's built-in Sharp optimizer in the existing Railway service.
     formats: ["image/webp"],
-    minimumCacheTTL: 14400,
+    // Bucket objects are ULID-keyed and never rewritten, so optimized
+    // variants can live a day instead of 4h; keeps repeat visits off Sharp.
+    minimumCacheTTL: 86400,
     qualities: [50, 75],
     remotePatterns: [
+      {
+        // Current media bucket (hero, category cards, product images).
+        protocol: "https",
+        hostname: "bucket-production-a1707.up.railway.app",
+        port: "",
+        pathname: "/medusa-media/**",
+      },
       {
         // Older catalog images still use this bucket alongside the current one.
         protocol: "https",

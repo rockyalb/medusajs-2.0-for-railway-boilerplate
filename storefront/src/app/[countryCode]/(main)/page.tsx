@@ -5,11 +5,13 @@ import HereWeFloSection from "@modules/home/components/here-we-flo"
 import EditorialTiles from "@modules/home/components/editorial-tiles"
 import ProductOfTheMonth from "@modules/home/components/product-of-the-month"
 import FeaturedProducts from "@modules/home/components/featured-products"
+import OffersSection from "@modules/home/components/offers"
 import LatestBlogPosts from "@modules/home/components/latest-blog-posts"
 import Newsletter from "@modules/home/components/newsletter"
 import Testimonials from "@modules/home/components/testimonials"
 import TrustBadges from "@modules/home/components/trust-badges"
 import { Reveal } from "@modules/common/components/motion"
+import { Suspense } from "react"
 import { getCategoriesList } from "@lib/data/categories"
 import { getCollectionsWithPreviewProducts } from "@lib/data/collections"
 import { getHomepageSettings } from "@lib/data/homepage"
@@ -21,6 +23,19 @@ import {
 import { getRegion } from "@lib/data/regions"
 import { listWordPressPosts } from "@lib/data/wordpress"
 import { HttpTypes } from "@medusajs/types"
+
+/**
+ * The homepage is the same for every visitor (the cart button hydrates on the
+ * client), so serve it as ISR: rendered once, re-rendered in the background
+ * every 5 minutes or immediately via /api/revalidate ("homepage" tag). Every
+ * fetch in this tree must stay cacheable, otherwise Next silently falls back
+ * to rendering on each request.
+ */
+export const revalidate = 300
+
+export async function generateStaticParams() {
+  return [{ countryCode: "al" }]
+}
 
 const normalizedCategoryName = (name: string) => name.toLowerCase()
 
@@ -72,13 +87,6 @@ export default async function Home({
   ])
 
   const curatedBestsellerIds = homepageSettings.bestsellers.product_ids
-  const curatedBestsellers = await getCuratedBestsellerProducts(
-    countryCode,
-    curatedBestsellerIds
-  )
-  const bestsellerProducts = curatedBestsellers.length
-    ? curatedBestsellers
-    : await getBestsellerProducts(countryCode)
 
   const topCategories = (
     (categoryResponse.product_categories ??
@@ -90,7 +98,18 @@ export default async function Home({
     ...(category.category_children?.map((child) => child.id) ?? []),
   ])
   const categoryIds = categoryIdGroups.flat()
-  const productsByCategoryId = await getMenuProductsByCategoryIds(categoryIds)
+
+  // The bestseller lookup only depends on homepage settings and the category
+  // products only on the category list, so run them side by side instead of
+  // as two extra serial round trips before the first byte.
+  const [curatedBestsellers, productsByCategoryId] = await Promise.all([
+    getCuratedBestsellerProducts(countryCode, curatedBestsellerIds),
+    getMenuProductsByCategoryIds(categoryIds),
+  ])
+  const bestsellerProducts = curatedBestsellers.length
+    ? curatedBestsellers
+    : await getBestsellerProducts(countryCode)
+
   const categoryCards = orderedTopCategories
     .map((category) => {
       const categoryProducts = [
@@ -106,7 +125,13 @@ export default async function Home({
       )
 
       return {
-        category,
+        // Only what the client card needs; the full category object was
+        // being serialized into the RSC payload for every card.
+        category: {
+          id: category.id,
+          name: category.name,
+          handle: category.handle,
+        },
         image: homepageSettings.category_cards.images[category.id] || null,
         products: uniqueProducts.map((product) => ({
           id: product.id,
@@ -121,8 +146,6 @@ export default async function Home({
   return (
     <div className="relative">
       <Hero settings={homepageSettings.hero} />
-      <CategoryGrid categories={categoryCards} />
-
       {bestsellerProducts.length > 0 && region && (
         <section className="yco-section bg-white/40 px-6 pt-8 small:pt-10">
           <Reveal className="font-hanken max-w-6xl mx-auto mb-5 small:mb-6">
@@ -133,6 +156,14 @@ export default async function Home({
           <FeaturedProducts products={bestsellerProducts} region={region} />
         </section>
       )}
+
+      {homepageSettings.navigation.show_discounts && (
+        <Suspense fallback={null}>
+          <OffersSection countryCode={countryCode} />
+        </Suspense>
+      )}
+
+      <CategoryGrid categories={categoryCards} />
 
       <FeaturedBrands collections={collectionResponse ?? []} />
       <HereWeFloSection />

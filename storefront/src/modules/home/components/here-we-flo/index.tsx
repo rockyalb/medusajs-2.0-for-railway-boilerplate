@@ -1,4 +1,9 @@
+import Image from "next/image"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+
+/* Full width on phones; on `small:` and up the photo is height-capped at
+   340px with a 4:5 ratio, so it never renders wider than ~272px. */
+const PHOTO_SIZES = "(max-width: 1023px) 100vw, 272px"
 
 /** Stack the full 4:5 campaign photo above the copy on mobile.
  * Desktop keeps the compact, height-capped image-and-copy band. */
@@ -6,12 +11,14 @@ export default function HereWeFloSection() {
   return (
     <section className="yco-section bg-white/40 px-3 py-3 small:px-7 small:py-4">
       <div className="flex flex-col overflow-hidden rounded-rounded bg-[#f3e3f4] small:h-[28vh] small:min-h-[248px] small:max-h-[340px] small:flex-row">
-        <div className="aspect-[4/5] w-full shrink-0 small:h-full small:w-auto small:self-stretch">
-          <img
+        <div className="relative aspect-[4/5] w-full shrink-0 small:h-full small:w-auto small:self-stretch">
+          <Image
             src="/cms/2024/04/here-we-flo-pads.webp"
             alt="Peceta dhe liners Flo për ndjeshmëri, të certifikuara OEKO-TEX"
-            className="h-full w-full object-cover"
+            fill
+            sizes={PHOTO_SIZES}
             loading="lazy"
+            className="object-cover"
           />
         </div>
 

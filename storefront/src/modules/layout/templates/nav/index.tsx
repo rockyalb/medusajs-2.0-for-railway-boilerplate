@@ -2,6 +2,7 @@ import { Suspense } from "react"
 
 import { getCategoriesList } from "@lib/data/categories"
 import { getCollectionsList } from "@lib/data/collections"
+import { getHomepageSettings } from "@lib/data/homepage"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CartButton from "@modules/layout/components/cart-button"
 import {
@@ -12,8 +13,13 @@ import {
 import NavClient from "./nav-client"
 
 export default async function Nav() {
-  const { product_categories } = await getCategoriesList(0, 100)
-  const { collections } = await getCollectionsList(0, 100)
+  const [{ product_categories }, { collections }, homepage] = await Promise.all(
+    [
+      getCategoriesList(0, 100),
+      getCollectionsList(0, 100),
+      getHomepageSettings(),
+    ]
+  )
 
   const topCategories = (product_categories ?? []).filter(
     (c) => !c.parent_category
@@ -41,6 +47,7 @@ export default async function Nav() {
     <NavClient
       categories={categories}
       collections={simpleCollections}
+      showDiscounts={homepage.navigation.show_discounts}
       searchEnabled={process.env.NEXT_PUBLIC_FEATURE_SEARCH_ENABLED !== "false"}
       cartButton={
         <Suspense

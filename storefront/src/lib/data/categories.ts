@@ -1,6 +1,8 @@
 import { sdk } from "@lib/config"
 import { cache } from "react"
 
+const publicCacheOptions = { cache: "force-cache" as const, next: { tags: ["categories"], revalidate: 3600 } }
+
 type CategoryWithChildren = {
   handle?: string
   name?: string
@@ -40,7 +42,7 @@ const removeSeedCategories = <T extends CategoryWithChildren>(
 
 export const listCategories = cache(async function () {
   return sdk.store.category
-    .list({ fields: "+category_children" }, { next: { tags: ["categories"] } })
+    .list({ fields: "+category_children" }, publicCacheOptions)
     .then(({ product_categories }) => removeSeedCategories(product_categories))
 })
 
@@ -53,7 +55,7 @@ export const getCategoriesList = cache(async function (
       // TODO: Look into fixing the type
       // @ts-ignore
       { limit, offset },
-      { next: { tags: ["categories"] } }
+      publicCacheOptions
     )
     .then((response) => ({
       ...response,
@@ -69,7 +71,7 @@ export const getCategoryByHandle = cache(async function (
       // TODO: Look into fixing the type
       // @ts-ignore
       { handle: categoryHandle, fields: "+category_children" },
-      { next: { tags: ["categories"] } }
+      publicCacheOptions
     )
     .then((response) => ({
       ...response,

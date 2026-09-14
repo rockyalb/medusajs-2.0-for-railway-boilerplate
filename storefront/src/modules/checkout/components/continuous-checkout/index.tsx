@@ -3,9 +3,11 @@
 import { useCallback, useEffect, useId, useRef, useState } from "react"
 import { HttpTypes } from "@medusajs/types"
 import { Button, Heading } from "@medusajs/ui"
+import { unstable_rethrow } from "next/navigation"
 import { completeCodCheckout, prepareCheckout } from "@lib/data/checkout"
 import CartTotals from "@modules/common/components/cart-totals"
 import ShippingAddress from "../shipping-address"
+import { trackPostHogEvent } from "@lib/posthog"
 
 const serialize = (form: FormData) => JSON.stringify(Array.from(form.entries()))
 
@@ -111,6 +113,21 @@ export default function ContinuousCheckout({
     setError(null)
     try {
       await queue.current
+
+      // The single submit confirms the prepared delivery option and cash on
+      // delivery, then starts placement, so all three steps are recorded here.
+      trackPostHogEvent("checkout_shipping_completed", {
+        shipping_method: quote.cart.shipping_methods?.at(-1)?.shipping_option_id,
+      })
+      trackPostHogEvent("checkout_payment_completed", {
+        payment_method: "pp_system_default",
+      })
+      trackPostHogEvent("order_submission_started", {
+        payment_method: "manual",
+        currency: quote.cart.currency_code?.toUpperCase(),
+        value: quote.cart.total,
+      })
+
       const result = await completeCodCheckout(data, {
         total: quote.cart.total ?? 0,
         currency: quote.cart.currency_code,
@@ -119,7 +136,10 @@ export default function ContinuousCheckout({
       })
       if (result.cart) setQuote({ cart: result.cart, values: serialize(data) })
       setError(result.error ?? null)
-    } catch {
+    } catch (error) {
+      // A successful Server Action redirect rejects its client-side promise.
+      // Preserve that framework signal so it cannot flash as a checkout error.
+      unstable_rethrow(error)
       setError("Porosia nuk u përfundua. Ju lutemi provoni përsëri.")
     } finally {
       submittingRef.current = false

@@ -19,6 +19,16 @@ export interface OrderPlacedTemplateProps {
 export const isOrderPlacedTemplateData = (data: any): data is OrderPlacedTemplateProps =>
   typeof data.order === 'object' && typeof data.shippingAddress === 'object'
 
+const getVariantTitle = (variantTitle?: string | null) => {
+  const normalized = variantTitle?.trim()
+
+  if (!normalized || ['default', 'default variant'].includes(normalized.toLowerCase())) {
+    return undefined
+  }
+
+  return normalized
+}
+
 export const OrderPlacedTemplate: React.FC<OrderPlacedTemplateProps> & {
   PreviewProps: OrderPlacedPreviewProps
 } = ({ order, shippingAddress, preview = 'Your order has been placed!' }) => {
@@ -95,7 +105,14 @@ export const OrderPlacedTemplate: React.FC<OrderPlacedTemplateProps> & {
               padding: '8px',
               borderBottom: '1px solid #ddd'
             }}>
-              <Text>{item.title} - {item.product_title}</Text>
+              <div>
+                <Text>{item.product_title ?? item.title}</Text>
+                {getVariantTitle(item.variant_title) && (
+                  <Text style={{ color: '#777', margin: '4px 0 0' }}>
+                    {getVariantTitle(item.variant_title)}
+                  </Text>
+                )}
+              </div>
               <Text>{item.quantity}</Text>
               <Text>{item.unit_price} {order.currency_code}</Text>
             </div>
@@ -114,8 +131,8 @@ OrderPlacedTemplate.PreviewProps = {
     email: 'test@example.com',
     currency_code: 'USD',
     items: [
-      { id: 'item-1', title: 'Item 1', product_title: 'Product 1', quantity: 2, unit_price: 10 },
-      { id: 'item-2', title: 'Item 2', product_title: 'Product 2', quantity: 1, unit_price: 25 }
+      { id: 'item-1', title: 'Product 1', product_title: 'Product 1', variant_title: '150ml', quantity: 2, unit_price: 10 },
+      { id: 'item-2', title: 'Product 2', product_title: 'Product 2', variant_title: 'Default Variant', quantity: 1, unit_price: 25 }
     ],
     shipping_address: {
       first_name: 'Test',
