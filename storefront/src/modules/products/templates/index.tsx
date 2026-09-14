@@ -2,12 +2,14 @@ import React, { Suspense } from "react"
 
 import ImageGallery from "@modules/products/components/image-gallery"
 import ProductActions from "@modules/products/components/product-actions"
+import ProductOnboardingCta from "@modules/products/components/product-onboarding-cta"
 import ProductTabs from "@modules/products/components/product-tabs"
 import RelatedProducts from "@modules/products/components/related-products"
 import ProductInfo from "@modules/products/templates/product-info"
 import SkeletonRelatedProducts from "@modules/skeletons/templates/skeleton-related-products"
 import MetaViewContent from "@modules/analytics/components/meta-view-content"
 import { notFound } from "next/navigation"
+import ProductActionsWrapper from "./product-actions-wrapper"
 import ProductScrollStage from "./product-scroll-stage"
 import { HttpTypes } from "@medusajs/types"
 import { getProductPrice } from "@lib/util/get-product-price"
@@ -40,7 +42,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
       />
       <ProductScrollStage>
         <div className="order-1 min-w-0 small:h-full small:min-h-0">
-          <ImageGallery images={product?.images || []} productId={product.id} />
+          <ImageGallery images={product?.images || []} />
         </div>
 
         <div
@@ -49,7 +51,18 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         >
           <ProductInfo product={product} />
 
-          <ProductActions product={product} region={region} />
+          <ProductOnboardingCta />
+          <Suspense
+            fallback={
+              <ProductActions
+                disabled={true}
+                product={product}
+                region={region}
+              />
+            }
+          >
+            <ProductActionsWrapper id={product.id} region={region} />
+          </Suspense>
 
           <ProductTabs product={product} />
         </div>

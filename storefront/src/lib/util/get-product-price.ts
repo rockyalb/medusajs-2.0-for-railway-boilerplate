@@ -1,10 +1,9 @@
 import { HttpTypes } from "@medusajs/types"
 import { getPercentageDiff } from "./get-precentage-diff"
 import { convertToLocale } from "./money"
-import { isDiscountedVariant } from "./discounts"
 
 export const getPricesForVariant = (variant: any) => {
-  if (typeof variant?.calculated_price?.calculated_amount !== "number") {
+  if (!variant?.calculated_price?.calculated_amount) {
     return null
   }
 
@@ -20,7 +19,7 @@ export const getPricesForVariant = (variant: any) => {
       currency_code: variant.calculated_price.currency_code,
     }),
     currency_code: variant.calculated_price.currency_code,
-    price_type: isDiscountedVariant(variant) ? "sale" : "default",
+    price_type: variant.calculated_price.calculated_price.price_list_type,
     percentage_diff: getPercentageDiff(
       variant.calculated_price.original_amount,
       variant.calculated_price.calculated_amount

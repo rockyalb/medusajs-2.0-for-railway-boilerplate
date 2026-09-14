@@ -26,10 +26,7 @@ import {
   useState,
 } from "react"
 import { sdk } from "../../lib/client"
-import ProductOfTheMonthSection, {
-  ProductOfTheMonthSettings,
-} from "./product-of-the-month"
-import NavigationSection from "./navigation"
+import ProductOfTheMonthSection, { ProductOfTheMonthSettings } from "./product-of-the-month"
 
 type HeroSettings = {
   image_url: string | null
@@ -41,7 +38,6 @@ type HeroSettings = {
 }
 
 type HomepageSettings = {
-  navigation?: { show_discounts: boolean }
   product_of_the_month?: ProductOfTheMonthSettings
   hero: HeroSettings
   category_cards: { images: Record<string, string> }
@@ -250,8 +246,8 @@ const HeroSection = ({
       <div className="px-6 py-4">
         <Heading level="h2">Hero</Heading>
         <Text size="small" className="text-ui-fg-subtle">
-          The image and copy at the top of the homepage. Empty fields fall back
-          to the storefront defaults.
+          The image and copy at the top of the homepage. Empty fields fall
+          back to the storefront defaults.
         </Text>
       </div>
 
@@ -723,8 +719,9 @@ const BestsellersSection = ({
       <div className="px-6 py-4">
         <Heading level="h2">Bestsellers</Heading>
         <Text size="small" className="text-ui-fg-subtle">
-          Pick and order the products shown in the homepage bestsellers section.
-          Leave the list empty to let the storefront choose automatically.
+          Pick and order the products shown in the homepage bestsellers
+          section. Leave the list empty to let the storefront choose
+          automatically.
         </Text>
       </div>
 
@@ -804,10 +801,7 @@ const BestsellersSection = ({
                 key={product.id}
                 className="flex items-center gap-x-3 rounded-lg border border-ui-border-base p-2"
               >
-                <Text
-                  size="small"
-                  className="text-ui-fg-subtle w-6 text-center"
-                >
+                <Text size="small" className="text-ui-fg-subtle w-6 text-center">
                   {index + 1}
                 </Text>
                 <div className="h-10 w-10 shrink-0 overflow-hidden rounded-md bg-ui-bg-subtle">
@@ -896,8 +890,8 @@ const HomepagePage = () => {
         <div className="px-6 py-4">
           <Heading level="h1">Homepage</Heading>
           <Text size="small" className="text-ui-fg-subtle">
-            Manage the storefront homepage. Every save hard-expires the homepage
-            cache so changes go live immediately.
+            Manage the storefront homepage. Every save hard-expires the
+            homepage cache so changes go live immediately.
           </Text>
         </div>
       </Container>
@@ -905,22 +899,13 @@ const HomepagePage = () => {
       {isLoading || !homepage ? (
         <Container className="p-6">
           <Text size="small" className="text-ui-fg-subtle">
-            {isLoading
-              ? "Loading homepage settings…"
-              : "Failed to load settings."}
+            {isLoading ? "Loading homepage settings…" : "Failed to load settings."}
           </Text>
         </Container>
       ) : (
         <>
-          <NavigationSection
-            showDiscounts={homepage.navigation?.show_discounts ?? true}
-            onSaved={fetchSettings}
-          />
           <HeroSection hero={homepage.hero} onSaved={setHomepage} />
-          <ProductOfTheMonthSection
-            settings={homepage.product_of_the_month}
-            onSaved={fetchSettings}
-          />
+          <ProductOfTheMonthSection settings={homepage.product_of_the_month} onSaved={fetchSettings} />
           <CategoryCardsSection
             images={homepage.category_cards.images}
             onSaved={setHomepage}

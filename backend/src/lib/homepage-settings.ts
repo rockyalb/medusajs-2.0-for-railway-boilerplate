@@ -5,7 +5,6 @@ export const HOMEPAGE_PRODUCT_OF_THE_MONTH_KEY = "product_of_the_month"
 export const HOMEPAGE_HERO_KEY = "hero"
 export const HOMEPAGE_CATEGORY_CARDS_KEY = "category_cards"
 export const HOMEPAGE_BESTSELLERS_KEY = "bestsellers"
-export const HOMEPAGE_NAVIGATION_KEY = "navigation"
 
 export type HomepageHeroSettings = {
   image_url: string | null
@@ -27,18 +26,13 @@ export type HomepageBestsellersSettings = {
 }
 
 export type HomepageSettings = {
-  navigation: { show_discounts: boolean }
-  product_of_the_month: {
-    product_id: string | null
-    description: string | null
-  }
+  product_of_the_month: { product_id: string | null; description: string | null }
   hero: HomepageHeroSettings
   category_cards: HomepageCategoryCardsSettings
   bestsellers: HomepageBestsellersSettings
 }
 
 export const EMPTY_HOMEPAGE_SETTINGS: HomepageSettings = {
-  navigation: { show_discounts: true },
   product_of_the_month: { product_id: null, description: null },
   hero: {
     image_url: null,
@@ -55,14 +49,15 @@ export const EMPTY_HOMEPAGE_SETTINGS: HomepageSettings = {
 export const getHomepageSettings = async (
   scope: MedusaContainer
 ): Promise<HomepageSettings> => {
-  const homepageSettingsService = scope.resolve(HOMEPAGE_SETTINGS_MODULE) as any
+  const homepageSettingsService = scope.resolve(
+    HOMEPAGE_SETTINGS_MODULE
+  ) as any
   const settings = await homepageSettingsService.listHomepageSettings({
     key: [
       HOMEPAGE_PRODUCT_OF_THE_MONTH_KEY,
       HOMEPAGE_HERO_KEY,
       HOMEPAGE_CATEGORY_CARDS_KEY,
       HOMEPAGE_BESTSELLERS_KEY,
-      HOMEPAGE_NAVIGATION_KEY,
     ],
   })
 
@@ -74,10 +69,6 @@ export const getHomepageSettings = async (
   )
 
   return {
-    navigation: {
-      ...EMPTY_HOMEPAGE_SETTINGS.navigation,
-      ...((valueByKey[HOMEPAGE_NAVIGATION_KEY] as object) ?? {}),
-    },
     product_of_the_month: {
       ...EMPTY_HOMEPAGE_SETTINGS.product_of_the_month,
       ...((valueByKey[HOMEPAGE_PRODUCT_OF_THE_MONTH_KEY] as object) ?? {}),
@@ -102,7 +93,9 @@ export const upsertHomepageSetting = async (
   key: string,
   value: unknown
 ) => {
-  const homepageSettingsService = scope.resolve(HOMEPAGE_SETTINGS_MODULE) as any
+  const homepageSettingsService = scope.resolve(
+    HOMEPAGE_SETTINGS_MODULE
+  ) as any
   const [existing] = await homepageSettingsService.listHomepageSettings({
     key,
   })

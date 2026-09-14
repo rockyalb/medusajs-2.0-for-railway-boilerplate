@@ -2,7 +2,7 @@
 
 import { Table, Text, clx } from "@medusajs/ui"
 
-import { updateLineItem } from "@lib/data/cart-client"
+import { updateLineItem } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
 import CartItemSelect from "@modules/cart/components/cart-item-select"
 import ErrorMessage from "@modules/checkout/components/error-message"
@@ -14,7 +14,6 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import Spinner from "@modules/common/icons/spinner"
 import Thumbnail from "@modules/products/components/thumbnail"
 import { useState } from "react"
-import { trackPostHogEvent } from "@lib/posthog"
 
 type ItemProps = {
   item: HttpTypes.StoreCartLineItem
@@ -31,16 +30,10 @@ const Item = ({ item, type = "full" }: ItemProps) => {
     setError(null)
     setUpdating(true)
 
-    await updateLineItem({
+    const message = await updateLineItem({
       lineId: item.id,
       quantity,
     })
-      .then(() => {
-        trackPostHogEvent("cart_quantity_changed", {
-          variant_id: item.variant_id,
-          quantity,
-        })
-      })
       .catch((err) => {
         setError(err.message)
       })

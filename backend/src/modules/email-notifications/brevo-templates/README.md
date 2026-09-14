@@ -12,8 +12,7 @@ Order item loops use Brevo's template language:
 
 ```text
 {% for item in params.items %}
-  {{ item.product_title }}
-  {{ item.variant_title }}
+  {{ item.title }}
 {% endfor %}
 ```
 
@@ -47,8 +46,8 @@ Required params:
   "shipping_country_code": "AL",
   "items": [
     {
-      "product_title": "Rose Face Oil",
-      "variant_title": "30ml",
+      "title": "Rose Face Oil",
+      "product_title": "YCO Skin",
       "quantity": 1,
       "unit_price": "39.95"
     }

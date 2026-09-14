@@ -9,10 +9,9 @@ import QuantityStepper from "@modules/common/components/quantity-stepper"
 import OptionSelect from "@modules/products/components/product-actions/option-select"
 
 import ProductPrice from "../product-price"
-import { addToCart } from "@lib/data/cart-client"
+import { addToCart } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
 import { buildMetaContents, trackMetaEvent } from "@lib/meta-pixel"
-import { trackPostHogEvent } from "@lib/posthog"
 
 type ProductActionsProps = {
   product: HttpTypes.StoreProduct
@@ -43,7 +42,6 @@ export default function ProductActions({
 }: ProductActionsProps) {
   const [options, setOptions] = useState<Record<string, string | undefined>>({})
   const [isAdding, setIsAdding] = useState(false)
-  const [addError, setAddError] = useState<string | null>(null)
   const [quantity, setQuantity] = useState(1)
   const countryCode = useParams().countryCode as string
   const hasSelectableVariants = (product.variants?.length ?? 0) > 1
@@ -119,52 +117,37 @@ export default function ProductActions({
 
   // add the selected variant to the cart
   const handleAddToCart = async () => {
-    if (!selectedVariant?.id || isAdding) return null
+    if (!selectedVariant?.id) return null
 
     setIsAdding(true)
-    setAddError(null)
 
-    try {
-      await addToCart({
-        variantId: selectedVariant.id,
-        quantity,
-        countryCode,
-      })
+    await addToCart({
+      variantId: selectedVariant.id,
+      quantity,
+      countryCode,
+    })
 
-      const price = (selectedVariant as any).calculated_price
-      const itemPrice = price?.calculated_amount
+    const price = (selectedVariant as any).calculated_price
+    const itemPrice = price?.calculated_amount
 
-      trackPostHogEvent("product_added_to_cart", {
-        product_id: product.id,
-        variant_id: selectedVariant.id,
-        quantity,
-        currency:
-          price?.currency_code?.toUpperCase() ??
-          region.currency_code?.toUpperCase(),
-        value: typeof itemPrice === "number" ? itemPrice * quantity : undefined,
-      })
+    trackMetaEvent("AddToCart", {
+      content_ids: [selectedVariant.id],
+      content_name: product.title,
+      content_type: "product",
+      contents: buildMetaContents([
+        {
+          id: selectedVariant.id,
+          item_price: itemPrice,
+          quantity,
+        },
+      ]),
+      currency:
+        price?.currency_code?.toUpperCase() ??
+        region.currency_code?.toUpperCase(),
+      value: typeof itemPrice === "number" ? itemPrice * quantity : undefined,
+    })
 
-      trackMetaEvent("AddToCart", {
-        content_ids: [selectedVariant.id],
-        content_name: product.title,
-        content_type: "product",
-        contents: buildMetaContents([
-          {
-            id: selectedVariant.id,
-            item_price: itemPrice,
-            quantity,
-          },
-        ]),
-        currency:
-          price?.currency_code?.toUpperCase() ??
-          region.currency_code?.toUpperCase(),
-        value: typeof itemPrice === "number" ? itemPrice * quantity : undefined,
-      })
-    } catch {
-      setAddError("Produkti nuk u shtua. Rifreskoni faqen dhe provoni përsëri.")
-    } finally {
-      setIsAdding(false)
-    }
+    setIsAdding(false)
   }
 
   return (
@@ -192,11 +175,6 @@ export default function ProductActions({
           </div>
         )}
 
-        {addError && (
-          <p role="alert" className="text-small-regular text-rose-500">
-            {addError}
-          </p>
-        )}
         <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1.15fr)] items-center gap-1.5 border-t border-yco-cream-dark pt-1">
           <ProductPrice product={product} variant={selectedVariant} compact />
 

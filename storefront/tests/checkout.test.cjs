@@ -80,14 +80,6 @@ function fixture({
       },
     },
   }
-  sdk.client = { fetch: async (url, options) => {
-    assert.equal(options.cache, "no-store")
-    assert.equal(options.headers?.cache, undefined)
-    if (url === "/store/shipping-options") return sdk.store.fulfillment.listCartOptions(options.query)
-    if (url === "/store/payment-providers") return sdk.store.payment.listPaymentProviders(options.query)
-    if (url === "/store/carts/cart_test") return sdk.store.cart.retrieve()
-    throw new Error("Unexpected URL: " + url)
-  } }
   const mocks = {
     "@lib/config": { sdk },
     "next/cache": { updateTag: () => {} },

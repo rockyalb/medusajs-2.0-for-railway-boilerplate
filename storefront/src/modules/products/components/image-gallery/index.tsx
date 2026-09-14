@@ -4,29 +4,19 @@ import { HttpTypes } from "@medusajs/types"
 import { Container } from "@medusajs/ui"
 import useEmblaCarousel from "embla-carousel-react"
 import Image, { getImageProps } from "next/image"
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 type ImageGalleryProps = {
   images: HttpTypes.StoreProductImage[]
-  productId: string
 }
 
 // Keep displayed and background images on the same responsive cache entries.
 const gallerySizes = "(max-width: 1023px) 100vw, 58vw"
 
-type IdleCapableWindow = Window & {
-  requestIdleCallback?: (
-    callback: () => void,
-    options?: { timeout: number }
-  ) => number
-  cancelIdleCallback?: (id: number) => void
-}
-
-const ImageGallery = ({ images, productId }: ImageGalleryProps) => {
+const ImageGallery = ({ images }: ImageGalleryProps) => {
   const [activeIndex, setActiveIndex] = useState(0)
   const [mobileIndex, setMobileIndex] = useState(0)
   const [settledFirstUrl, setSettledFirstUrl] = useState<string>()
-  const prefetchedUrls = useRef(new Set<string>())
   const firstUrl = images[0]?.url
   const firstImageSettled = !!firstUrl && settledFirstUrl === firstUrl
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -37,78 +27,39 @@ const ImageGallery = ({ images, productId }: ImageGalleryProps) => {
   const activeImage = images[activeIndex] ?? images[0]
 
   useEffect(() => {
-    prefetchedUrls.current.clear()
-    if (firstUrl) {
-      prefetchedUrls.current.add(firstUrl)
-    }
-  }, [firstUrl])
-
-  useEffect(() => {
-    if (!firstImageSettled) {
-      return
-    }
-
-    const visibleIndex = window.matchMedia("(max-width: 1023px)").matches
-      ? mobileIndex
-      : activeIndex
-    const adjacentUrls = [
-      images[visibleIndex - 1]?.url,
-      images[visibleIndex + 1]?.url,
-    ].filter((url): url is string => !!url)
-
-    if (!adjacentUrls.length) {
-      return
-    }
+    if (!firstImageSettled) return
 
     let cancelled = false
-    let idleId: number | undefined
-    let timeoutId: number | undefined
-
-    const prefetchAdjacent = () => {
-      if (cancelled) {
-        return
-      }
-
-      adjacentUrls.forEach((url) => {
-        if (prefetchedUrls.current.has(url)) {
-          return
-        }
-
-        prefetchedUrls.current.add(url)
-        const { props } = getImageProps({
-          src: url,
-          alt: "",
-          fill: true,
-          sizes: gallerySizes,
-        })
-        const pending = new window.Image()
-        pending.setAttribute("fetchpriority", "low")
-        pending.decoding = "async"
-        pending.sizes = props.sizes ?? gallerySizes
-        pending.srcset = props.srcSet ?? ""
-        pending.src = props.src
+    let pending: HTMLImageElement | undefined
+    const remaining = images.slice(1).filter((image) => image.url)
+    let index = 0
+    const loadNext = () => {
+      if (cancelled || index >= remaining.length) return
+      const image = remaining[index++]
+      const { props } = getImageProps({
+        src: image.url,
+        alt: "",
+        fill: true,
+        sizes: gallerySizes,
       })
+      pending = new window.Image()
+      pending.setAttribute("fetchpriority", "low")
+      pending.decoding = "async"
+      pending.onload = loadNext
+      pending.onerror = loadNext
+      pending.sizes = props.sizes ?? gallerySizes
+      pending.srcset = props.srcSet ?? ""
+      pending.src = props.src
     }
-
-    const idleWindow = window as IdleCapableWindow
-    if (idleWindow.requestIdleCallback) {
-      idleId = idleWindow.requestIdleCallback(prefetchAdjacent, {
-        timeout: 1200,
-      })
-    } else {
-      timeoutId = window.setTimeout(prefetchAdjacent, 250)
-    }
-
+    loadNext()
     return () => {
       cancelled = true
-      if (idleId !== undefined && idleWindow.cancelIdleCallback) {
-        idleWindow.cancelIdleCallback(idleId)
-      }
-      if (timeoutId !== undefined) {
-        window.clearTimeout(timeoutId)
+      if (pending) {
+        pending.onload = null
+        pending.onerror = null
       }
     }
-  }, [activeIndex, firstImageSettled, images, mobileIndex])
+  }, [images, firstImageSettled])
 
   const updateMobileIndex = useCallback(() => {
     if (!emblaApi) {
@@ -149,10 +100,6 @@ const ImageGallery = ({ images, productId }: ImageGalleryProps) => {
   return (
     <div className="relative h-full min-h-0">
       <div
-        id={`product-image-discount-${productId}`}
-        className="pointer-events-none absolute inset-0 z-[3]"
-      />
-      <div
         ref={emblaRef}
         className="overflow-hidden small:hidden"
         role="region"
@@ -160,25 +107,16 @@ const ImageGallery = ({ images, productId }: ImageGalleryProps) => {
       >
         <div className="flex">
           {images.map((image, index) => {
-            const isMobileActive = index === mobileIndex
-            const isMobileAdjacent = Math.abs(index - mobileIndex) === 1
-            const shouldRenderMobileImage =
-              index === 0 ||
-              isMobileActive ||
-              (firstImageSettled && isMobileAdjacent)
-
             return (
               <Container
                 key={image.id}
                 className="relative aspect-[4/5] w-full shrink-0 overflow-hidden rounded-none bg-yco-panel-dark shadow-none"
                 id={image.id}
               >
-                {!!image.url && shouldRenderMobileImage && (
+                {!!image.url && (index === 0 || firstImageSettled || index === mobileIndex) && (
                   <Image
                     src={image.url}
-                    loading={
-                      index === 0 || isMobileActive ? "eager" : "lazy"
-                    }
+                    loading={index === 0 || index === mobileIndex ? "eager" : "lazy"}
                     fetchPriority={index === 0 ? "high" : "low"}
                     onLoad={index === 0 ? () => setSettledFirstUrl(firstUrl) : undefined}
                     onError={index === 0 ? () => setSettledFirstUrl(firstUrl) : undefined}

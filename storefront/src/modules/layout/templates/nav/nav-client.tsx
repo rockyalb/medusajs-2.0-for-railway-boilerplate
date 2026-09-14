@@ -355,13 +355,11 @@ export default function NavClient({
   collections,
   cartButton,
   searchEnabled,
-  showDiscounts = true,
 }: {
   categories: SimpleCategory[]
   collections: SimpleCollection[]
   cartButton: ReactNode
   searchEnabled?: boolean
-  showDiscounts?: boolean
 }) {
   const [shopOpen, setShopOpen] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -432,7 +430,7 @@ export default function NavClient({
                 onClick={() => setMobileOpen((o) => !o)}
               />
             </div>
-            <div className="hidden small:flex items-center gap-x-3 large:gap-x-7 h-full">
+            <div className="hidden small:flex items-center gap-x-7 h-full">
               <LocalizedClientLink
                 href="/"
                 className="mr-3 hover:opacity-80 transition-opacity duration-300"
@@ -442,8 +440,6 @@ export default function NavClient({
                 <img
                   src="/image2vector.svg"
                   alt="yco"
-                  width={40}
-                  height={40}
                   className="h-10 w-auto"
                 />
               </LocalizedClientLink>
@@ -471,15 +467,6 @@ export default function NavClient({
               >
                 Rreth nesh
               </LocalizedClientLink>
-              {showDiscounts && (
-                <LocalizedClientLink
-                  className={navLink}
-                  href="/discounts"
-                  onMouseEnter={closeShop}
-                >
-                  Oferta
-                </LocalizedClientLink>
-              )}
             </div>
           </div>
 
@@ -491,13 +478,7 @@ export default function NavClient({
               onClick={closeMobile}
               onMouseEnter={closeShop}
             >
-              <img
-                src="/image2vector.svg"
-                alt="yco"
-                width={36}
-                height={36}
-                className="h-9 w-auto"
-              />
+              <img src="/image2vector.svg" alt="yco" className="h-9 w-auto" />
             </LocalizedClientLink>
           </div>
 
@@ -621,13 +602,7 @@ export default function NavClient({
               className="hover:opacity-80 transition-opacity duration-300"
               onClick={closeMobile}
             >
-              <img
-                src="/image2vector.svg"
-                alt="yco"
-                width={40}
-                height={40}
-                className="h-10 w-auto"
-              />
+              <img src="/image2vector.svg" alt="yco" className="h-10 w-auto" />
             </LocalizedClientLink>
             <button
               type="button"
@@ -720,9 +695,6 @@ export default function NavClient({
           <ul className="border-t border-yco-cream-dark">
             {[
               { label: "Produktet", href: "/store" },
-              ...(showDiscounts
-                ? [{ label: "Oferta", href: "/discounts" }]
-                : []),
               ...secondaryLinks,
               { label: "Llogaria", href: "/account" },
             ].map((link) => (

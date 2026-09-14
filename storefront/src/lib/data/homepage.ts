@@ -11,18 +11,13 @@ export type HomepageHeroSettings = {
 }
 
 export type HomepageSettings = {
-  navigation: { show_discounts: boolean }
-  product_of_the_month: {
-    product_id: string | null
-    description: string | null
-  }
+  product_of_the_month: { product_id: string | null; description: string | null }
   hero: HomepageHeroSettings
   category_cards: { images: Record<string, string> }
   bestsellers: { product_ids: string[] }
 }
 
 export const EMPTY_HOMEPAGE_SETTINGS: HomepageSettings = {
-  navigation: { show_discounts: true },
   product_of_the_month: { product_id: null, description: null },
   hero: {
     image_url: null,
@@ -39,21 +34,10 @@ export const EMPTY_HOMEPAGE_SETTINGS: HomepageSettings = {
 export const getHomepageSettings = cache(async function () {
   return sdk.client
     .fetch<{ homepage: HomepageSettings }>("/store/homepage", {
-      // Without `force-cache` Next 15+ treats this as no-store, so every
-      // page view waited on the backend. /api/revalidate busts the tag when
-      // the admin saves homepage settings.
-      cache: "force-cache",
-      next: { tags: ["homepage"], revalidate: 300 },
+      next: { tags: ["homepage"] },
     })
     .then(({ homepage }) => ({
-      navigation: {
-        ...EMPTY_HOMEPAGE_SETTINGS.navigation,
-        ...(homepage?.navigation ?? {}),
-      },
-      product_of_the_month: {
-        ...EMPTY_HOMEPAGE_SETTINGS.product_of_the_month,
-        ...(homepage?.product_of_the_month ?? {}),
-      },
+      product_of_the_month: { ...EMPTY_HOMEPAGE_SETTINGS.product_of_the_month, ...(homepage?.product_of_the_month ?? {}) },
       hero: { ...EMPTY_HOMEPAGE_SETTINGS.hero, ...(homepage?.hero ?? {}) },
       category_cards: {
         images: homepage?.category_cards?.images ?? {},

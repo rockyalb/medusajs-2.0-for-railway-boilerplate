@@ -6,10 +6,6 @@ checkEnvVariables()
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
-  // Detect clients from earlier Railway builds during navigation.
-  deploymentId: process.env.RAILWAY_DEPLOYMENT_ID || process.env.RAILWAY_GIT_COMMIT_SHA,
-  // Bound how long an edge cache may serve old ISR HTML while revalidating.
-  expireTime: 3600,
   reactStrictMode: true,
   typescript: {
     ignoreBuildErrors: true,
@@ -17,18 +13,9 @@ const nextConfig = {
   images: {
     // Uses Next's built-in Sharp optimizer in the existing Railway service.
     formats: ["image/webp"],
-    // Bucket objects are ULID-keyed and never rewritten, so optimized
-    // variants can live a day instead of 4h; keeps repeat visits off Sharp.
-    minimumCacheTTL: 86400,
+    minimumCacheTTL: 14400,
     qualities: [50, 75],
     remotePatterns: [
-      {
-        // Current media bucket (hero, category cards, product images).
-        protocol: "https",
-        hostname: "bucket-production-a1707.up.railway.app",
-        port: "",
-        pathname: "/medusa-media/**",
-      },
       {
         // Older catalog images still use this bucket alongside the current one.
         protocol: "https",

@@ -1,11 +1,5 @@
-import Image from "next/image"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { Stagger, StaggerItem } from "@modules/common/components/motion"
-
-/* Tiles are 76vw wide on phones and one of four columns of a 72rem grid
-   (about 270px) on `small:` and up. Without `sizes`, next/image would assume
-   100vw and phones would still pull the full-size source. */
-const TILE_IMAGE_SIZES = "(max-width: 1023px) 76vw, 270px"
 
 type EditorialTile = {
   label: string
@@ -74,14 +68,12 @@ export default function EditorialTiles() {
                 href={tile.href}
                 className="group block focus:outline-none"
               >
-                <div className="relative aspect-[3/4] w-full overflow-hidden bg-yco-panel">
-                  <Image
+                <div className="aspect-[3/4] w-full overflow-hidden bg-yco-panel">
+                  <img
                     src={tile.image}
                     alt={tile.alt}
-                    fill
-                    sizes={TILE_IMAGE_SIZES}
+                    className="h-full w-full object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
                     loading="lazy"
-                    className="object-cover transition-transform duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.04]"
                   />
                 </div>
 

@@ -117,6 +117,7 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
       <Accordion
         type="single"
         collapsible
+        defaultValue={tabs[0]?.label}
         onValueChange={(value) => {
           if (value) {
             window.requestAnimationFrame(() => {

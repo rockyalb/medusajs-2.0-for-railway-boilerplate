@@ -1,4 +1,7 @@
-import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
+import {
+  MedusaRequest,
+  MedusaResponse,
+} from "@medusajs/framework/http"
 import {
   EMPTY_HOMEPAGE_SETTINGS,
   HOMEPAGE_BESTSELLERS_KEY,
@@ -10,7 +13,6 @@ import {
 import { expireStorefrontHomepageCache } from "../../../lib/storefront-cache"
 import { updateHomepageProductOfTheMonthWorkflow } from "../../../workflows/update-homepage-product-of-the-month"
 import { AdminUpdateHomepageType } from "./validators"
-import { updateHomepageNavigationWorkflow } from "../../../workflows/update-homepage-navigation"
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   res.json({ homepage: await getHomepageSettings(req.scope) })
@@ -20,19 +22,7 @@ export async function POST(
   req: MedusaRequest<AdminUpdateHomepageType>,
   res: MedusaResponse
 ) {
-  const {
-    hero,
-    category_cards,
-    bestsellers,
-    product_of_the_month,
-    navigation,
-  } = req.validatedBody
-
-  if (navigation) {
-    await updateHomepageNavigationWorkflow(req.scope).run({
-      input: navigation,
-    })
-  }
+  const { hero, category_cards, bestsellers, product_of_the_month } = req.validatedBody
 
   if (hero) {
     await upsertHomepageSetting(req.scope, HOMEPAGE_HERO_KEY, {
