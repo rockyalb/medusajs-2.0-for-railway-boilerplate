@@ -14,6 +14,7 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import Spinner from "@modules/common/icons/spinner"
 import Thumbnail from "@modules/products/components/thumbnail"
 import { useState } from "react"
+import { trackPostHogEvent } from "@lib/posthog"
 
 type ItemProps = {
   item: HttpTypes.StoreCartLineItem
@@ -30,10 +31,16 @@ const Item = ({ item, type = "full" }: ItemProps) => {
     setError(null)
     setUpdating(true)
 
-    const message = await updateLineItem({
+    await updateLineItem({
       lineId: item.id,
       quantity,
     })
+      .then(() => {
+        trackPostHogEvent("cart_quantity_changed", {
+          variant_id: item.variant_id,
+          quantity,
+        })
+      })
       .catch((err) => {
         setError(err.message)
       })

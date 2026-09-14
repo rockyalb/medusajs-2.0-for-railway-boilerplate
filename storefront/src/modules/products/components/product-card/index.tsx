@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react"
 
 import { addToCart } from "@lib/data/cart-client"
 import { buildMetaContents, trackMetaEvent } from "@lib/meta-pixel"
+import { trackPostHogEvent } from "@lib/posthog"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 
 import DiscountBadge from "./discount-badge"
@@ -109,6 +110,14 @@ export default function ProductCard({
         variantId: product.variantId,
         quantity: 1,
         countryCode,
+      })
+
+      trackPostHogEvent("product_quick_added_to_cart", {
+        product_id: product.id,
+        variant_id: product.variantId,
+        quantity: 1,
+        currency: product.currencyCode?.toUpperCase(),
+        value: product.priceAmount ?? undefined,
       })
 
       trackMetaEvent("AddToCart", {
