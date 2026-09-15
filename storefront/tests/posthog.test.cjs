@@ -38,10 +38,14 @@ function createLocalStorage({ throws = false } = {}) {
 
 // The singleton is stubbed so the assertions describe what the helpers decided
 // to send, independent of the real SDK's transport.
-function loadModule({ configured = true, localStorage = createLocalStorage() } = {}) {
+function loadModule({
+  configured = true,
+  localStorage = createLocalStorage(),
+} = {}) {
   const captures = []
   const identifies = []
   const resets = []
+  const inits = []
 
   const previousWindow = global.window
   const previousToken = process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN
@@ -58,6 +62,7 @@ function loadModule({ configured = true, localStorage = createLocalStorage() } =
   global.window = { localStorage }
 
   const stub = {
+    init: (...args) => inits.push(args),
     capture: (...args) => captures.push(args),
     identify: (...args) => identifies.push(args),
     reset: (...args) => resets.push(args),
@@ -65,7 +70,9 @@ function loadModule({ configured = true, localStorage = createLocalStorage() } =
 
   const module = { exports: {} }
   const requireStub = (specifier) =>
-    specifier === "posthog-js" ? { default: stub, ...stub } : require(specifier)
+    specifier === "posthog-js/no-external"
+      ? { default: stub, ...stub }
+      : require(specifier)
 
   new Function("require", "module", "exports", code)(
     requireStub,
@@ -78,6 +85,7 @@ function loadModule({ configured = true, localStorage = createLocalStorage() } =
     captures,
     identifies,
     resets,
+    inits,
     cleanup() {
       global.window = previousWindow
       restoreEnv("NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN", previousToken)
@@ -94,14 +102,16 @@ function restoreEnv(key, value) {
   }
 }
 
-test("an unconfigured environment sends nothing instead of throwing", () => {
+test("an unconfigured environment sends nothing instead of throwing", async () => {
   const loaded = loadModule({ configured: false })
 
   try {
-    loaded.module.trackPostHogEvent("product_added_to_cart", { quantity: 1 })
-    loaded.module.trackPostHogEventOnce("order:1", "order_completed", {})
-    loaded.module.identifyPostHogCustomer("cus_1", {})
-    loaded.module.resetPostHog()
+    await loaded.module.trackPostHogEvent("product_added_to_cart", {
+      quantity: 1,
+    })
+    await loaded.module.trackPostHogEventOnce("order:1", "order_completed", {})
+    await loaded.module.identifyPostHogCustomer("cus_1", {})
+    await loaded.module.resetPostHog()
 
     assert.equal(loaded.module.POSTHOG_ENABLED, false)
     assert.deepEqual(loaded.captures, [])
@@ -112,11 +122,11 @@ test("an unconfigured environment sends nothing instead of throwing", () => {
   }
 })
 
-test("a configured environment forwards the event name and payload", () => {
+test("a configured environment forwards the event name and payload", async () => {
   const loaded = loadModule()
 
   try {
-    loaded.module.trackPostHogEvent("cart_quantity_changed", {
+    await loaded.module.trackPostHogEvent("cart_quantity_changed", {
       variant_id: "variant_1",
       quantity: 3,
     })
@@ -126,25 +136,55 @@ test("a configured environment forwards the event name and payload", () => {
       "cart_quantity_changed",
       { variant_id: "variant_1", quantity: 3 },
     ])
+    assert.equal(loaded.inits.length, 1)
+    assert.deepEqual(
+      {
+        autocapture: loaded.inits[0][1].autocapture,
+        capture_dead_clicks: loaded.inits[0][1].capture_dead_clicks,
+        capture_exceptions: loaded.inits[0][1].capture_exceptions,
+        capture_performance: loaded.inits[0][1].capture_performance,
+        disable_session_recording: loaded.inits[0][1].disable_session_recording,
+        disable_surveys: loaded.inits[0][1].disable_surveys,
+        disable_external_dependency_loading:
+          loaded.inits[0][1].disable_external_dependency_loading,
+      },
+      {
+        autocapture: false,
+        capture_dead_clicks: false,
+        capture_exceptions: false,
+        capture_performance: false,
+        disable_session_recording: true,
+        disable_surveys: true,
+        disable_external_dependency_loading: true,
+      }
+    )
   } finally {
     loaded.cleanup()
   }
 })
 
-test("a confirmed order is counted once across reloads but each order still counts", () => {
+test("a confirmed order is counted once across reloads but each order still counts", async () => {
   const localStorage = createLocalStorage()
   const first = loadModule({ localStorage })
 
   try {
-    first.module.trackPostHogEventOnce("order_completed:order_1", "order_completed", {
-      order_id: "order_1",
-      value: 4200,
-    })
+    await first.module.trackPostHogEventOnce(
+      "order_completed:order_1",
+      "order_completed",
+      {
+        order_id: "order_1",
+        value: 4200,
+      }
+    )
     // The shopper reloads the confirmation page in the same session.
-    first.module.trackPostHogEventOnce("order_completed:order_1", "order_completed", {
-      order_id: "order_1",
-      value: 4200,
-    })
+    await first.module.trackPostHogEventOnce(
+      "order_completed:order_1",
+      "order_completed",
+      {
+        order_id: "order_1",
+        value: 4200,
+      }
+    )
 
     assert.equal(first.captures.length, 1)
     assert.equal(first.captures[0][1].order_id, "order_1")
@@ -157,12 +197,20 @@ test("a confirmed order is counted once across reloads but each order still coun
   const second = loadModule({ localStorage })
 
   try {
-    second.module.trackPostHogEventOnce("order_completed:order_1", "order_completed", {
-      order_id: "order_1",
-    })
-    second.module.trackPostHogEventOnce("order_completed:order_2", "order_completed", {
-      order_id: "order_2",
-    })
+    await second.module.trackPostHogEventOnce(
+      "order_completed:order_1",
+      "order_completed",
+      {
+        order_id: "order_1",
+      }
+    )
+    await second.module.trackPostHogEventOnce(
+      "order_completed:order_2",
+      "order_completed",
+      {
+        order_id: "order_2",
+      }
+    )
 
     assert.equal(second.captures.length, 1)
     assert.equal(second.captures[0][1].order_id, "order_2")
@@ -171,13 +219,19 @@ test("a confirmed order is counted once across reloads but each order still coun
   }
 })
 
-test("blocked browser storage records the conversion rather than dropping it", () => {
-  const loaded = loadModule({ localStorage: createLocalStorage({ throws: true }) })
+test("blocked browser storage records the conversion rather than dropping it", async () => {
+  const loaded = loadModule({
+    localStorage: createLocalStorage({ throws: true }),
+  })
 
   try {
-    loaded.module.trackPostHogEventOnce("order_completed:order_1", "order_completed", {
-      order_id: "order_1",
-    })
+    await loaded.module.trackPostHogEventOnce(
+      "order_completed:order_1",
+      "order_completed",
+      {
+        order_id: "order_1",
+      }
+    )
 
     assert.equal(loaded.captures.length, 1)
   } finally {
@@ -185,12 +239,14 @@ test("blocked browser storage records the conversion rather than dropping it", (
   }
 })
 
-test("identify and reset reach the SDK when configured", () => {
+test("identify and reset reach the SDK when configured", async () => {
   const loaded = loadModule()
 
   try {
-    loaded.module.identifyPostHogCustomer("cus_1", { email: "shopper@example.com" })
-    loaded.module.resetPostHog()
+    await loaded.module.identifyPostHogCustomer("cus_1", {
+      email: "shopper@example.com",
+    })
+    await loaded.module.resetPostHog()
 
     assert.deepEqual(loaded.identifies, [
       ["cus_1", { email: "shopper@example.com" }],

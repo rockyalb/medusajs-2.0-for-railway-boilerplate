@@ -1,8 +1,4 @@
-"use client"
-
-import { motion, useReducedMotion } from "motion/react"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-const EASE_OUT = [0.22, 1, 0.36, 1] as const
 
 type PotmBannerProps = {
   title: string
@@ -14,8 +10,7 @@ type PotmBannerProps = {
   image: string
 }
 
-/** Full-width band on the animated logo-pastel wash. The product card
-    springs in from off-canvas, settles at a tilt, then floats in place. */
+/** Full-width band on the animated logo-pastel wash. */
 export default function PotmBanner({
   title,
   subtitle,
@@ -25,7 +20,6 @@ export default function PotmBanner({
   handle,
   image,
 }: PotmBannerProps) {
-  const reducedMotion = useReducedMotion()
   const customDescription = homepageDescription?.trim()
   const productCopy = customDescription || whyChosen || description || subtitle
 
@@ -37,13 +31,7 @@ export default function PotmBanner({
         </p>
 
         <div className="relative grid min-h-[460px] grid-cols-1 items-center gap-0 small:min-h-[680px] small:grid-cols-[0.82fr_1.18fr]">
-          <motion.div
-            initial={reducedMotion ? false : { opacity: 0, y: 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.85, ease: EASE_OUT }}
-            className="order-2 max-w-xl p-7 pt-2 text-yco-charcoal small:order-1 small:p-14"
-          >
+          <div className="order-2 max-w-xl p-7 pt-2 text-yco-charcoal small:order-1 small:p-14">
             <p className="mb-3 hidden items-center gap-2 font-sans text-xs font-bold uppercase tracking-[0.14em] small:flex">
               Produkti i muajit
             </p>
@@ -70,35 +58,11 @@ export default function PotmBanner({
                 Zbulo produktin
               </LocalizedClientLink>
             </div>
-          </motion.div>
+          </div>
 
           <div className="order-1 flex h-full min-h-[340px] items-center justify-center overflow-hidden p-5 pb-0 small:order-2 small:min-h-[680px] small:p-8">
-            <motion.div
-              initial={
-                reducedMotion
-                  ? false
-                  : { opacity: 0, x: 80, y: 24, scale: 0.92 }
-              }
-              whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
-              viewport={{ once: true, amount: 0.4 }}
-              transition={{
-                type: "spring",
-                stiffness: 55,
-                damping: 13,
-                mass: 1.1,
-              }}
-              className="relative flex h-full w-full items-center justify-center"
-            >
-              <motion.div
-                animate={reducedMotion ? undefined : { y: [0, -10, 0] }}
-                transition={{
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: 1.6,
-                }}
-                className="relative flex h-full w-full items-center justify-center"
-              >
+            <div className="relative flex h-full w-full items-center justify-center">
+              <div className="relative flex h-full w-full items-center justify-center">
                 {image ? (
                   <img
                     src={image}
@@ -109,8 +73,8 @@ export default function PotmBanner({
                 ) : (
                   <div className="aspect-[3/4] w-full rounded-rounded bg-white/30 small:aspect-auto small:h-[600px]" />
                 )}
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

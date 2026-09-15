@@ -6,8 +6,6 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
-import { Stagger, StaggerItem } from "@modules/common/components/motion"
-
 // Full literal class names so Tailwind keeps these hand-written @layer rules.
 const ACCENT_CLASSES = [
   "yco-accent--mint",
@@ -32,9 +30,11 @@ const badges: { icon: LucideIcon; label: string }[] = [
 
 export default function TrustBadges() {
   return (
-    <section className="bg-white/40 px-6 py-2 small:py-3" aria-label="Standardet tona">
-      <Stagger
-        stagger={0.08}
+    <section
+      className="bg-white/40 px-6 py-2 small:py-3"
+      aria-label="Standardet tona"
+    >
+      <div
         role="list"
         className="mx-auto grid max-w-6xl grid-cols-4 gap-x-2 gap-y-10 border-y border-yco-cream-dark py-4 md:gap-x-4"
       >
@@ -42,7 +42,7 @@ export default function TrustBadges() {
           const accentClass = ACCENT_CLASSES[index % ACCENT_CLASSES.length]
 
           return (
-            <StaggerItem
+            <div
               key={label}
               role="listitem"
               className={`${accentClass} group flex flex-col items-center gap-3 text-center md:gap-4`}
@@ -57,10 +57,10 @@ export default function TrustBadges() {
               <div className="font-sans text-xs font-bold leading-tight tracking-wide text-yco-charcoal md:text-sm">
                 {label}
               </div>
-            </StaggerItem>
+            </div>
           )
         })}
-      </Stagger>
+      </div>
     </section>
   )
 }

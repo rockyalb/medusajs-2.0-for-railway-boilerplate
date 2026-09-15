@@ -1,4 +1,3 @@
-import { Reveal, Stagger, StaggerItem } from "@modules/common/components/motion"
 import { getGoogleReviews } from "@lib/data/featurable"
 
 type DisplayReview = {
@@ -58,7 +57,13 @@ const SOCIAL_LINKS = [
     label: "TikTok",
     href: "https://www.tiktok.com/@ycorganics",
     icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden
+      >
         <path d="M16.5 3c.3 2.1 1.5 3.7 3.5 4.1v3c-1.4.1-2.7-.3-3.9-1v6.6c0 3.4-2.6 5.8-5.8 5.8A5.6 5.6 0 0 1 4.7 16c0-3.3 3-5.9 6.4-5.3v3.1a2.6 2.6 0 0 0-1.1-.2 2.6 2.6 0 1 0 2.6 2.6V3h3.9Z" />
       </svg>
     ),
@@ -68,7 +73,15 @@ const SOCIAL_LINKS = [
     href: "https://www.instagram.com/ycorganics/",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-        <rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" strokeWidth="1.7" />
+        <rect
+          x="3"
+          y="3"
+          width="18"
+          height="18"
+          rx="5"
+          stroke="currentColor"
+          strokeWidth="1.7"
+        />
         <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.7" />
         <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" />
       </svg>
@@ -78,7 +91,13 @@ const SOCIAL_LINKS = [
     label: "Facebook",
     href: "https://www.facebook.com/ycorganic/",
     icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden
+      >
         <path d="M14 8.5V6.7c0-.8.2-1.2 1.4-1.2H17V2.6c-.3 0-1.3-.1-2.4-.1-2.4 0-4 1.5-4 4.1v1.9H8v3h2.6V21H14v-8.5h2.5l.4-3H14Z" />
       </svg>
     ),
@@ -150,9 +169,11 @@ export default async function Testimonials() {
   return (
     <section className="yco-section bg-white/40 px-6 py-10 small:py-12">
       <div className="mx-auto max-w-6xl">
-        <Reveal className="mb-6 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+        <div className="mb-6 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="yco-section-title rhode-display font-hanken text-3xl md:text-4xl">YCO+YOU</h2>
+            <h2 className="yco-section-title rhode-display font-hanken text-3xl md:text-4xl">
+              YCO+YOU
+            </h2>
           </div>
           <div className="flex items-center gap-3 self-start sm:self-auto">
             {SOCIAL_LINKS.map((social) => (
@@ -168,60 +189,57 @@ export default async function Testimonials() {
               </a>
             ))}
           </div>
-        </Reveal>
+        </div>
 
-        <Stagger
-          stagger={0.1}
-          className="-mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0 md:pb-0"
-        >
+        <div className="-mx-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:px-0 md:pb-0">
           {reviews.map((review, index) => {
             const accentClass = ACCENT_CLASSES[index % ACCENT_CLASSES.length]
 
             return (
-            <StaggerItem
-              key={review.id}
-              className={`${accentClass} yco-accent-card flex w-[82%] shrink-0 snap-start flex-col gap-5 rounded-large p-8 md:w-auto md:shrink`}
-            >
-              <Stars
-                count={review.rating}
-                className="text-[color:var(--accent)]"
-              />
-              <blockquote className="flex-1 font-sans text-yco-charcoal text-sm leading-[1.8]">
-                &quot;{review.text}&quot;
-              </blockquote>
-              <div className="flex items-center justify-between border-t border-yco-cream-dark pt-5">
-                <div>
-                  <div className="font-sans text-yco-charcoal text-sm font-bold">
-                    {review.name}
-                  </div>
-                  <div className="font-sans text-yco-charcoal-muted text-xs mt-0.5">
-                    {review.detail}
-                  </div>
-                </div>
-                <div className="text-right">
-                  <div className="font-sans text-yco-charcoal-muted text-[10px] uppercase tracking-[0.12em]">
-                    {review.footnoteLabel}
-                  </div>
-                  {review.url ? (
-                    <a
-                      href={review.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-sans text-yco-charcoal text-[11px] font-bold mt-0.5 leading-tight underline-offset-2 hover:underline"
-                    >
-                      {review.footnoteValue}
-                    </a>
-                  ) : (
-                    <div className="font-sans text-yco-charcoal text-[11px] font-bold mt-0.5 leading-tight">
-                      {review.footnoteValue}
+              <div
+                key={review.id}
+                className={`${accentClass} yco-accent-card flex w-[82%] shrink-0 snap-start flex-col gap-5 rounded-large p-8 md:w-auto md:shrink`}
+              >
+                <Stars
+                  count={review.rating}
+                  className="text-[color:var(--accent)]"
+                />
+                <blockquote className="flex-1 font-sans text-yco-charcoal text-sm leading-[1.8]">
+                  &quot;{review.text}&quot;
+                </blockquote>
+                <div className="flex items-center justify-between border-t border-yco-cream-dark pt-5">
+                  <div>
+                    <div className="font-sans text-yco-charcoal text-sm font-bold">
+                      {review.name}
                     </div>
-                  )}
+                    <div className="font-sans text-yco-charcoal-muted text-xs mt-0.5">
+                      {review.detail}
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="font-sans text-yco-charcoal-muted text-[10px] uppercase tracking-[0.12em]">
+                      {review.footnoteLabel}
+                    </div>
+                    {review.url ? (
+                      <a
+                        href={review.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-sans text-yco-charcoal text-[11px] font-bold mt-0.5 leading-tight underline-offset-2 hover:underline"
+                      >
+                        {review.footnoteValue}
+                      </a>
+                    ) : (
+                      <div className="font-sans text-yco-charcoal text-[11px] font-bold mt-0.5 leading-tight">
+                        {review.footnoteValue}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </StaggerItem>
             )
           })}
-        </Stagger>
+        </div>
 
         <div className="mt-8 flex flex-col items-center justify-center gap-2 text-center sm:flex-row">
           <Stars count={5} />

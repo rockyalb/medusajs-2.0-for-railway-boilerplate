@@ -10,7 +10,6 @@ import LatestBlogPosts from "@modules/home/components/latest-blog-posts"
 import Newsletter from "@modules/home/components/newsletter"
 import Testimonials from "@modules/home/components/testimonials"
 import TrustBadges from "@modules/home/components/trust-badges"
-import { Reveal } from "@modules/common/components/motion"
 import { Suspense } from "react"
 import { getCategoriesList } from "@lib/data/categories"
 import { getCollectionsWithPreviewProducts } from "@lib/data/collections"
@@ -148,11 +147,11 @@ export default async function Home({
       <Hero settings={homepageSettings.hero} />
       {bestsellerProducts.length > 0 && region && (
         <section className="yco-section bg-white/40 px-6 pt-8 small:pt-10">
-          <Reveal className="font-hanken max-w-6xl mx-auto mb-5 small:mb-6">
+          <div className="font-hanken max-w-6xl mx-auto mb-5 small:mb-6">
             <h2 className="yco-section-title rhode-display text-3xl md:text-4xl">
               Most Loved
             </h2>
-          </Reveal>
+          </div>
           <FeaturedProducts products={bestsellerProducts} region={region} />
         </section>
       )}

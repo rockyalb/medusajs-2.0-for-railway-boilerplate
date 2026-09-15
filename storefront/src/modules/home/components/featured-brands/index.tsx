@@ -1,7 +1,6 @@
 import Link from "next/link"
 import { HttpTypes } from "@medusajs/types"
 import { BRAND_LOGOS } from "@lib/data/brand-logos"
-import { Reveal, Stagger, StaggerItem } from "@modules/common/components/motion"
 
 type BrandCollection = HttpTypes.StoreCollection & {
   products?: HttpTypes.StoreProduct[]
@@ -28,18 +27,17 @@ export default function FeaturedBrands({
   return (
     <section className="yco-section bg-yco-cream-dark/50 px-6 py-10 small:py-12">
       <div className="max-w-6xl mx-auto">
-
-        <Reveal className="font-hanken text-center mb-7 small:mb-8">
+        <div className="font-hanken text-center mb-7 small:mb-8">
           <h2 className="yco-section-title yco-section-title--center text-yco-charcoal text-2xl md:text-3xl">
             Brende që u besojmë
           </h2>
           <p className="font-sans text-yco-charcoal-muted text-sm mt-4 max-w-md mx-auto leading-relaxed">
-            Çdo brend përzgjidhet me kujdes për cilësinë, etikën dhe përkushtimin ndaj qëndrueshmërisë.
+            Çdo brend përzgjidhet me kujdes për cilësinë, etikën dhe
+            përkushtimin ndaj qëndrueshmërisë.
           </p>
-        </Reveal>
+        </div>
 
-        <Stagger
-          stagger={0.06}
+        <div
           role="list"
           className="-mx-6 flex gap-4 overflow-x-auto px-6 pb-2 md:mx-0 md:grid md:grid-cols-3 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-6"
         >
@@ -48,41 +46,42 @@ export default function FeaturedBrands({
             const accentClass = accentClasses[index % accentClasses.length]
 
             return (
-            <StaggerItem
-              key={brand.id}
-              role="listitem"
-              className="w-[42vw] min-w-[9.5rem] max-w-[12rem] shrink-0 md:w-auto md:min-w-0 md:max-w-none"
-            >
-            <Link
-              href={`/collections/${brand.handle}`}
-              className={`group ${accentClass} flex h-full flex-col rounded-2xl border border-yco-cream-dark/40 bg-yco-cream p-3 transition-all duration-300 hover:-translate-y-1 hover:border-[color:var(--accent)] hover:shadow-[0_20px_42px_-20px_var(--accent-glow)] active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2`}
-            >
-              <div className="mb-4 aspect-square overflow-hidden rounded-large bg-white flex items-center justify-center p-5">
-                {logo ? (
-                  <img
-                    src={logo}
-                    alt={`${brand.title} logo`}
-                    className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.06]"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="flex h-full items-center justify-center">
-                    <span className="font-serif text-yco-charcoal text-3xl font-medium">
-                      {brand.title[0]}
-                    </span>
+              <div
+                key={brand.id}
+                role="listitem"
+                className="w-[42vw] min-w-[9.5rem] max-w-[12rem] shrink-0 md:w-auto md:min-w-0 md:max-w-none"
+              >
+                <Link
+                  href={`/collections/${brand.handle}`}
+                  className={`group ${accentClass} flex h-full flex-col rounded-2xl border border-yco-cream-dark/40 bg-yco-cream p-3 transition-all duration-300 hover:-translate-y-1 hover:border-[color:var(--accent)] hover:shadow-[0_20px_42px_-20px_var(--accent-glow)] active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2`}
+                >
+                  <div className="mb-4 aspect-square overflow-hidden rounded-large bg-white flex items-center justify-center p-5">
+                    {logo ? (
+                      <img
+                        src={logo}
+                        alt={`${brand.title} logo`}
+                        className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.06]"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center">
+                        <span className="font-serif text-yco-charcoal text-3xl font-medium">
+                          {brand.title[0]}
+                        </span>
+                      </div>
+                    )}
                   </div>
-                )}
+                  <div className="font-serif text-yco-charcoal text-sm font-semibold mb-1 leading-tight text-center">
+                    {brand.title}
+                  </div>
+                  <div className="font-sans text-yco-charcoal-muted text-[10px] tracking-wide leading-snug text-center">
+                    Shfleto brendin
+                  </div>
+                </Link>
               </div>
-              <div className="font-serif text-yco-charcoal text-sm font-semibold mb-1 leading-tight text-center">
-                {brand.title}
-              </div>
-              <div className="font-sans text-yco-charcoal-muted text-[10px] tracking-wide leading-snug text-center">
-                Shfleto brendin
-              </div>
-            </Link>
-            </StaggerItem>
-          )})}
-        </Stagger>
+            )
+          })}
+        </div>
 
         <div className="text-center mt-8">
           <Link
@@ -92,7 +91,6 @@ export default function FeaturedBrands({
             Shiko të gjitha brendet
           </Link>
         </div>
-
       </div>
     </section>
   )

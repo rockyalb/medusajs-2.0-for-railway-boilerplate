@@ -1,6 +1,5 @@
 import Image from "next/image"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { Stagger, StaggerItem } from "@modules/common/components/motion"
 
 /* Tiles are 76vw wide on phones and one of four columns of a 72rem grid
    (about 270px) on `small:` and up. Without `sizes`, next/image would assume
@@ -56,17 +55,9 @@ export default function EditorialTiles() {
       <h2 className="sr-only">Kujdesi sipas kategorive</h2>
 
       <div className="mx-auto max-w-6xl">
-        {/* The entrance animation is driven from the row, not per card. A card
-            that only peeks in from the right is under any per-element in-view
-            threshold, so it would sit at opacity 0 and pop in on first scroll —
-            hiding the very sliver that signals the row scrolls. Staggering from
-            the parent keeps the same cascade while the peek stays visible. */}
-        <Stagger
-          stagger={0.08}
-          className="-mx-6 flex snap-x snap-mandatory scroll-pl-6 gap-4 overflow-x-auto px-6 pb-2 small:mx-0 small:grid small:grid-cols-4 small:gap-5 medium:gap-7 small:snap-none small:overflow-visible small:px-0 small:pb-0"
-        >
+        <div className="-mx-6 flex snap-x snap-mandatory scroll-pl-6 gap-4 overflow-x-auto px-6 pb-2 small:mx-0 small:grid small:grid-cols-4 small:gap-5 medium:gap-7 small:snap-none small:overflow-visible small:px-0 small:pb-0">
           {TILES.map((tile) => (
-            <StaggerItem
+            <div
               key={tile.href}
               className="w-[76vw] shrink-0 snap-start small:w-auto"
             >
@@ -91,9 +82,9 @@ export default function EditorialTiles() {
                   </span>
                 </span>
               </LocalizedClientLink>
-            </StaggerItem>
+            </div>
           ))}
-        </Stagger>
+        </div>
       </div>
     </section>
   )

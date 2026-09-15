@@ -4,7 +4,6 @@ import Image from "next/image"
 import Link from "next/link"
 import useEmblaCarousel from "embla-carousel-react"
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures"
-import { motion, useReducedMotion } from "motion/react"
 import { useMemo, useRef } from "react"
 import type { MouseEvent, PointerEvent } from "react"
 import { isOptimizableImageUrl } from "@lib/util/image-host"
@@ -40,7 +39,6 @@ export default function CategoryGrid({
 }: {
   categories: CategoryCard[]
 }) {
-  const reducedMotion = useReducedMotion()
   const wheelGestures = useMemo(
     () => [WheelGesturesPlugin({ forceWheelAxis: "x" })],
     []
@@ -117,13 +115,7 @@ export default function CategoryGrid({
 
   return (
     <section className="yco-section font-hanken bg-white/40 px-6 pb-8 pt-12 small:pb-10 small:pt-16">
-      <motion.div
-        initial={reducedMotion ? false : { opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.25 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="max-w-6xl mx-auto"
-      >
+      <div className="max-w-6xl mx-auto">
         <div
           ref={emblaRef}
           className="-mx-6 cursor-grab overflow-hidden px-6 pb-3 active:cursor-grabbing small:mx-0 small:px-0"
@@ -136,76 +128,74 @@ export default function CategoryGrid({
           onPointerLeave={endDrag}
         >
           <div className="flex gap-3 pr-8 small:pr-12">
-            {categories.map(
-              ({ category, products, image: imageOverride }) => {
-                const image = imageOverride || products[0]?.image
+            {categories.map(({ category, products, image: imageOverride }) => {
+              const image = imageOverride || products[0]?.image
 
-                return (
-                  <div
-                    key={category.id}
-                    className="w-[78vw] max-w-[25rem] shrink-0 small:w-[30%]"
+              return (
+                <div
+                  key={category.id}
+                  className="w-[78vw] max-w-[25rem] shrink-0 small:w-[30%]"
+                >
+                  <Link
+                    href={`/categories/${category.handle}`}
+                    className={`group ${CATEGORY_CARD_ACCENT_CLASS} yco-accent-card yco-home-category-card relative flex h-full flex-col overflow-hidden rounded-large p-0 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2`}
+                    aria-label={`Bli ${category.name}`}
+                    draggable={false}
+                    onClick={handleCategoryClick}
                   >
-                    <Link
-                      href={`/categories/${category.handle}`}
-                      className={`group ${CATEGORY_CARD_ACCENT_CLASS} yco-accent-card yco-home-category-card relative flex h-full flex-col overflow-hidden rounded-large p-0 outline-none focus-visible:ring-2 focus-visible:ring-yco-charcoal focus-visible:ring-offset-2`}
-                      aria-label={`Bli ${category.name}`}
-                      draggable={false}
-                      onClick={handleCategoryClick}
-                    >
-                      <div className="relative aspect-[4/5] w-full overflow-hidden bg-white/55">
-                        {image ? (
-                          /* This slider sits below the fold. Every card is
+                    <div className="relative aspect-[4/5] w-full overflow-hidden bg-white/55">
+                      {image ? (
+                        /* This slider sits below the fold. Every card is
                              lazy: React 19 SSR hoists a <link rel=preload>
                              for any eager <img>, and the first two cards'
                              ~430 KiB PNGs were competing with the hero for
                              bandwidth during LCP. */
-                          <Image
-                            src={image}
-                            alt={products[0]?.title || category.name}
-                            fill
-                            sizes={CARD_IMAGE_SIZES}
-                            loading="lazy"
-                            fetchPriority="low"
-                            unoptimized={!isOptimizableImageUrl(image)}
-                            className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-                            draggable={false}
-                          />
-                        ) : (
-                          <div className="flex h-full items-center justify-center font-hanken text-6xl font-black lowercase text-yco-charcoal/20">
-                            {category.name.slice(0, 1)}
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex items-center justify-between gap-3 px-4 py-3">
-                        <div className="font-hanken text-sm font-normal text-yco-charcoal">
-                          {category.name}
+                        <Image
+                          src={image}
+                          alt={products[0]?.title || category.name}
+                          fill
+                          sizes={CARD_IMAGE_SIZES}
+                          loading="lazy"
+                          fetchPriority="low"
+                          unoptimized={!isOptimizableImageUrl(image)}
+                          className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                          draggable={false}
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center font-hanken text-6xl font-black lowercase text-yco-charcoal/20">
+                          {category.name.slice(0, 1)}
                         </div>
-                        <span className="rhode-round-btn rhode-round-btn--accent shrink-0">
-                          <svg
-                            width="22"
-                            height="22"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                          >
-                            <path
-                              d="M9 8l4 4-4 4"
-                              stroke="currentColor"
-                              strokeWidth="1.3"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-between gap-3 px-4 py-3">
+                      <div className="font-hanken text-sm font-normal text-yco-charcoal">
+                        {category.name}
                       </div>
-                    </Link>
-                  </div>
-                )
-              }
-            )}
+                      <span className="rhode-round-btn rhode-round-btn--accent shrink-0">
+                        <svg
+                          width="22"
+                          height="22"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                        >
+                          <path
+                            d="M9 8l4 4-4 4"
+                            stroke="currentColor"
+                            strokeWidth="1.3"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </span>
+                    </div>
+                  </Link>
+                </div>
+              )
+            })}
           </div>
         </div>
-      </motion.div>
+      </div>
     </section>
   )
 }

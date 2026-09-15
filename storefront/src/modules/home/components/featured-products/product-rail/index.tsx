@@ -107,16 +107,12 @@ export default function ProductRail({
         aria-label={ariaLabel}
       >
         <div className="flex gap-3">
-          {showcaseProducts.map((product, productIndex) => (
+          {showcaseProducts.map((product) => (
             <div
               key={product.id}
               className="w-[62%] min-w-[10rem] max-w-[15rem] shrink-0 xsmall:w-[44%] small:w-[19%]"
             >
-              <ProductCard
-                product={product}
-                priority={productIndex < 2}
-                featured
-              />
+              <ProductCard product={product} featured />
             </div>
           ))}
         </div>

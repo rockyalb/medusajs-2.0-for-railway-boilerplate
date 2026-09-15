@@ -23,7 +23,7 @@ const AccountNav = ({
   const handleLogout = async () => {
     // Drop the identified person before the session ends so a later anonymous
     // visitor on the same browser is not attributed to this customer.
-    resetPostHog()
+    await resetPostHog()
     await signout()
   }
 

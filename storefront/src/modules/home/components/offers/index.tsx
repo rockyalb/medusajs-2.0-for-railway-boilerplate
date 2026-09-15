@@ -1,6 +1,5 @@
 import { getDiscountedProducts } from "@lib/data/discounts"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { Reveal } from "@modules/common/components/motion"
 import ProductRail from "@modules/home/components/featured-products/product-rail"
 
 export default async function OffersSection({
@@ -22,7 +21,7 @@ export default async function OffersSection({
     return (
       <section className="yco-section yco-accent--coral bg-white/55 px-6 py-10 small:py-14">
         <div className="mx-auto max-w-6xl">
-          <Reveal className="mb-6 flex flex-col gap-5 small:mb-8 small:flex-row small:items-end small:justify-between small:gap-8">
+          <div className="mb-6 flex flex-col gap-5 small:mb-8 small:flex-row small:items-end small:justify-between small:gap-8">
             <div className="max-w-xl">
               <h2 className="yco-section-title rhode-display font-hanken text-3xl md:text-4xl">
                 Pak më shumë kujdes, me më pak.
@@ -39,7 +38,7 @@ export default async function OffersSection({
             >
               Shiko të gjitha ofertat
             </LocalizedClientLink>
-          </Reveal>
+          </div>
 
           <ProductRail
             products={products}
