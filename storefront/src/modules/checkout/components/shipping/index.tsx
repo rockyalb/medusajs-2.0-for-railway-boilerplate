@@ -67,7 +67,7 @@ const Shipping: React.FC<ShippingProps> = ({
       ? "tirane"
       : "other"
     const targetCode =
-      (cart.subtotal ?? 0) >= FREE_SHIPPING_THRESHOLD_ALL
+      (cart.item_total ?? 0) >= FREE_SHIPPING_THRESHOLD_ALL
         ? "free-delivery"
         : cityGroup === "tirane"
         ? "tirane-delivery"
@@ -78,7 +78,7 @@ const Shipping: React.FC<ShippingProps> = ({
         (method) => method.type?.code === targetCode
       ) ?? selectableShippingMethods[0]
     )
-  }, [cart.shipping_address, cart.subtotal, selectableShippingMethods])
+  }, [cart.shipping_address, cart.item_total, selectableShippingMethods])
 
   const handleEdit = () => {
     router.push(pathname + "?step=delivery", { scroll: false })

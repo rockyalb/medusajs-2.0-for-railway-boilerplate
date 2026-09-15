@@ -174,7 +174,8 @@ const CartDropdown = ({
 
   const totalItems =
     cartState?.items?.reduce((acc, item) => acc + item.quantity, 0) || 0
-  const subtotal = cartState?.subtotal ?? 0
+  // Match free-shipping eligibility: merchandise after discounts, including tax.
+  const itemTotal = cartState?.item_total ?? 0
   const openRef = useRef(openVersion)
   const pathname = usePathname()
 
@@ -255,7 +256,7 @@ const CartDropdown = ({
           <>
             <div className="shrink-0 border-b border-yco-cream-dark px-6 py-5">
               <FreeShippingProgress
-                subtotal={subtotal}
+                item_total={itemTotal}
                 currency_code={cartState.currency_code}
                 compact
               />
@@ -283,10 +284,10 @@ const CartDropdown = ({
                 <span
                   className="font-sans text-yco-charcoal text-base font-bold"
                   data-testid="cart-subtotal"
-                  data-value={subtotal}
+                  data-value={itemTotal}
                 >
                   {convertToLocale({
-                    amount: subtotal,
+                    amount: itemTotal,
                     currency_code: cartState.currency_code,
                   })}
                 </span>
