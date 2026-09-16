@@ -1,5 +1,9 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { MedusaError, QueryContext } from "@medusajs/framework/utils"
+import {
+  getVariantAvailability,
+  MedusaError,
+  QueryContext,
+} from "@medusajs/framework/utils"
 import { getCatalogPrice } from "../../../lib/meta-catalog-price"
 
 type FeedMetadata = Record<string, unknown>
@@ -36,12 +40,40 @@ const metadataValue = (metadata: FeedMetadata, key: string) => {
   return Array.isArray(value) ? value.join(", ") : String(value)
 }
 
-const getAvailability = (variant: any) => {
+const getAvailability = (
+  variant: any,
+  availability: Record<string, { availability: number | null }>
+) => {
   if (!variant.manage_inventory || variant.allow_backorder) {
     return "in stock"
   }
 
-  return (variant.inventory_quantity || 0) > 0 ? "in stock" : "out of stock"
+  return (availability[variant.id]?.availability ?? 0) > 0
+    ? "in stock"
+    : "out of stock"
+}
+
+const getSalesChannelId = async (query: any) => {
+  const configured = process.env.META_CATALOG_SALES_CHANNEL_ID?.trim()
+
+  if (configured) {
+    return configured
+  }
+
+  const { data: stores } = await query.graph({
+    entity: "store",
+    fields: ["default_sales_channel_id"],
+  })
+  const salesChannelId = stores[0]?.default_sales_channel_id
+
+  if (!salesChannelId) {
+    throw new MedusaError(
+      MedusaError.Types.INVALID_DATA,
+      "No sales channel configured for the Meta catalog"
+    )
+  }
+
+  return salesChannelId as string
 }
 
 const renderElement = (name: string, value: unknown) => {
@@ -92,7 +124,6 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
         "variants.sku",
         "variants.manage_inventory",
         "variants.allow_backorder",
-        "variants.inventory_quantity",
         "variants.calculated_price.*",
       ],
       filters: {
@@ -120,6 +151,18 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     total = metadata?.count ?? data.length
     skip += data.length
   } while (skip < total)
+
+  const managedVariantIds = products.flatMap((product: any) =>
+    (product.variants || [])
+      .filter((variant: any) => variant.manage_inventory)
+      .map((variant: any) => variant.id)
+  )
+  const availability = managedVariantIds.length
+    ? await getVariantAvailability(query, {
+        variant_ids: managedVariantIds,
+        sales_channel_id: await getSalesChannelId(query),
+      })
+    : {}
 
   const items = products.flatMap((product: any) => {
     const metadata = (product.metadata || {}) as FeedMetadata
@@ -165,7 +208,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
             "description",
             product.description || product.subtitle || product.title
           ),
-          renderElement("availability", getAvailability(variant)),
+          renderElement("availability", getAvailability(variant, availability)),
           renderElement("condition", "new"),
           renderElement("price", price.price),
           renderElement("sale_price", price.salePrice),
