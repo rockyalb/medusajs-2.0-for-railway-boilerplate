@@ -12,11 +12,12 @@ import Testimonials from "@modules/home/components/testimonials"
 import TrustBadges from "@modules/home/components/trust-badges"
 import { Suspense } from "react"
 import { getCategoriesList } from "@lib/data/categories"
-import { getCollectionsWithPreviewProducts } from "@lib/data/collections"
+import { getCollectionsList } from "@lib/data/collections"
 import { getHomepageSettings } from "@lib/data/homepage"
 import {
   getBestsellerProducts,
   getCuratedBestsellerProducts,
+  getLatestProducts,
   getMenuProductsByCategoryIds,
 } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
@@ -77,12 +78,14 @@ export default async function Home({
     categoryResponse,
     collectionResponse,
     latestPosts,
+    latestProducts,
   ] = await Promise.all([
     getHomepageSettings(),
     getRegion(countryCode),
     getCategoriesList(0, 100),
-    getCollectionsWithPreviewProducts(countryCode, 12),
+    getCollectionsList(0, 12),
     listWordPressPosts(3),
+    getLatestProducts(countryCode, 6),
   ])
 
   const curatedBestsellerIds = homepageSettings.bestsellers.product_ids
@@ -158,7 +161,26 @@ export default async function Home({
 
       <CategoryGrid categories={categoryCards} />
 
-      <FeaturedBrands collections={collectionResponse ?? []} />
+      {latestProducts.length > 0 && region && (
+        <section className="yco-section bg-white/40 px-6 pt-8 small:pt-10">
+          <div className="font-hanken mx-auto mb-5 max-w-6xl small:mb-6">
+            <h2 className="yco-section-title rhode-display text-3xl md:text-4xl">
+              Më të rejat
+            </h2>
+          </div>
+          <FeaturedProducts
+            products={latestProducts}
+            region={region}
+            ariaLabel="Produktet më të reja"
+          />
+        </section>
+      )}
+
+      <FeaturedBrands
+        brands={(collectionResponse.collections ?? []).map(
+          ({ id, title, handle }) => ({ id, title, handle })
+        )}
+      />
       <HereWeFloSection />
       <TrustBadges />
       {homepageSettings.navigation.show_discounts && (

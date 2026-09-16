@@ -5,7 +5,10 @@ import { getRegion } from "./regions"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import { sortProducts } from "@lib/util/sort-products"
 
-const publicCacheOptions = { cache: "force-cache" as const, next: { tags: ["products"], revalidate: 60 } }
+const publicCacheOptions = {
+  cache: "force-cache" as const,
+  next: { tags: ["products"], revalidate: 60 },
+}
 
 // Homepage sections (bestsellers, product of the month). In Next 15+ a fetch
 // with only `next.tags` is uncached, so these hit Medusa on every page view
@@ -14,6 +17,14 @@ const publicCacheOptions = { cache: "force-cache" as const, next: { tags: ["prod
 const homepageCacheOptions = {
   cache: "force-cache" as const,
   next: { tags: ["homepage", "products"], revalidate: 300 },
+}
+
+// New arrivals only change when catalog products are created. Keep this query
+// warm far longer than the homepage ISR interval, while the products tag lets
+// the backend's catalog-sync hook expire it immediately after product changes.
+const latestProductsCacheOptions = {
+  cache: "force-cache" as const,
+  next: { tags: ["products"], revalidate: 60 * 60 * 12 },
 }
 
 export const getProductsById = cache(async function ({
@@ -52,10 +63,7 @@ export const getMenuProductsByCategoryIds = cache(async function (
         publicCacheOptions
       )
 
-      return [
-        categoryId,
-        products,
-      ] as const
+      return [categoryId, products] as const
     })
   )
 
@@ -106,10 +114,7 @@ export const getMenuProductsByCollectionIds = cache(async function (
         publicCacheOptions
       )
 
-      return [
-        collectionId,
-        products,
-      ] as const
+      return [collectionId, products] as const
     })
   )
 
@@ -213,10 +218,36 @@ export const getBestsellerProducts = cache(async function (
 
   const fallbackProducts = products.filter(
     (product) =>
-      !curatedProducts.some((curatedProduct) => curatedProduct.id === product.id)
+      !curatedProducts.some(
+        (curatedProduct) => curatedProduct.id === product.id
+      )
   )
 
   return [...curatedProducts, ...fallbackProducts].slice(0, limit)
+})
+
+export const getLatestProducts = cache(async function (
+  countryCode: string,
+  limit: number = 6
+) {
+  const region = await getRegion(countryCode)
+
+  if (!region) {
+    return []
+  }
+
+  const { products } = await sdk.store.product.list(
+    {
+      limit,
+      order: "-created_at",
+      region_id: region.id,
+      fields:
+        "id,title,handle,thumbnail,*images,*variants.calculated_price,+variants.inventory_quantity",
+    },
+    latestProductsCacheOptions
+  )
+
+  return products
 })
 
 export const getProductOfTheMonth = cache(async function (
@@ -234,7 +265,8 @@ export const getProductOfTheMonth = cache(async function (
       {
         id: [selectedProductId],
         region_id: region.id,
-        fields: "id,title,handle,subtitle,description,thumbnail,*images,+metadata,*variants.calculated_price",
+        fields:
+          "id,title,handle,subtitle,description,thumbnail,*images,+metadata,*variants.calculated_price",
       },
       homepageCacheOptions
     )
