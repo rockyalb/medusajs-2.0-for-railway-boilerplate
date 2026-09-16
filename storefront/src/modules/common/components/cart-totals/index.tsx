@@ -8,7 +8,9 @@ type CartTotalsProps = {
   totals: {
     total?: number | null
     subtotal?: number | null
+    item_subtotal?: number | null
     tax_total?: number | null
+    item_tax_total?: number | null
     shipping_total?: number | null
     discount_total?: number | null
     gift_card_total?: number | null
@@ -22,7 +24,9 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals, pendingLabel }) => {
     currency_code,
     total,
     subtotal,
+    item_subtotal,
     tax_total,
+    item_tax_total,
     shipping_total,
     discount_total,
     gift_card_total,
@@ -30,6 +34,10 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals, pendingLabel }) => {
   } = totals
 
   const appliedCredit = credit_line_total ?? gift_card_total ?? 0
+  // Medusa's subtotal/tax_total include shipping, which is shown tax-inclusive
+  // on its own row, so the product rows use the item-only totals.
+  const productsSubtotal = item_subtotal ?? subtotal
+  const productsTax = item_tax_total ?? tax_total
 
   return (
     <div>
@@ -38,8 +46,8 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals, pendingLabel }) => {
           <span className="flex gap-x-1 items-center">
             Nëntotali (pa TVSH, pa transport)
           </span>
-          <span data-testid="cart-subtotal" data-value={subtotal || 0}>
-            {convertToLocale({ amount: subtotal ?? 0, currency_code })}
+          <span data-testid="cart-subtotal" data-value={productsSubtotal || 0}>
+            {convertToLocale({ amount: productsSubtotal ?? 0, currency_code })}
           </span>
         </div>
         {!!discount_total && (
@@ -67,8 +75,8 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals, pendingLabel }) => {
         </div>
         <div className="flex justify-between">
           <span className="flex gap-x-1 items-center ">TVSH</span>
-          <span data-testid="cart-taxes" data-value={tax_total || 0}>
-            {convertToLocale({ amount: tax_total ?? 0, currency_code })}
+          <span data-testid="cart-taxes" data-value={productsTax || 0}>
+            {convertToLocale({ amount: productsTax ?? 0, currency_code })}
           </span>
         </div>
         {!!appliedCredit && (
