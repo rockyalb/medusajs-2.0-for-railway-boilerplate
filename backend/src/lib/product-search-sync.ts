@@ -30,7 +30,11 @@ const getMeiliConfig = () => {
 }
 
 const getStorefrontUrl = () => {
-  const configured = process.env.STOREFRONT_URL || ""
+  const configured = process.env.STOREFRONT_URL?.trim()
+
+  if (!configured && process.env.NODE_ENV === "production") {
+    throw new Error("STOREFRONT_URL is required to refresh the storefront cache")
+  }
 
   return (configured || "http://localhost:8000").trim().replace(/\/+$/, "")
 }
@@ -135,12 +139,18 @@ export const deleteProductFromMeili = async (
 export const expireStorefrontProductCache = async (
   handle?: string | null
 ): Promise<boolean> => {
-  const url = `${getStorefrontUrl()}/api/revalidate`
-  const paths = handle ? [`/products/${handle}`] : []
+  // Next renders public URLs under /[countryCode]. Expire the actual route
+  // pattern too, including cached 404s and old handles after rename/deletion.
+  const paths = ["/[countryCode]/products/[handle]"]
+  if (handle) {
+    paths.push(`/products/${handle}`, `/al/products/${handle}`)
+  }
 
   try {
+    const url = `${getStorefrontUrl()}/api/revalidate`
     const response = await fetch(url, {
       method: "POST",
+      signal: AbortSignal.timeout(10_000),
       headers: {
         "Content-Type": "application/json",
         ...(process.env.REVALIDATE_SECRET
@@ -148,7 +158,7 @@ export const expireStorefrontProductCache = async (
           : {}),
       },
       body: JSON.stringify({
-        tags: ["products"],
+        tags: ["products", "categories", "collections"],
         paths,
       }),
     })
@@ -159,7 +169,10 @@ export const expireStorefrontProductCache = async (
       )
     }
 
-    return response.ok
+    if (!response.ok) return false
+
+    const result = await response.json()
+    return result.revalidated === true
   } catch (error) {
     console.error("Storefront product revalidation request failed", error)
     return false
@@ -170,16 +183,15 @@ export const syncProductSearchAndCache = async (
   container: any,
   productId: string
 ) => {
+  // Search failures must never prevent the next storefront read being fresh.
+  const cacheExpired = await expireStorefrontProductCache()
   const document = await retrieveProductSearchDocument(container, productId)
 
   if (!document) {
     await deleteProductFromMeili(productId)
-    await expireStorefrontProductCache()
-    return { indexed: false, deleted: true, cacheExpired: true }
+    return { indexed: false, deleted: true, cacheExpired }
   }
 
   const indexed = await upsertProductInMeili(document)
-  const cacheExpired = await expireStorefrontProductCache(document.handle)
-
   return { indexed, deleted: false, cacheExpired }
 }

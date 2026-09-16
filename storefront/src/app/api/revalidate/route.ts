@@ -27,7 +27,8 @@ export async function POST(request: NextRequest) {
   const paths = body.paths?.length ? body.paths : ["/[countryCode]"]
 
   for (const tag of tags) {
-    revalidateTag(tag, "max")
+    // Admin edits and inventory webhooks must block the next read on fresh data.
+    revalidateTag(tag, { expire: 0 })
   }
 
   for (const path of paths) {

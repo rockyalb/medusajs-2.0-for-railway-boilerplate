@@ -34,7 +34,7 @@ export default function NavigationSection({
       if (result.revalidated) toast.success("Offer visibility saved")
       else
         toast.warning(
-          "Offer visibility saved. Storefront cache refresh is pending."
+          "Offer visibility saved, but the storefront cache refresh failed. Please save again to retry."
         )
       onSaved()
     } catch (error) {

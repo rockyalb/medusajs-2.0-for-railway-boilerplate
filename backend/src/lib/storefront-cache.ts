@@ -1,5 +1,9 @@
 const getStorefrontUrl = () => {
-  const configured = process.env.STOREFRONT_URL || ""
+  const configured = process.env.STOREFRONT_URL?.trim()
+
+  if (!configured && process.env.NODE_ENV === "production") {
+    throw new Error("STOREFRONT_URL is required to refresh the storefront cache")
+  }
 
   return (configured || "http://localhost:8000").trim().replace(/\/+$/, "")
 }
@@ -10,11 +14,11 @@ const getStorefrontUrl = () => {
  * here should never block saving the settings themselves.
  */
 export const expireStorefrontHomepageCache = async (): Promise<boolean> => {
-  const url = `${getStorefrontUrl()}/api/revalidate`
-
   try {
+    const url = `${getStorefrontUrl()}/api/revalidate`
     const response = await fetch(url, {
       method: "POST",
+      signal: AbortSignal.timeout(10_000),
       headers: {
         "Content-Type": "application/json",
         ...(process.env.REVALIDATE_SECRET
@@ -30,7 +34,10 @@ export const expireStorefrontHomepageCache = async (): Promise<boolean> => {
       )
     }
 
-    return response.ok
+    if (!response.ok) return false
+
+    const result = await response.json()
+    return result.revalidated === true
   } catch (error) {
     console.error("Storefront revalidation request failed", error)
     return false

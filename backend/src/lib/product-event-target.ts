@@ -31,6 +31,8 @@ export const resolveProductIdFromEvent = async (
       {
         select: ["id", "product_id"],
         take: 1,
+        // Deleted variants still identify the parent whose SKU index changed.
+        withDeleted: true,
       }
     )
 
