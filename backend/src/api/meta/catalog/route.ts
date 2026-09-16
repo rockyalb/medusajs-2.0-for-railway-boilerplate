@@ -133,6 +133,15 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       product.handle
     )}`
     const imageUrl = product.thumbnail || product.images?.[0]?.url
+    const additionalImageUrls = Array.from(
+      new Set(
+        (product.images || [])
+          .map((image: any) => image.url)
+          .filter((url: unknown) =>
+            Boolean(url && typeof url === "string" && url !== imageUrl)
+          )
+      )
+    )
 
     return (product.variants || []).flatMap((variant: any) => {
       const price = getCatalogPrice(variant.calculated_price)
@@ -162,6 +171,9 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
           renderElement("sale_price", price.salePrice),
           renderElement("link", link),
           renderElement("image_link", imageUrl),
+          ...additionalImageUrls.map((url) =>
+            renderElement("additional_image_link", url)
+          ),
           renderElement("brand", metadataValue(metadata, "brand") || "YCO"),
           renderElement("mpn", variant.sku),
           renderElement("identifier_exists", variant.sku ? "yes" : "no"),

@@ -88,7 +88,7 @@ test("Meta XML uses regional calculated prices, sale labels and keeps existing v
   await GET({ scope: { resolve: () => ({ graph: async (query) => {
     if (query.entity === "region") return { data: [{ id: "al-region", currency_code: "all", countries: [{ iso_2: "al" }] }] }
     context.push(query.context)
-    return { data: [{ id: "p1", title: "Serum & cream", handle: "serum", thumbnail: "https://example.com/image.png", variants: [variant(1800, 2000), variant(100)], metadata: { meta_custom_label_0: "test" } }], metadata: { count: 1 } }
+    return { data: [{ id: "p1", title: "Serum & cream", handle: "serum", thumbnail: "https://example.com/image.png", images: [{ url: "https://example.com/image.png" }, { url: "https://example.com/side.png" }, { url: "https://example.com/detail?a=1&b=2" }, { url: "https://example.com/side.png" }], variants: [variant(1800, 2000), variant(100)], metadata: { meta_custom_label_0: "test" } }], metadata: { count: 1 } }
   } }) } }, { setHeader() {}, status() { return this }, send(value) { xml = value } })
   assert.deepEqual(context[0].variants.calculated_price, { region_id: "al-region", currency_code: "all" })
   assert.match(xml, /<g:price>2000.00 ALL<\/g:price><g:sale_price>1800.00 ALL<\/g:sale_price>/)
@@ -97,4 +97,7 @@ test("Meta XML uses regional calculated prices, sale labels and keeps existing v
   assert.match(xml, /<g:custom_label_4>regular_price<\/g:custom_label_4>/)
   assert.match(xml, /<g:id>variant_1800<\/g:id>/)
   assert.match(xml, /Serum &amp; cream/)
+  assert.equal((xml.match(/<g:additional_image_link>/g) || []).length, 4)
+  assert.equal((xml.match(/https:\/\/example\.com\/side\.png/g) || []).length, 2)
+  assert.match(xml, /<g:additional_image_link>https:\/\/example\.com\/detail\?a=1&amp;b=2<\/g:additional_image_link>/)
 })
