@@ -21,22 +21,18 @@ export default async function OffersSection({
     return (
       <section className="yco-section yco-accent--coral bg-white/55 px-6 py-10 small:py-14">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-6 flex flex-col gap-5 small:mb-8 small:flex-row small:items-end small:justify-between small:gap-8">
-            <div className="max-w-xl">
-              <h2 className="yco-section-title rhode-display font-hanken text-3xl md:text-4xl">
-                Pak më shumë kujdes, me më pak.
+          <div className="mb-6 flex items-end justify-between gap-4 small:mb-8 small:gap-8">
+            <div>
+              <h2 className="yco-section-title rhode-display text-3xl md:text-4xl">
+                Ofertat
               </h2>
-              <p className="mt-4 max-w-lg font-sans text-sm leading-relaxed text-yco-charcoal-muted small:text-base">
-                Zbulo produktet në ofertë dhe gjej të preferuarat për rutinën
-                tënde.
-              </p>
             </div>
 
             <LocalizedClientLink
               href="/discounts"
-              className="yco-btn yco-btn--coral shrink-0 self-start small:self-end"
+              className="shrink-0 border-b border-yco-charcoal pb-0.5 font-sans text-[10px] font-medium uppercase tracking-[0.12em] text-yco-charcoal transition-colors duration-300 hover:border-pastel-coral-ink hover:text-pastel-coral-ink small:text-xs small:tracking-[0.18em]"
             >
-              Shiko të gjitha ofertat
+              Shiko të gjitha
             </LocalizedClientLink>
           </div>
 
