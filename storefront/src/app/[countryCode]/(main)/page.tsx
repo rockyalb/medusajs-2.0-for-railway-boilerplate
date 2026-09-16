@@ -156,17 +156,16 @@ export default async function Home({
         </section>
       )}
 
-      {homepageSettings.navigation.show_discounts && (
-        <Suspense fallback={null}>
-          <OffersSection countryCode={countryCode} />
-        </Suspense>
-      )}
-
       <CategoryGrid categories={categoryCards} />
 
       <FeaturedBrands collections={collectionResponse ?? []} />
       <HereWeFloSection />
       <TrustBadges />
+      {homepageSettings.navigation.show_discounts && (
+        <Suspense fallback={null}>
+          <OffersSection countryCode={countryCode} />
+        </Suspense>
+      )}
       <EditorialTiles />
       <ProductOfTheMonth countryCode={countryCode} />
       <Testimonials />
