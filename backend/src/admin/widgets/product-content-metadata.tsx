@@ -22,6 +22,7 @@ type MetadataField = {
     | "product_of_the_month_reason"
     | "ingredients"
     | "how_to_use"
+    | "not_recommended_for"
     | "meta_custom_label_0"
     | "meta_custom_label_1"
     | "meta_custom_label_2"
@@ -51,6 +52,19 @@ const fields: MetadataField[] = [
     key: "how_to_use",
     label: "How to use",
     aliases: ["howToUse", "how-to-use", "how to use"],
+  },
+  {
+    key: "not_recommended_for",
+    label: "Nuk rekomandohet për",
+    aliases: [
+      "notRecommendedFor",
+      "not-recommended-for",
+      "not recommended for",
+      "may_not_be_suitable_for",
+      "mayNotBeSuitableFor",
+      "may-not-be-suitable-for",
+      "may not be suitable for",
+    ],
   },
   {
     key: "meta_custom_label_0",

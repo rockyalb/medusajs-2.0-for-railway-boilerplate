@@ -25,6 +25,19 @@ const metadataSections = [
     label: "How to use",
     keys: ["how_to_use", "howToUse", "how-to-use", "how to use"],
   },
+  {
+    label: "Nuk rekomandohet për",
+    keys: [
+      "not_recommended_for",
+      "notRecommendedFor",
+      "not-recommended-for",
+      "not recommended for",
+      "may_not_be_suitable_for",
+      "mayNotBeSuitableFor",
+      "may-not-be-suitable-for",
+      "may not be suitable for",
+    ],
+  },
 ]
 
 const hasDisplayableValue = (value: unknown): boolean => {
