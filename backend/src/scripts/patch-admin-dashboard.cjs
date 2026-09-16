@@ -6,6 +6,7 @@ const { getReferencePrice, addReferencePriceColumns } = require("../admin-custom
 
 const MARKER = "// yco-price-list-admin-v1"
 const PRODUCT_CREATE_MARKER = "// yco-product-create-defaults-v1"
+const PRODUCT_HANDLE_MARKER = "// yco-product-create-handle-v1"
 
 function replaceOnce(source, before, after) {
   if (source.split(before).length !== 2) {
@@ -93,8 +94,9 @@ function patchDashboard(dashboardRoot) {
     )
     changes.push({ file: productCreateUtils.file, source: `${PRODUCT_CREATE_MARKER}\n${source}` })
   }
-  if (!productCreate.source.includes(PRODUCT_CREATE_MARKER)) {
-    let source = productCreate.source
+  let productCreateSource = productCreate.source
+  if (!productCreateSource.includes(PRODUCT_CREATE_MARKER)) {
+    let source = productCreateSource
     source = replaceOnce(
       source,
       `        variant_rank: newVariants.length,
@@ -194,7 +196,41 @@ function patchDashboard(dashboardRoot) {
   }`
     )
     source = replaceOnce(source, "        defaultChannel: sales_channel,", "        defaultChannel,")
-    changes.push({ file: productCreate.file, source: `${PRODUCT_CREATE_MARKER}\n${source}` })
+    productCreateSource = `${PRODUCT_CREATE_MARKER}\n${source}`
+  }
+  // Fill the handle from the title while it still matches the previous
+  // auto-generated value, so a hand-edited handle is never overwritten.
+  if (!productCreateSource.includes(PRODUCT_HANDLE_MARKER)) {
+    const source = replaceOnce(
+      productCreateSource,
+      `var ProductCreateGeneralSection = ({
+  form
+}) => {
+  const { t } = useTranslation();`,
+      `var ProductCreateGeneralSection = ({
+  form
+}) => {
+  const { t } = useTranslation();
+  useEffect2(() => {
+    const toHandle = (value) => String(value ?? "").normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    let previousTitle = form.getValues("title");
+    const subscription = form.watch((values, { name }) => {
+      if (name !== "title") {
+        return;
+      }
+      const handle = values.handle ?? "";
+      if (!handle || handle === toHandle(previousTitle)) {
+        form.setValue("handle", toHandle(values.title), { shouldDirty: true });
+      }
+      previousTitle = values.title;
+    });
+    return () => subscription.unsubscribe();
+  }, [form]);`
+    )
+    productCreateSource = `${PRODUCT_HANDLE_MARKER}\n${source}`
+  }
+  if (productCreateSource !== productCreate.source) {
+    changes.push({ file: productCreate.file, source: productCreateSource })
   }
   // Validate every signature before changing any file. Copy-on-write avoids pnpm hardlink mutation.
   for (const { file, source } of changes) {
