@@ -63,6 +63,12 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals, pendingLabel }) => {
             </span>
           </div>
         )}
+        <div className="flex justify-between">
+          <span className="flex gap-x-1 items-center ">TVSH</span>
+          <span data-testid="cart-taxes" data-value={productsTax || 0}>
+            {convertToLocale({ amount: productsTax ?? 0, currency_code })}
+          </span>
+        </div>
         <div className="flex items-start justify-between gap-4">
           <span>Transporti</span>
           <span
@@ -71,12 +77,6 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals, pendingLabel }) => {
           >
             {pendingLabel ??
               convertToLocale({ amount: shipping_total ?? 0, currency_code })}
-          </span>
-        </div>
-        <div className="flex justify-between">
-          <span className="flex gap-x-1 items-center ">TVSH</span>
-          <span data-testid="cart-taxes" data-value={productsTax || 0}>
-            {convertToLocale({ amount: productsTax ?? 0, currency_code })}
           </span>
         </div>
         {!!appliedCredit && (
